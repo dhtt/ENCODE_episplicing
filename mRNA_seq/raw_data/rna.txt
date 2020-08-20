@@ -1,0 +1,11 @@
+"https://www.encodeproject.org/metadata/?type=Experiment&option=raw" -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data '{"elements": ["/experiments/ENCSR828LSC/","/experiments/ENCSR244ISQ/","/experiments/ENCSR444WHQ/"]}'
+https://www.encodeproject.org/files/ENCFF193XIP/@@download/ENCFF193XIP.fastq.gz
+https://www.encodeproject.org/files/ENCFF994BMY/@@download/ENCFF994BMY.fastq.gz
+https://www.encodeproject.org/files/ENCFF726PAY/@@download/ENCFF726PAY.fastq.gz
+https://www.encodeproject.org/files/ENCFF996KMK/@@download/ENCFF996KMK.fastq.gz
+https://www.encodeproject.org/files/ENCFF939FVE/@@download/ENCFF939FVE.fastq.gz
+https://www.encodeproject.org/files/ENCFF201WLO/@@download/ENCFF201WLO.fastq.gz
+https://www.encodeproject.org/files/ENCFF002DMH/@@download/ENCFF002DMH.fastq.gz
+https://www.encodeproject.org/files/ENCFF002DMI/@@download/ENCFF002DMI.fastq.gz
+https://www.encodeproject.org/files/ENCFF002DML/@@download/ENCFF002DML.fastq.gz
+https://www.encodeproject.org/files/ENCFF002DMM/@@download/ENCFF002DMM.fastq.gz
