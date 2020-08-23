@@ -5,6 +5,7 @@ echo "Get submetadata from metadata.tsv"
 for file in $INPUT_PATH/*
 do (
     ID=${file%%.*}
+    ID=${ID##*/}
     echo $ID
     grep "^$ID" $INPUT_PATH/metadata.tsv >> $INPUT_PATH/submetadata.tsv
 )
