@@ -1,0 +1,13 @@
+"https://www.encodeproject.org/metadata/?type=Experiment&files.assembly=GRCh38&files.output_type=alignments&files.file_type=bam" -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data '{"elements": ["/experiments/ENCSR746CUY/","/experiments/ENCSR065HOR/","/experiments/ENCSR824UNY/","/experiments/ENCSR501JET/","/experiments/ENCSR013KEC/","/experiments/ENCSR832JVP/"]}'
+https://www.encodeproject.org/files/ENCFF262VKZ/@@download/ENCFF262VKZ.bam
+https://www.encodeproject.org/files/ENCFF615PUT/@@download/ENCFF615PUT.bam
+https://www.encodeproject.org/files/ENCFF009ADE/@@download/ENCFF009ADE.bam
+https://www.encodeproject.org/files/ENCFF533ZII/@@download/ENCFF533ZII.bam
+https://www.encodeproject.org/files/ENCFF740GZB/@@download/ENCFF740GZB.bam
+https://www.encodeproject.org/files/ENCFF242CIG/@@download/ENCFF242CIG.bam
+https://www.encodeproject.org/files/ENCFF412PPW/@@download/ENCFF412PPW.bam
+https://www.encodeproject.org/files/ENCFF651ARP/@@download/ENCFF651ARP.bam
+https://www.encodeproject.org/files/ENCFF356HLU/@@download/ENCFF356HLU.bam
+https://www.encodeproject.org/files/ENCFF455IUR/@@download/ENCFF455IUR.bam
+https://www.encodeproject.org/files/ENCFF071ETA/@@download/ENCFF071ETA.bam
+https://www.encodeproject.org/files/ENCFF707CSG/@@download/ENCFF707CSG.bam
