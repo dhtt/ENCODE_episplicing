@@ -9,7 +9,7 @@ dexseq_count() {
     echo $ID
     echo $file
     echo "counting $ID" >> log_dexseqcount.txt
-    # (python ~/R/x86_64-pc-linux-gnu-library/3.6/DEXSeq/python_scripts/dexseq_count.py $ENCODE_REFGEN/reference_genome.gtf $file $ENCODE_EXP/dexseqcount/"$ID"_count.txt) || (echo "Err: Counting $ID failed" >> log_dexseqcount.txt)
+    (python ~/R/x86_64-pc-linux-gnu-library/3.6/DEXSeq/python_scripts/dexseq_count.py $ENCODE_REFGEN/reference_genome.gtf $file $ENCODE_EXP/dexseqcount/"$ID"_count.txt) || (echo "Err: Counting $ID failed" >> log_dexseqcount.txt)
 }
 for file in ls $ENCODE_EXP/sam_files/*.sam
 do
@@ -25,7 +25,8 @@ for f in $ENCODE_EXP/dexseqcount/*count.txt
 do
     ACC_NO=${f#*/}
     ACC_NO=${ACC_NO%_*}
-    # ID=$(grep -ih $ACC_NO epi_ids.txt)
+    ID=$(grep -ih $ACC_NO $ENCODE_EXP/epi_ids.txt)
+    echo $ID
     # prefix_ID=${ID%%_*}
     # NEWNAME="backupcount_NCBI"/"${prefix_ID}"_"$ACC_NO"_"count.txt"
     # mv $f $NEWNAME
