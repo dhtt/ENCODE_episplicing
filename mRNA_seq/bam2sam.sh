@@ -15,7 +15,7 @@ bam_to_sam(){
 
 for f in $BAM_folder/*.bam
 do
-    bam_to_sam $f &
+    bam_to_sam $f 
 done
 wait
 
