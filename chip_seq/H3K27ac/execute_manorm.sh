@@ -29,8 +29,7 @@ for chunk in $INPUT_PATH/pair_chunks/*
 do
     while read p;
     do
-    # execute_manorm_parallel &
-    echo "-"
+    execute_manorm_parallel &
     done < $chunk
     wait
     echo "===> FINISHED manorm-ING ALL PAIRS IN "$chunk"" >> $INPUT_PATH/execute_manorm.log
