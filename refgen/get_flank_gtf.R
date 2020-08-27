@@ -3,7 +3,7 @@ library(rtracklayer)
 library(data.table)
 library(dplyr)
 
-refgen.exon = import.gff("/home/dhthutrang/ENCODE/refgen/reference_genome.exon.gtf")
+refgen.exon = import.gff("/home/dhthutrang/ENCODE/refgen/reference_genome.gtf")
 refgen.exon = as(refgen.exon, "GRanges")
 start(refgen.exon)
 strand(refgen.exon)
