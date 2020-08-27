@@ -6,6 +6,7 @@ echo "===> START MANORM-ING ALL PAIRS IN $histone_type"
 mkdir $INPUT_PATH/manorm_result
 mkdir $INPUT_PATH/pair_chunks
 split -l 11 --numeric-suffixes $INPUT_PATH/all_pairs.txt $INPUT_PATH/pair_chunks/chunk_
+ls $INPUT_PATH
 
 execute_manorm_parallel() {
     peak_file1=$(echo $p | awk '{split($0, a, " "); print a[1]}')
@@ -14,7 +15,7 @@ execute_manorm_parallel() {
     read_file2=$(echo $p | awk '{split($0, a, " "); print a[4]}')
     epi1=$(echo $p | awk '{split($0, a, " "); print a[5]}')
     epi2=$(echo $p | awk '{split($0, a, " "); print a[6]}')
-    if (ls manorm_result | grep "$epi1"_"$epi2" )
+    if (ls $INPUT_PATH/manorm_result | grep "$epi1"_"$epi2" )
     then (
         echo "Pair "$epi1"_"$epi2" already exists" >> execute_manorm.log
         )

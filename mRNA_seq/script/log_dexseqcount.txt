@@ -70,3 +70,42 @@ Err: Counting ENCFF317PIS failed
 Err: Counting ENCFF686FFX failed
 Err: Counting ENCFF365PWT failed
 Err: Counting ENCFF358IAU failed
+Counting ls
+Counting ENCFF011JJG
+Counting ENCFF011TNN
+ALready counted ENCFF011TNN
+Counting ENCFF115FOK
+Counting ENCFF134ORW
+Counting ENCFF136XQD
+ALready counted ENCFF136XQD
+Counting ENCFF317PIS
+Counting ENCFF338NGO
+Counting ENCFF329ZLV
+ALready counted ENCFF329ZLV
+Counting ENCFF358IAU
+Counting ENCFF365PWT
+Counting ENCFF407CUK
+ALready counted ENCFF407CUK
+Counting ENCFF421XWB
+Counting ENCFF433ZEN
+Counting ENCFF481OUR
+ALready counted ENCFF481OUR
+Counting ENCFF483XKV
+Counting ENCFF522AQG
+Counting ENCFF597HHX
+Counting ENCFF540BJB
+ALready counted ENCFF540BJB
+Counting ENCFF665MNZ
+Counting ENCFF678OXW
+Counting ENCFF686FFX
+Counting ENCFF693ALI
+Counting ENCFF843NIZ
+Counting ENCFF753IWP
+ALready counted ENCFF753IWP
+Counting ENCFF921DDO
+ALready counted ENCFF921DDO
+Counting ENCFF896ZWC
+Counting ENCFF998HTU
+ALready counted ENCFF998HTU
+ALready counted ENCFF896ZWC
+Err: Counting ls failed
