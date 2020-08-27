@@ -3,20 +3,20 @@ echo "Start Time: $(date)" >> annotate_manorm.log
 histonetype=$1
 HISTONE_PATH=$ENCODE_HIS/$histonetype
 
-# echo "===> Begin annotating"
-# #Get chr, start, end, M-value, p-value, normedcount1, normedcount2
-# echo "===> 1: Get chr, start, end, M-value, p-value, normedcount1, normedcount2"
-# mkdir $HISTONE_PATH/normalizedcounts
-# for x in $HISTONE_PATH/manorm_result/*/*.xls
-# do (
-#     echo $x
-#     f=${x##*/}
-#     echo $f
-#     awk '{print $1"\t"$2"\t"$3"\t"$5"\t"$7"\t"$9"\t"$10}' $x > $HISTONE_PATH/normalizedcounts/$f.bed
-# ) &
-# done
-# wait
-# echo "===> Finish"
+echo "===> Begin annotating"
+#Get chr, start, end, M-value, p-value, normedcount1, normedcount2
+echo "===> 1: Get chr, start, end, M-value, p-value, normedcount1, normedcount2"
+mkdir $HISTONE_PATH/normalizedcounts
+for x in $HISTONE_PATH/manorm_result/*/*.xls
+do (
+    echo $x
+    f=${x##*/}
+    echo $f
+    awk '{print $1"\t"$2"\t"$3"\t"$5"\t"$7"\t"$9"\t"$10}' $x > $HISTONE_PATH/normalizedcounts/$f.bed
+) &
+done
+wait
+echo "===> Finish"
 
 #annotate all xls.bed in normalizedcounts into $FLANK/histonetype
 echo "===> 2: Annotate all xls.bed in normalizedcounts into FLANK/histonetype"
