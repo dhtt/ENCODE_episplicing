@@ -25,13 +25,14 @@ mkdir $HISTONE_PATH/flank
 retrieve_epiid(){
     FILE=${FILE##*/}
     epi1=${FILE%%_*}
-    FILE=${FILE#_*}
-    epi2=${FILE#*_}
+    FILE2=${FILE#_*}
+    epi2=${FILE2#*_}
     epi2=${epi2%%_*}
 }
 annotate_manorm_parallel_flank() {
     retrieve_epiid
     echo $FILE
+    echo $FILE2
     echo $epi1
     echo $epi2
     if (ls $HISTONE_PATH/normalizedcounts| grep "$epi1" ) && (ls $HISTONE_PATH/normalizedcounts | grep "$epi2" )
