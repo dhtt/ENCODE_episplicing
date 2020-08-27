@@ -31,6 +31,9 @@ retrieve_epiid(){
 }
 annotate_manorm_parallel_flank() {
     retrieve_epiid
+    echo $FILE
+    echo $epi1
+    echo $epi2
     if (ls $HISTONE_PATH/normalizedcounts| grep "$epi1" ) && (ls $HISTONE_PATH/normalizedcounts | grep "$epi2" )
     then (
         if (ls $HISTONE_PATH/flank | grep "$epi1"_"$epi2")
@@ -57,7 +60,7 @@ do
     annotate_manorm_parallel_flank &
 done
 echo "End Time: $(date)" >> annotate_manorm.log
-
+wait
 
 #Collapse counts
 echo "===> 3: Collapsing annotated counts"
