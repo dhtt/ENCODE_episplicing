@@ -23,9 +23,9 @@ echo "===> 2: Annotate all xls.bed in normalizedcounts into FLANK/histonetype"
 mkdir $HISTONE_PATH/flank
 mkdir $HISTONE_PATH/flank
 retrieve_epiid(){
-    FILE=${FILE##*/}
-    epi1=${FILE%%_*}
-    FILE2=${FILE#_*}
+    FILE1=${FILE##*/}
+    epi1=${FILE1%%_*}
+    FILE2=${FILE1#_*}
     epi2=${FILE2#*_}
     epi2=${epi2%%_*}
 }
