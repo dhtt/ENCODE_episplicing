@@ -7,11 +7,26 @@ library("doMC")
 setwd("/home/dhthutrang/ENCODE/utilities")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities")
 doMC::registerDoMC(cores = 17)
+
+get_colname <- function(filename_list, option='his'){
+  name = sapply(filename_list, function(x) strsplit(x, split='/'))
+  name = sapply(name, function(x) x[length(x)][[1]])
+  if (option=="his"){
+    name = sapply(name, function(x) strsplit(x, split="\\.")[[1]][1])
+  }
+  else if (option=="exp"){
+    name = sapply(name, function(x) strsplit(x, split=".res.csv")[[1]][1])
+  }
+  names(name) = NULL
+  return(name)
+}
+get_colname(temp,"exp")
+
 #===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
 print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
-all_pairs.exp = list.files("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res", full.names = FALSE)
+all_pairs.exp = list.files("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res", full.names = TRUE)
 get_all_pairs.exp <- function(all_pairs.exp){
-  colname_exp = c("gene_id", "exon_id", sapply(all_pairs.exp, function(x) strsplit(x, split = '_res.csv')))
+  colname_exp = c("gene_id", "exon_id", get_colname(all_pairs.exp, "exp"))
   pair.exp_list = vector("list", length(all_pairs.exp))
   for (i in 1:length(all_pairs.exp)){
     print(paste("Pair: ",i, sep=''))
@@ -73,11 +88,11 @@ get_all_pairs.his_list <- function(histone_type_list){
     # for (j in 1:1){
     his = histone_type_list[[j]]
     print(his)
-    all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), full.names = FALSE)
+    all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), full.names = TRUE)
     print(all_pairs.his)
-    colname_his = sapply(temp, function(x) strsplit(x, split = '\\.')[[1]][1])
+    colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
-    colnames(all_pairs.his.sig) = c("gene_id", "exon_id", colname_his)
+    colnames(all_pairs.his.sig) = colname_his
     all_pairs.his_list[[j]] = all_pairs.his.sig
   }
   return(all_pairs.his_list)
@@ -151,14 +166,3 @@ print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
 saveRDS(all_res_list.pearcor_p, "all_res_list.pearcor_p.RDS")
 
-
-temp = "/home/dhthutrang/ENCODE/chip_seq/H3K36me3/flank/cardiacmusclecell_H1.txt.fl.txt"
-temp = strsplit(temp, split='/')[[1]]
-temp = temp[length(temp)][1]
-temp = strsplit(temp, split="\\.")[[1]][1]
-temp = list.files(getwd(), full.names = FALSE)
-temp = c("cardiacmusclecell_H1.txt.fl.txt", "mesenchymalstemcell_skeletalmusclemyoblast.txt.fl.txt",  "skeletalmusclemyoblast_H1.txt.fl.txt")
-sapply(temp, function(x) strsplit(x, split = '\\.')[[1]][1])
-
-  
-       
