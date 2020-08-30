@@ -40,7 +40,7 @@ print(RData_files)
 
 for (file in RData_files){
   load(file)
-  plot_name = paste(paste("/home/dhthutrang/ENCODE/utilities", file, sep = '/'), gene_ID, 'tiff', sep = '.')
+  plot_name = paste(paste("/home/dhthutrang/ENCODE/utilities/plot", file, sep = '/'), gene_ID, 'tiff', sep = '.')
   tiff(plot_name,
        units="in", width=image_width, height=image_height, res=image_res)
   plotDEXSeq(dxd.res, gene_ID, legend=TRUE,
