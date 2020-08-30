@@ -53,8 +53,7 @@ get_all_pairs.his <- function(all_pairs.his){
       mutate(temp_val = abs(as.numeric(as.character(V10))),
 	     temp_p = as.numeric(as.character(V11)),
              m_val = if_else(!is.na(temp_val) & temp_val >= 1 & !is.na(temp_p) & temp_p <= 0.05, 
-			     true = temp_val, 
-                             false = 0)) %>%
+			     true = temp_val, false = 0)) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
@@ -85,11 +84,9 @@ histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3"
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 print(head(all_pairs.his_list[[1]][[1]]))
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
-#all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+# all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]])
-all_pairs.his_list[[1]]$exon_id
-length(all_pairs.exp$gene_id)
-sapply(all_pairs.his_list, ncol)
+
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
 all_genes = fread("gene_id.txt", header = FALSE)
@@ -111,17 +108,19 @@ pearcor_p <- function(exp, his){
 
 analyze_array <- function(all_pairs.exp, all_pairs.his, n_pairs){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
+  # for (i in 1:n_pairs){
   all_res_pair <- foreach( i=1:n_pairs, .combine='c', .packages=c('dplyr') ) %dopar% { #325 if other than H3K27ac and 231
     print(paste("Pair: ", i, sep=''))
     exp = all_pairs.exp[[i+2]]
     his = all_pairs.his[[i+2]]
     data_table = as.data.table(cbind(exp, his))
-    print(dim(data_table))
-    print(head(data_table))
+    head(data_table)
+    
     res_table = data_table %>%
       group_by(all_pairs.exp$gene_id) %>%
       summarise(res = pearcor_p(exp, his)) %>%
       dplyr::select(res)
+    # all_res_pair[[i]] = res_table
   }
   all_res_pair = as.data.table(all_res_pair)
   all_res_pair = cbind(all_genes, all_res_pair)
@@ -138,6 +137,8 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
 	#   else {
 	#     all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 25*24/2)
 	#   }
+    print(ncol(all_pairs.his)-2)
+    print(ncol(all_pairs.exp)-2)
     all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = ncol(all_pairs.his)-2)
     all_res_list[[j]] = all_res_pair
   }
@@ -147,7 +148,6 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
 print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
 saveRDS(all_res_list.pearcor_p, "all_res_list.pearcor_p.RDS")
-
 
 
 
