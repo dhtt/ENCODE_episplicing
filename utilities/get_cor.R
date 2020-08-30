@@ -5,7 +5,7 @@ library(stats)
 library(parallel)
 library("doMC")
 setwd("/home/dhthutrang/ENCODE/utilities")
-setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities")
+#setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities")
 doMC::registerDoMC(cores = 17)
 #===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
 print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
