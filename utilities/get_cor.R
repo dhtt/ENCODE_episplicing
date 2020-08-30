@@ -114,6 +114,8 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, n_pairs){
     exp = all_pairs.exp[[i+2]]
     his = all_pairs.his[[i+2]]
     data_table = as.data.table(cbind(exp, his))
+    print(dim(data_table))
+    print(head(data_table))
     res_table = data_table %>%
       group_by(all_pairs.exp$gene_id) %>%
       summarise(res = pearcor_p(exp, his)) %>%
