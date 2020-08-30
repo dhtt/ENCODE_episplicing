@@ -1,0 +1,6 @@
+mesenchymalstemcell skeletalmusclemyoblast
+mesenchymalstemcell neuralprogenitorcell
+mesenchymalstemcell spleen
+skeletalmusclemyoblast neuralprogenitorcell
+skeletalmusclemyoblast spleen
+neuralprogenitorcell spleen

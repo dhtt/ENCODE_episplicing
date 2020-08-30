@@ -1,6 +1,6 @@
 echo "=====> Begin counting"
 cd "$(dirname "$0")"
-mkdir $ENCODE_EXP/dexseqcount #dexseqcount instead of backupcount_NCBI
+#mkdir $ENCODE_EXP/dexseqcount #dexseqcount instead of backupcount_NCBI
 
 # COUNTING =====================================
 dexseq_count() {
@@ -16,24 +16,28 @@ dexseq_count() {
         (python ~/R/x86_64-pc-linux-gnu-library/3.6/DEXSeq/python_scripts/dexseq_count.py $ENCODE_REFGEN/reference_genome.gtf $file $ENCODE_EXP/dexseqcount/"$ID"_count.txt) || (echo "Err: Counting $ID failed" >> log_dexseqcount.txt)
     fi
 }
-for file in ls $ENCODE_EXP/sam_files/*.sam
-do
-    dexseq_count &
-done
-wait 
+#for file in ls $ENCODE_EXP/sam_files/*.sam
+#do
+    #dexseq_count &
+#done
+#wait 
 
-echo "=====> Changing names"
+#echo "=====> Changing names"
 
 
 # Change name to contain epigenome ID =====================================
 for f in $ENCODE_EXP/dexseqcount/*count.txt
 do
-    ACC_NO=${f#*/}
-    ACC_NO=${ACC_NO%_*}
-    ID=$(grep -ih $ACC_NO $ENCODE_EXP/epi_ids.txt)
-    echo $ID
-    # prefix_ID=${ID%%_*}
-    # NEWNAME="backupcount_NCBI"/"${prefix_ID}"_"$ACC_NO"_"count.txt"
-    # mv $f $NEWNAME
+    ACC_NO=${f##*/}
+    ACC_NO=${ACC_NO%%_*}
+    echo "ACC_NO: "$ACC_NO
+    
+    ID=$(grep -ih $ACC_NO $Ftransfer/epi_ids.txt)
+    prefix_ID=${ID%%_*}
+    echo "ID: "$ID
+
+    NEWNAME=$ENCODE_EXP/dexseqcount/"${prefix_ID}"_"$ACC_NO"_"count.txt"
+    echo $NEWNAME
+    mv $f $NEWNAME
 done
 echo "=====> Finished counting"
