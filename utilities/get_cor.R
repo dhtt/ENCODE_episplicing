@@ -49,9 +49,9 @@ get_all_pairs.exp <- function(all_pairs.exp){
   return(pair.exp_list)
 }
 
-all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
-# all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
+# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
+all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
 print(head(all_pairs.exp))
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
@@ -98,21 +98,10 @@ get_all_pairs.his_list <- function(histone_type_list){
   return(all_pairs.his_list)
 }
 histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-print(head(all_pairs.his_list[[1]][[1]]))
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
-# all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]])
-# 
-# 
-# temp = colnames(all_pairs.his_list[[1]])
-# temp1 = sapply(temp, function(x) strsplit(x, split='_'))
-# ncol(all_pairs.his_list[[1]])
-# colnames(all_pairs.exp)
-# class(all_pairs.exp[,c("keratinocyte_skeletalmusclemyoblast")])
-# temp = all_pairs.exp[, c("gene_id", "keratinocyte_skeletalmusclemyoblast")]
-# temp1 = colnames(all_pairs.his_list[[1]])
-# temp = all_pairs.exp[, "neuralprogenitorcell_mesenchymalstemcell"]
 
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
