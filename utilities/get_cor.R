@@ -48,9 +48,9 @@ get_all_pairs.exp <- function(all_pairs.exp){
   return(pair.exp_list)
 }
 
-all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-saveRDS(all_pairs.exp, "all_pairs.exp.RDS")
-# all_pairs.exp = readRDS("all_pairs.exp.RDS")
+# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+# saveRDS(all_pairs.exp, "all_pairs.exp.RDS")
+all_pairs.exp = readRDS("all_pairs.exp.RDS")
 print(head(all_pairs.exp))
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
@@ -97,10 +97,10 @@ get_all_pairs.his_list <- function(histone_type_list){
   return(all_pairs.his_list)
 }
 histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-print(head(all_pairs.his_list[[1]][[1]]))
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
-# all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+# print(head(all_pairs.his_list[[1]][[1]]))
+# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]])
 
 #===== CORRELATION WITH RANDOMIZATION =====
@@ -147,14 +147,6 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
   for (j in 1:length(histone_type_list)){
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
     all_pairs.his = all_pairs.his_list[[j]]
-	#   if (j == length(histone_type_list)){
-	# 	  all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 22*21/2)
-	#   }
-	#   else {
-	#     all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 25*24/2)
-	#   }
-    print(ncol(all_pairs.his)-2)
-    print(ncol(all_pairs.exp)-2)
     all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = ncol(all_pairs.his)-2)
     all_res_list[[j]] = all_res_pair
   }
