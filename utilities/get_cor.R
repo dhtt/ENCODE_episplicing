@@ -40,7 +40,7 @@ print(head(all_pairs.exp))
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
-his_id = fread("/home/dhthutrang/ENCODE/utilities/flank_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+his_id = fread("flank_id.txt", sep = '\t', quote=FALSE, header = FALSE)
 get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
@@ -86,7 +86,12 @@ histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3"
 # print(head(all_pairs.his_list[[1]][[1]]))
 # saveRDS(all_pairs.his_list, "all_pairs.his_list.RDS")
 all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
+dim(all_pairs.his_list[[1]])
+dim(all_pairs.exp)
 head(all_pairs.his_list[[1]])
+head(all_pairs.exp)
+all_pairs.his_list[[1]]$exon_id
+length(all_pairs.exp$gene_id)
 sapply(all_pairs.his_list, ncol)
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
