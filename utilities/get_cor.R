@@ -5,6 +5,7 @@ library(stats)
 library(parallel)
 library("doMC")
 setwd("/home/dhthutrang/ENCODE/utilities")
+setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities")
 doMC::registerDoMC(cores = 17)
 #===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
 print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
@@ -36,7 +37,6 @@ get_all_pairs.exp <- function(all_pairs.exp){
 #saveRDS(all_pairs.exp, "all_pairs.exp.RDS")
 all_pairs.exp = readRDS("all_pairs.exp.RDS")
 print(head(all_pairs.exp))
-all_genes = fread("gene_id.txt", header = FALSE)
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -82,14 +82,15 @@ get_all_pairs.his_list <- function(histone_type_list){
   return(all_pairs.his_list)
 }
 histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-print(head(all_pairs.his_list[[1]][[1]]))
-saveRDS(all_pairs.his_list, "all_pairs.his_list.RDS")
-#all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
+# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+# print(head(all_pairs.his_list[[1]][[1]]))
+# saveRDS(all_pairs.his_list, "all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]])
-
+sapply(all_pairs.his_list, ncol)
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
+all_genes = fread("gene_id.txt", header = FALSE)
 p_value_calculator <- function(r, nrow){
   P <- r*sqrt(nrow-2)/sqrt(1-r*r)
   P <- 2*pt(-abs(P), nrow-2)
@@ -98,7 +99,7 @@ p_value_calculator <- function(r, nrow){
 pearcor_p <- function(exp, his){
   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
     p_val = p_value_calculator(cor(exp, his, method = "pearson"), nrow = length(exp))
-    p_adj = p.adjust(p_val, method = "fdr", n=27247)
+    p_adj = p.adjust(p_val, method = "fdr", n=nrow(all_genes))
     return(p_adj)
   }
   else {
@@ -127,12 +128,13 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
   for (j in 1:length(histone_type_list)){
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
     all_pairs.his = all_pairs.his_list[[j]]
-	  if (j == length(histone_type_list)){
-		  all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 22*21/2)
-	  }
-	  else {
-	    all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 25*24/2)
-	  }
+	#   if (j == length(histone_type_list)){
+	# 	  all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 22*21/2)
+	#   }
+	#   else {
+	#     all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = 25*24/2)
+	#   }
+    all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_pairs = ncol(all_pairs.his)-2)
     all_res_list[[j]] = all_res_pair
   }
   return(all_res_list)
@@ -141,4 +143,8 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
 print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
 saveRDS(all_res_list.pearcor_p, "all_res_list.pearcor_p.RDS")
+
+
+
+
 
