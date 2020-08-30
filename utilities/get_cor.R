@@ -127,8 +127,10 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, n_pairs){
   subset_name = colnames(all_pairs.his)
   print(subset_name)
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
-  # for (i in 1:n_pairs){
-  all_res_pair <- foreach( i=1:length(subset_name), .combine='c', .packages=c('dplyr') ) %dopar% { #325 if other than H3K27ac and 231
+  print(dim(all_pairs.exp_subset))
+  print(dim(all_pairs.his))
+  for (i in 1:n_pairs){
+  # all_res_pair <- foreach( i=1:length(subset_name), .combine='c', .packages=c('dplyr') ) %dopar% { #325 if other than H3K27ac and 231
     print(paste("Pair: ", i, sep=''))
     exp = all_pairs.exp_subset[[i+2]]
     his = all_pairs.his[[i+2]]
@@ -139,7 +141,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, n_pairs){
       group_by(all_pairs.exp$gene_id) %>%
       summarise(res = pearcor_p(exp, his)) %>%
       dplyr::select(res)
-    # all_res_pair[[i]] = res_table
+    all_res_pair[[i]] = res_table
   }
   all_res_pair = as.data.table(all_res_pair)
   all_res_pair = cbind(all_genes, all_res_pair)
