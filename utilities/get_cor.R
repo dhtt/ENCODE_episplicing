@@ -20,7 +20,6 @@ get_colname <- function(filename_list, option='his'){
   names(name) = NULL
   return(name)
 }
-get_colname(temp,"exp")
 
 #===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
 print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
