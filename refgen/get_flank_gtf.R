@@ -38,6 +38,16 @@ temp = sort(temp)
 
 export(temp, "reference_genome.fl200.gtf")
 
+file = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/file_transfer/mrna_submetadata.tsv")
+file$tissue = sapply(file$`Biosample term name`, function(x) paste(strsplit(x, split=' ')[[1]], collapse = ''))
+temp = file[,c('tissue', 'File accession')]
+file_name = as.data.frame(paste(temp$tissue, temp$`File accession`, sep='_'))
+fwrite(file_name, "/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/file_transfer/epi_ids.txt",
+       col.names = FALSE, row.names = FALSE, quote = FALSE)
+
+unique(temp$tissue)
+fwrite(as.data.frame(unique(temp$tissue)), "/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/file_transfer/epi_ids_list.main.txt",
+       col.names = FALSE, row.names = FALSE, quote = FALSE)
 
 
 
