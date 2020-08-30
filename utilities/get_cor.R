@@ -137,7 +137,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, n_pairs){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
   print(subset_name)
-  all_pairs.exp_subset = all_pairs.exp[, subset_name]
+  all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
   # for (i in 1:n_pairs){
   all_res_pair <- foreach( i=1:length(subset_name), .combine='c', .packages=c('dplyr') ) %dopar% { #325 if other than H3K27ac and 231
     print(paste("Pair: ", i, sep=''))
