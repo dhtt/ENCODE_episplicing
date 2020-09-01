@@ -91,9 +91,8 @@ annotate_manorm_parallel_intron() {
     echo $FILE2
     echo $epi1
     echo $epi2
-    if (ls $HISTONE_PATH/normalizedcounts| grep "$epi1" ) && (ls $HISTONE_PATH/normalizedcounts | grep "$epi2" )
-    then (
-        if (ls $HISTONE_PATH/flank | grep "$epi1"_"$epi2")
+    
+    if (ls $HISTONE_PATH/flank | grep "$epi1"_"$epi2")
         then (
             echo "Pair "$epi1"_"$epi2" already annotated" >> annotate_manorm.log
         )
@@ -107,9 +106,7 @@ annotate_manorm_parallel_intron() {
             bedtools intersect -a $REF_GEN_EXON -b $HIS_COUNT -wo -loj -bed > $ANNOT_HIS_COUNT
             )
         fi
-        )
-    else echo "Pair "$epi1"_"$epi2" does not exist" >> annotate_manorm.log
-    fi
+
 }
 
 for FILE in $HISTONE_PATH/normalizedcounts/*
