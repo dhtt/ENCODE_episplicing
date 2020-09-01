@@ -4,7 +4,6 @@ library(boot)
 library(stats)
 library(parallel)
 library("doMC")
-setwd("/home/dhthutrang/ENCODE/flank")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities")
 doMC::registerDoMC(cores = 17)
 
@@ -162,4 +161,4 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
 
 print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
-saveRDS(all_res_list.pearcor_p, "all_res_list.pearcor_p.RDS")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
