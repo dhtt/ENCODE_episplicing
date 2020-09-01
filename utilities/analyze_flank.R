@@ -1,4 +1,5 @@
 library(data.table, quietly=TRUE)
+library(tidyverse)
 library(dplyr, quietly=TRUE)
 library(plyr)
 library(rtracklayer)
@@ -7,10 +8,9 @@ library(reshape2)
 setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 
 #---------------------------------------------
-folder = "/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank"
 all_res_list.pearcor_p = readRDS("all_res_list.pearcor_p.RDS")
 lapply(all_res_list.pearcor_p, dim)
-
+all_res_list.pearcor_p[[1]]
 
 get_tissue_spec_ref <- function(){
   RPKM = read.csv("~/Documents/BIOINFO/Episplicing/files/flank/57epigenomes.RPKM.pc", row.names=1, sep="")
@@ -39,106 +39,72 @@ get_all_res_list_sig <- function(all_res_list, method, r_sig=0.5, p_sig= 0.05){
   all_res_list_sig = vector("list", length(all_res_list))
   for (i in 1:length(all_res_list)) {
     all_res = all_res_list[[i]]
+    
     all_res_sig = vector("list", ncol(all_res)-1)
     for (j in 2:ncol(all_res)){
       all_res.col = as.numeric(all_res[[j]])
-      if (method == "randcor" | method == "pearcor" | method == "spearcor"){
+      if (method == "pearcor"){
         all_res_sig[[j-1]] = all_res[abs(all_res.col) >= r_sig  & !is.na(all_res.col), 1] 
       }
-      else if (method == "bootcor_fisher"){
-        all_res_sig[[j-1]] = all_res[abs(all_res.col) >= r_sig & abs(all_res.col) <= 1 & !is.na(all_res.col), 1] 
-      }
-      else if (method == "fisher" | method == "chisq" | method == "pairedcor" | method == "pearcor_p" | method == "spearcor_p" ){
+      else if (method == "pearcor_p" ){
         all_res_sig[[j-1]] = all_res[all_res.col <= p_sig  & !is.na(all_res.col), 1]
       }
     }
+    names(all_res_sig) = colnames(all_res)[2:length(colnames(all_res))]
     all_res_list_sig[[i]] = all_res_sig
   }
   return(all_res_list_sig)
 }
 all_res_list.pearcor_p_sig = get_all_res_list_sig(all_res_list.pearcor_p, "pearcor_p", p_sig=0.05)
 lapply(all_res_list.pearcor_p_sig, length)
-# ----Tissue spec array-----
-get_tissue_spec_array <- function(){
-  epigenomes_types = list(
-    c("E003", "E004", "E005", "E006", "E007", "E011","E012","E013", "E016", "E024", "E053","E054", "E065","E066","E071","E079","E094","E095", "E096", "E098", "E100","E105","E106", "E109","E113"),
-    c("E003", "E004", "E005", "E006", "E007", "E011","E012","E013", "E016", "E065","E066","E071","E079","E094","E095", "E096", "E098", "E100","E105","E106", "E109","E113"))
-  tissue_type_list = vector("list")
-  for (k in 1:length(epigenomes_types)){
-    epigenomes = epigenomes_types[[k]]
-    all_pairs = seq(1, length(epigenomes)*(length(epigenomes)-1)/2)
-    print(all_pairs)
-    idx_list = vector("list")
-    idx = 1
-    counter = 1
-    n_epigenomes = length(epigenomes)
-    while (counter <= n_epigenomes){
-      print("new")
-      print(counter)
-      if (counter != n_epigenomes){
-        idx_list[[counter]] = all_pairs[idx : (idx + (n_epigenomes - counter) - 1)]
-      }
-      else { idx_list[[counter]] = c(n_epigenomes*(n_epigenomes - 1)/2)}
-      
-      idx = idx + (n_epigenomes - counter)
-      if (counter != 1){
-        for (i in 1:(counter - 1)){
-          temp = idx_list[[i]][counter-i]
-          idx_list[[counter]] = union(idx_list[[counter]], temp)
-        }
-      }
-      counter = counter + 1
-      print(idx_list[[counter - 1]] )
-    }
-    tissue_type_list[[k]] = idx_list
-  }
-  return(tissue_type_list)
-}
-tissue_type_list = get_tissue_spec_array()
-histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac", "Methylation")
+lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) length(y)))
+lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) paste(y, collapse = ', ')))
 
+# ----Tissue spec array-----
+get_tissue_spec_array <- function(all_res_list.pearcor_p_sig){
+  temp2 = vector("list", length(all_res_list.pearcor_p_sig))
+  for (i in 1:length(all_res_list.pearcor_p_sig)){
+    temp = names(all_res_list.pearcor_p_sig[[i]])
+    temp1 = as.vector(sapply(temp, function(x) strsplit(x, split = '_')[[1]]))
+    tissue_name = unique(temp1)
+    tissue_index = lapply(tissue_name, function(x) grep(x, temp))
+    names(tissue_index) = tissue_name
+    temp2[[i]] = tissue_index
+  }
+  return(temp2)
+}
+tissue_type_list = get_tissue_spec_array(all_res_list.pearcor_p_sig)
+histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
+tissue_type_list[[2]]$H1
 #START here
 get_genes_for_tissue <- function(res_list){
   all_genes_joined = vector("list") #List of 6 histone, each has sig genes for 25 tissues
   for (i in 1:length(res_list)){ #for each histone type
     res = res_list[[i]]
-    all_tissues = vector("list")
-    if (i == 6){
-      tissue_list = tissue_type_list[[2]] }
-    else {
-      tissue_list = tissue_type_list[[1]] }
-    for (j in 1:length(tissue_list)){
-      print(paste(i, j, sep= ', '))
-      tissue_type = tissue_list[[j]]
-      all_tissues[[j]] = Reduce(union, res[tissue_type])
-    }
+    tissue_list = tissue_type_list[[i]]
+    all_tissues = lapply(tissue_list, function(x) return(Reduce(union, res[x])))
+    names(all_tissues) = names(tissue_list)
     all_genes_joined[[i]] = all_tissues
   }
-  temp = all_genes_joined[[6]][10:22]
-  all_genes_joined[[6]][10:13] = c("")
-  all_genes_joined[[6]][13:25] = temp
   return(all_genes_joined)
 }
 all_genes_joined = get_genes_for_tissue(all_res_list.pearcor_p_sig)
 length(all_genes_joined)
 lapply(all_genes_joined, length)
-lapply(all_genes_joined[[6]], length)
+lapply(all_genes_joined[[5]], length)
+lapply(all_genes_joined, function(x) lapply(x, function(y) length(y)))
 
+merge_all <- function(x){ return(merge(x, by=0, all = T))}
 get_all_len_before <- function(all_genes_joined){
-  all_len_before = vector("list")
-  for (i in 1:length(all_genes_joined)){
-    len = lapply(all_genes_joined[[i]], length) 
-    print(length(len))
-    all_len_before[[i]] = len
-  }
-  all_len_before[[6]][c(10,11,12)] = NaN
-  all_len_before = as.data.frame(do.call(cbind, all_len_before))
-  rownames(all_len_before) = epigenomes_names
-  colnames(all_len_before) = histone_type_list
+  all_len_before = lapply(all_genes_joined, function(x) lapply(x, function(y) length(y)))
+  all_len_before = lapply(all_len_before, function(x) as.data.frame(cbind(names(x), do.call(rbind, x))))
+  all_len_before = all_len_before %>% reduce(full_join, by = "V1")
+  colnames(all_len_before) = c('Tissue', histone_type_list)
   return(all_len_before)
 }
 all_len_before = get_all_len_before(all_genes_joined)
 
+#============THIS PART HAVE NOT BEEN DONE============
 get_genes_for_tissue_filtered <- function(all_genes_joined){
   for (i in 1:length(all_genes_joined)){
     print(paste("New histone type", histone_type_list[i], sep=' '))
@@ -171,7 +137,7 @@ get_all_len_after <- function(all_genes_joined){
   return(all_len_after)
 }
 all_len_after = get_all_len_after(all_genes_joined_filtered)
-#END here
+#============END here============
 
 length(all_genes_joined_filtered[[1]])
 paste(all_genes_joined_filtered[[4]][[12]], collapse = ', ')
@@ -400,14 +366,16 @@ temp = all_len_after.his %>%
 
 all_len_after.his$`Total genes with DMP (overlap)` = all_len_before$Methylation
 all_len_after.his$`Total genes with DMP (non-overlap)` = all_len_after$Methylation
-# -----4-----
+
+# -----FORMATTABLE TABLE-----
 library(formattable)
+head(all_len_before)
 tissue_formatter <- formatter("span", 
                               style = x ~ style(
                                 width = suffix(x, "px"),
                                 font.weight = "bold", 
                                 color = ifelse(x == "Total", "black", "gray")))
-formattable(all_len_after.his,
+formattable(all_len_before,
             # align =c("l", "l", "c","c","c","c"), 
             list(
               `H3K4me1` = color_tile("white", "wheat"),
@@ -416,11 +384,7 @@ formattable(all_len_after.his,
               `H3K27me3` = color_tile("white", "wheat"),
               `H3K36me3` = color_tile("white", "wheat"), 
               `H3K4me1` = color_tile("white", "wheat"),
-              `H3K27ac` = color_tile("white", "wheat"),
-              `Total genes with DHP (overlap)` = color_tile("white", "LightSalmon"),
-              `Total genes with DHP (non-overlap)` = color_tile("white", "LightSalmon"),
-              `Total genes with DMP (overlap)` = color_tile("white", "LightSalmon"),
-              `Total genes with DMP (non-overlap)` = color_tile("white", "LightSalmon")
+              `H3K27ac` = color_tile("white", "wheat")
             )
 )
 
