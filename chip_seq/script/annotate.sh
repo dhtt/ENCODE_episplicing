@@ -100,7 +100,7 @@ annotate_manorm_parallel_intron() {
         else (
             echo "Annotating pair $epi1 and $epi2" >> annotate_manorm.log
 
-            REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.promoter_intron.gtf
+            REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.intron.gtf
             HIS_COUNT=$FILE
             ANNOT_HIS_COUNT=$HISTONE_PATH/flank/pi_"$epi1"_"$epi2".txt
             
@@ -115,15 +115,15 @@ annotate_manorm_parallel_intron() {
 for FILE in $HISTONE_PATH/normalizedcounts/*
 do
     # annotate_manorm_parallel_flank &
-    annotate_manorm_parallel_exon &
-    # annotate_manorm_parallel_intron &
+    # annotate_manorm_parallel_exon &
+    annotate_manorm_parallel_intron &
 done
 echo "End Time: $(date)" >> annotate_manorm.log
 wait
 
 #Collapse counts
 echo "===> 3: Collapsing annotated counts"
-for f in $HISTONE_PATH/flank/exon_*
+for f in $HISTONE_PATH/flank/pi_*
 do (
     echo $f 
     bedtools groupby -i $f -g 1-9 -c 13,14 -o max > $f.fl.txt
