@@ -26,13 +26,13 @@ retrieve_epiid(){
     FILE1=${FILE##*/}
     epi1=${FILE1%%_*}
     FILE2=${FILE1#_*}
-    epi3=${FILE2#*_}
-    epi3=${epi3%%_*}
-    if [[ "$epi1" < "$epi3" ]]; then epi2=$epi3
-    else (
-        epi2=$epi1
-        epi1=$epi3)
-    fi
+    epi2=${FILE2#*_}
+    epi2=${epi2%%_*}
+    # if [[ "$epi1" < "$epi3" ]]; then epi2=$epi3
+    # else (
+    #     epi2=$epi1
+    #     epi1=$epi3)
+    # fi
 }
 annotate_manorm_parallel_flank() {
     retrieve_epiid
@@ -67,11 +67,7 @@ annotate_manorm_parallel_exon() {
     echo $epi2
     if (ls $HISTONE_PATH/normalizedcounts| grep "$epi1" ) && (ls $HISTONE_PATH/normalizedcounts | grep "$epi2" )
     then (
-        if (ls $HISTONE_PATH/flank | grep "$epi1"_"$epi2")
-        then (
-            echo "Pair "$epi1"_"$epi2" already annotated" >> annotate_manorm.log
-        )
-        else (
+        
             echo "Annotating pair $epi1 and $epi2" >> annotate_manorm.log
 
             REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.gtf
@@ -79,8 +75,6 @@ annotate_manorm_parallel_exon() {
             ANNOT_HIS_COUNT=$HISTONE_PATH/flank/exon_"$epi1"_"$epi2".txt
             
             bedtools intersect -a $REF_GEN_EXON -b $HIS_COUNT -wo -loj -bed > $ANNOT_HIS_COUNT
-            )
-        fi
         )
     else echo "Pair "$epi1"_"$epi2" does not exist" >> annotate_manorm.log
     fi
@@ -111,14 +105,22 @@ annotate_manorm_parallel_intron() {
 for FILE in $HISTONE_PATH/normalizedcounts/*
 do
     # annotate_manorm_parallel_flank &
-    # annotate_manorm_parallel_exon &
-    annotate_manorm_parallel_intron &
+    (annotate_manorm_parallel_exon
+    annotate_manorm_parallel_intron ) &
 done
 echo "End Time: $(date)" >> annotate_manorm.log
 wait
 
 #Collapse counts
 echo "===> 3: Collapsing annotated counts"
+for f in $HISTONE_PATH/flank/exon_*
+do (
+    echo $f 
+    bedtools groupby -i $f -g 1-9 -c 13,14 -o max > $f.fl.txt
+) &
+done
+wait
+
 for f in $HISTONE_PATH/flank/pi_*
 do (
     echo $f 
