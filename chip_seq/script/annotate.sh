@@ -85,18 +85,16 @@ annotate_manorm_parallel_exon() {
     else echo "Pair "$epi1"_"$epi2" does not exist" >> annotate_manorm.log
     fi
 }
+
 annotate_manorm_parallel_intron() {
     retrieve_epiid
     echo $FILE
     echo $FILE2
     echo $epi1
     echo $epi2
-    
-    if (ls $HISTONE_PATH/flank | grep "$epi1"_"$epi2")
-        then (
-            echo "Pair "$epi1"_"$epi2" already annotated" >> annotate_manorm.log
-        )
-        else (
+    if (ls $HISTONE_PATH/normalizedcounts| grep "$epi1" ) && (ls $HISTONE_PATH/normalizedcounts | grep "$epi2" )
+    then (
+        
             echo "Annotating pair $epi1 and $epi2" >> annotate_manorm.log
 
             REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.intron.gtf
@@ -104,9 +102,10 @@ annotate_manorm_parallel_intron() {
             ANNOT_HIS_COUNT=$HISTONE_PATH/flank/pi_"$epi1"_"$epi2".txt
             
             bedtools intersect -a $REF_GEN_EXON -b $HIS_COUNT -wo -loj -bed > $ANNOT_HIS_COUNT
-            )
-        fi
-
+       
+        )
+    else echo "Pair "$epi1"_"$epi2" does not exist" >> annotate_manorm.log
+    fi
 }
 
 for FILE in $HISTONE_PATH/normalizedcounts/*
