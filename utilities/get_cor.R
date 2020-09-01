@@ -144,7 +144,9 @@ analyze_array <- function(all_pairs.exp, all_pairs.his){
     #all_res_pair[[i]] = res_table
   }
   all_res_pair = as.data.table(all_res_pair)
+  colnames(all_res_pair) = subset_name
   all_res_pair = cbind(all_genes, all_res_pair)
+  print(head(all_res_pair))
   return(as.data.frame(all_res_pair))
 }
 analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
