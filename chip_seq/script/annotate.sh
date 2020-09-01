@@ -20,8 +20,7 @@ echo "===> Finish"
 
 #annotate all xls.bed in normalizedcounts into $FLANK/histonetype
 echo "===> 2: Annotate all xls.bed in normalizedcounts into FLANK/histonetype"
-mkdir $HISTONE_PATH/flank
-mkdir $HISTONE_PATH/flank
+mkdir $HISTONE_PATH/exon_pi
 retrieve_epiid(){
     FILE1=${FILE##*/}
     epi1=${FILE1%%_*}
@@ -72,7 +71,7 @@ annotate_manorm_parallel_exon() {
 
             REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.gtf
             HIS_COUNT=$FILE
-            ANNOT_HIS_COUNT=$HISTONE_PATH/flank/exon_"$epi1"_"$epi2".txt
+            ANNOT_HIS_COUNT=$HISTONE_PATH/exon_pi/exon_"$epi1"_"$epi2".txt
             
             bedtools intersect -a $REF_GEN_EXON -b $HIS_COUNT -wo -loj -bed > $ANNOT_HIS_COUNT
         )
@@ -93,7 +92,7 @@ annotate_manorm_parallel_intron() {
 
             REF_GEN_EXON=$ENCODE_REFGEN/reference_genome.intron.gtf
             HIS_COUNT=$FILE
-            ANNOT_HIS_COUNT=$HISTONE_PATH/flank/pi_"$epi1"_"$epi2".txt
+            ANNOT_HIS_COUNT=$HISTONE_PATH/exon_pi/pi_"$epi1"_"$epi2".txt
             
             bedtools intersect -a $REF_GEN_EXON -b $HIS_COUNT -wo -loj -bed > $ANNOT_HIS_COUNT
        
@@ -113,7 +112,7 @@ wait
 
 #Collapse counts
 echo "===> 3: Collapsing annotated counts"
-for f in $HISTONE_PATH/flank/exon_*
+for f in $HISTONE_PATH/exon_pi/exon_*
 do (
     echo $f 
     bedtools groupby -i $f -g 1-9 -c 13,14 -o max > $f.fl.txt
@@ -121,7 +120,7 @@ do (
 done
 wait
 
-for f in $HISTONE_PATH/flank/pi_*
+for f in $HISTONE_PATH/exon_pi/pi_*
 do (
     echo $f 
     bedtools groupby -i $f -g 1-9 -c 13,14 -o max > $f.fl.txt
