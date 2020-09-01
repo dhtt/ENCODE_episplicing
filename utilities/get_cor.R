@@ -143,7 +143,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his){
     #all_res_pair[[i]] = res_table
   }
   all_res_pair = as.data.table(all_res_pair)
-  colnames(all_res_pair) = subset_name[3:length(subset_name)]
+  colnames(all_res_pair) = c('gene_id', subset_name[3:length(subset_name)])
   all_res_pair = cbind(all_genes, all_res_pair)
   print(head(all_res_pair))
   return(as.data.frame(all_res_pair))
