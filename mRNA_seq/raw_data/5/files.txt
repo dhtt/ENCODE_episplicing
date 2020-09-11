@@ -1,8 +1,0 @@
-"https://www.encodeproject.org/metadata/?type=Experiment&files.assembly=GRCh38&files.output_type=alignments&files.file_type=bam&files.file_format=bam&files.status=released" -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data '{"elements": ["/experiments/ENCSR000COU/","/experiments/ENCSR000CRJ/","/experiments/ENCSR294NDO/","/experiments/ENCSR379YAE/","/experiments/ENCSR828LSC/","/experiments/ENCSR244ISQ/","/experiments/ENCSR444WHQ/","/experiments/ENCSR000COY/","/experiments/ENCSR000CVR/","/experiments/ENCSR292TAP/","/experiments/ENCSR307FBN/","/experiments/ENCSR900SGE/","/experiments/ENCSR000CPL/","/experiments/ENCSR000CRS/","/experiments/ENCSR330UMQ/","/experiments/ENCSR917CQJ/","/experiments/ENCSR275ZLF/","/experiments/ENCSR586TYR/","/experiments/ENCSR663WGC/"]}'
-https://www.encodeproject.org/files/ENCFF309BMG/@@download/ENCFF309BMG.bam
-https://www.encodeproject.org/files/ENCFF944EQM/@@download/ENCFF944EQM.bam
-https://www.encodeproject.org/files/ENCFF337ZCE/@@download/ENCFF337ZCE.bam
-https://www.encodeproject.org/files/ENCFF930VVS/@@download/ENCFF930VVS.bam
-https://www.encodeproject.org/files/ENCFF308NAL/@@download/ENCFF308NAL.bam
-https://www.encodeproject.org/files/ENCFF003XND/@@download/ENCFF003XND.bam
-https://www.encodeproject.org/files/ENCFF579BCL/@@download/ENCFF579BCL.bam
