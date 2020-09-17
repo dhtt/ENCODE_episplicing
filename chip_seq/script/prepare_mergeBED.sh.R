@@ -28,7 +28,7 @@ rep_list = file %>%
                                        paste(paste(`File accession`, '.bed', sep=''), collapse = ' '),
                                        '>', file_name, sep=' ')),
     sort = paste('sort -k1,1 -k2,2n ', file_name ,' > ', paste(file_name, '.sorted.bed', sep='')), 
-    merge = paste('bedtool -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = ''),
+    merge = paste('bedtool merge -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = ''),
     remove = paste('rm ', paste(file_name, '.sorted.bed', sep=''), sep =''), 
     all = paste(dup, sort, merge, remove, sep =';')) %>%
   ungroup() %>%
