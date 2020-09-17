@@ -1,6 +1,11 @@
-mesenchymalstemcell skeletalmusclemyoblast
-mesenchymalstemcell neuralprogenitorcell
-mesenchymalstemcell spleen
-skeletalmusclemyoblast neuralprogenitorcell
-skeletalmusclemyoblast spleen
-neuralprogenitorcell spleen
+adiposetissue CD8positivealphabetaTcell
+adiposetissue H1
+adiposetissue esophagus
+adiposetissue mesendoderm
+adiposetissue mesenchymalstemcell
+adiposetissue endodermalcell
+adiposetissue psoasmuscle
+adiposetissue ectodermalcell
+adiposetissue mesodermalcell
+adiposetissue trophoblastcell
+adiposetissue smallintestine
