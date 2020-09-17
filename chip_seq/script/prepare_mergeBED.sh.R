@@ -35,4 +35,4 @@ rep_list = file %>%
   dplyr::select(all) %>%
   unique()
 rep_list$all[1]
-fwrite(rep_list, paste(args[1], 'mergeBED.sh', sep='/'), col.names = FALSE)
+fwrite(rep_list, paste(args[1], 'mergeBED.sh', sep='/'), col.names = FALSE, quote = FALSE)
