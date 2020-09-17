@@ -1,0 +1,11 @@
+endodermalcell psoasmuscle
+endodermalcell ectodermalcell
+endodermalcell mesodermalcell
+endodermalcell trophoblastcell
+endodermalcell smallintestine
+endodermalcell spleen
+endodermalcell CD4positivealphabetaTcell
+psoasmuscle ectodermalcell
+psoasmuscle mesodermalcell
+psoasmuscle trophoblastcell
+psoasmuscle smallintestine
