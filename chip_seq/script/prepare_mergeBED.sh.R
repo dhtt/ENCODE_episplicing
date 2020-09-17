@@ -23,16 +23,18 @@ rep_list = file %>%
     tissue_type = gsub('[[:punct:]]|\ ', '', `Biosample term name`),
     file_name = paste('merged/', histone_type, '_', tissue_type, '.bed', sep = ''),
     dup = dplyr::if_else(nfiles == 1, 
-                         true = paste('mv', paste(`File accession`, '.bed', sep=''), file_name, sep =' '),
+                         true = paste('cp', paste(`File accession`, '.bed', sep=''), file_name, sep =' '),
                          false = paste('cat', 
                                        paste(paste(`File accession`, '.bed', sep=''), collapse = ' '),
                                        '>', file_name, sep=' ')),
     sort = paste('sort -k1,1 -k2,2n ', file_name ,' > ', paste(file_name, '.sorted.bed', sep='')), 
-    merge = paste('bedtools merge -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = ''),
+    merge = dplyr::if_else(nfiles == 1,
+                           true = paste('mv ', paste(file_name, '.sorted.bed ', sep=''), file_name,sep = ''),
+                           false = paste('bedtools merge -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', 
+                                         paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = '')),
     remove = paste('rm ', paste(file_name, '.sorted.bed', sep=''), sep =''), 
     all = paste(dup, sort, merge, remove, sep =';')) %>%
   ungroup() %>%
   dplyr::select(all) %>%
   unique()
-# rep_list$all[1]
 fwrite(rep_list, paste(args[1], 'mergeBED.sh', sep='/'), col.names = FALSE, quote = FALSE)
