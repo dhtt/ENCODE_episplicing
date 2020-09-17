@@ -27,6 +27,6 @@ rep_list = file %>%
                                        '-o sum >', 
                                        paste('merged/', histone_type, '_', tissue_type, '.bed', sep = ''), sep=' '))) %>%
   ungroup() %>%
-  dplyr::select(nfiles, dup) %>%
+  dplyr::select(dup) %>%
   unique()
 fwrite(rep_list, paste(args[1], 'mergeBED.sh', sep='/'), col.names = FALSE)
