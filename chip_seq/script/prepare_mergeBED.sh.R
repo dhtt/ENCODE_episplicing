@@ -13,6 +13,7 @@ file = fread(file_path, header=TRUE)
 # file = fread('/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/chip_seq/peak_files/metadata.tsv', header=TRUE)
 
 head(file)
+colnames(file)
 #MERGE USING TISSUE TYPE AND HISTONE TYPE
 rep_list = file %>%
   group_by(`Biosample term name`, `Experiment target`) %>%
@@ -20,13 +21,18 @@ rep_list = file %>%
     nfiles = length(unique(`File accession`)),
     histone_type = strsplit(`Experiment target`, '-')[[1]][1],
     tissue_type = gsub('[[:punct:]]|\ ', '', `Biosample term name`),
+    file_name = paste('merged/', histone_type, '_', tissue_type, '.bed', sep = ''),
     dup = dplyr::if_else(nfiles == 1, 
-                         true = paste('mv ', paste(`File accession`, '.bed', sep=''), paste('merged/', histone_type, '_', tissue_type, '.bed', sep = '') ),
-                         false = paste('bedtools merge -i', 
+                         true = paste('mv', paste(`File accession`, '.bed', sep=''), file_name, sep =' '),
+                         false = paste('cat', 
                                        paste(paste(`File accession`, '.bed', sep=''), collapse = ' '),
-                                       '-o sum >', 
-                                       paste('merged/', histone_type, '_', tissue_type, '.bed', sep = ''), sep=' '))) %>%
+                                       '>', file_name, sep=' ')),
+    sort = paste('sort -k1,1 -k2,2n ', file_name ,' > ', paste(file_name, '.sorted.bed', sep='')), 
+    merge = paste('bedtool -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = ''),
+    remove = paste('rm ', paste(file_name, '.sorted.bed', sep=''), sep =''), 
+    all = paste(dup, sort, merge, remove, sep =';')) %>%
   ungroup() %>%
-  dplyr::select(dup) %>%
+  dplyr::select(all) %>%
   unique()
+rep_list$all[1]
 fwrite(rep_list, paste(args[1], 'mergeBED.sh', sep='/'), col.names = FALSE)
