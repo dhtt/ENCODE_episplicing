@@ -21,13 +21,15 @@ file = fread(file_path, header=TRUE)
 #     dplyr::select(dup) %>%
 #       unique()
 # fwrite(rep_list, paste(args[1], "mergeBAM.sh", sep='/'), col.names = FALSE) 
+str = "fask,pfa_"
+
 
 #MERGE USING TISSUE TYPE AND HISTONE TYPE
 rep_list = file %>%
   group_by(`Biosample term name`, `Experiment target`) %>%
   mutate(
     histone_type = strsplit(`Experiment target`, "-")[[1]][1],
-    tissue_type = paste(strsplit(`Biosample term name`, ' ')[[1]], collapse = ''),
+    tissue_type = gsub('[[:punct:]]', "", `Biosample term name`),
     dup = paste("samtools merge -@ 8", paste("merged/", histone_type, "_", tissue_type, ".bam", sep = ''), paste(paste(`File accession`, '.bam', sep=''), collapse = ' ')), sep=" ") %>%
   ungroup() %>%
   dplyr::select(dup) %>%
