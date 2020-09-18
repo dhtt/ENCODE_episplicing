@@ -26,6 +26,18 @@ for (histone_type in unique(submeta$histone_type)){
   temp2 = as.data.frame(t(combn(temp1$combined_files, 2, FUN=c)))
   temp3 = as.data.frame(t(combn(temp1$tissue_type, 2, FUN=c)))
   temp4 = cbind(temp2, temp3)
-  print(dim(temp4))
-  fwrite(temp4, paste("chip_seq", histone_type, "all_pairs.txt", sep='/'), sep="\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+  colnames(temp4) = c("file_1", "file_2", "tis_1", "tis_2")
+  temp = temp4 %>%
+    mutate(tis1 = dplyr::if_else(tis_1 < tis_2, true = tis_1, false = tis_2),
+           tis2 = dplyr::if_else(tis_1 < tis_2, true = tis_2, false = tis_1),
+           file1 = dplyr::if_else(tis_1 < tis_2, true = file_1, false = file_2),
+           file2 = dplyr::if_else(tis_1 < tis_2, true = file_2, false = file_1)
+    ) %>%
+    dplyr::select(file1, file2, tis1, tis2)
+  fwrite(temp, paste("chip_seq", histone_type, "all_pairs.txt", sep='/'), sep="\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 }
+
+
+
+
+
