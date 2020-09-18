@@ -32,7 +32,9 @@ rep_list = file %>%
                            true = paste('mv ', paste(file_name, '.sorted.bed ', sep=''), file_name,sep = ''),
                            false = paste('bedtools merge -c 4,5,6,7 -o collapse,sum,distinct,sum -i ', 
                                          paste(file_name, '.sorted.bed', sep=''), ' > ', file_name,sep = '')),
-    remove = paste('rm ', paste(file_name, '.sorted.bed', sep=''), sep =''), 
+    remove = dplyr::if_else(nfiles == 1,
+                            true = paste('rm ', paste(file_name, '.sorted.bed', sep=''), sep =''), 
+                            false = paste('')), 
     all = paste(dup, sort, merge, remove, sep =';')) %>%
   ungroup() %>%
   dplyr::select(all) %>%
