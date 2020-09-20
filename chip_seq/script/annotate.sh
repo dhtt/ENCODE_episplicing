@@ -21,6 +21,8 @@ echo "===> Finish"
 #annotate all xls.bed in normalizedcounts into $FLANK/histonetype
 echo "===> 2: Annotate all xls.bed in normalizedcounts into FLANK/histonetype"
 mkdir $HISTONE_PATH/exon_pi
+mkdir $HISTONE_PATH/flank
+
 retrieve_epiid(){
     FILE1=${FILE##*/}
     epi1=${FILE1%%_*}
@@ -33,6 +35,7 @@ retrieve_epiid(){
     #     epi1=$epi3)
     # fi
 }
+
 annotate_manorm_parallel_flank() {
     retrieve_epiid
     echo $FILE
@@ -58,6 +61,7 @@ annotate_manorm_parallel_flank() {
     else echo "Pair "$epi1"_"$epi2" does not exist" >> annotate_manorm.log
     fi
 }
+
 annotate_manorm_parallel_exon() {
     retrieve_epiid
     echo $FILE
@@ -104,7 +108,9 @@ annotate_manorm_parallel_intron() {
 for FILE in $HISTONE_PATH/normalizedcounts/*
 do
     # annotate_manorm_parallel_flank &
-    (annotate_manorm_parallel_exon
+    (
+    annotate_manorm_parallel_flank
+    annotate_manorm_parallel_exon
     annotate_manorm_parallel_intron ) &
 done
 echo "End Time: $(date)" >> annotate_manorm.log
@@ -112,6 +118,14 @@ wait
 
 #Collapse counts
 echo "===> 3: Collapsing annotated counts"
+for f in $HISTONE_PATH/flank/*
+do (
+    echo $f 
+    bedtools groupby -i $f -g 1-9 -c 13,14 -o max > $f.fl.txt
+) &
+done
+wait
+
 for f in $HISTONE_PATH/exon_pi/exon_*
 do (
     echo $f 
