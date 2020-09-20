@@ -1,6 +1,6 @@
-trophoblastcell smallintestine
-trophoblastcell spleen
-trophoblastcell CD4positivealphabetaTcell
 smallintestine spleen
-smallintestine CD4positivealphabetaTcell
-spleen CD4positivealphabetaTcell
+smallintestine stomach
+smallintestine trophoblastcell
+spleen stomach
+spleen trophoblastcell
+stomach trophoblastcell
