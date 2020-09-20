@@ -10,5 +10,7 @@ do (
     ID=${ID##*/}
     echo $ID
     bedtools bamtobed -i $INPUT_PATH/$ID.bam > $OUTPUT_PATH/$ID.bed
-)
+) & 
 done
+wait
+echo "DONE!"

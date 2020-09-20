@@ -1,6 +1,8 @@
 cat /dev/null > execute_manorm.log
 histone_type=$1
+mkdir $ENCODE_HIS/$histone_type
 INPUT_PATH=$ENCODE_HIS/$histone_type
+
 echo "Start Time: $(date)" >> execute_manorm.log
 echo "===> START MANORM-ING ALL PAIRS IN $histone_type"
 mkdir $INPUT_PATH/manorm_result
