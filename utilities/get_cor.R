@@ -36,21 +36,22 @@ get_all_pairs.exp <- function(all_pairs.exp){
   pair.exp_list = lapply(pair.exp_list,
                          function(x) {
                            x = x %>%
-                             mutate(exp = if_else(padj <= 0.05 & !is.na(padj), true = stat,
+                             mutate(exp = if_else(padj <= 0.1 & !is.na(padj), true = stat,
                                                   false = 0.0)) %>%
                              dplyr::select(exp)
                          })
   pair.exp_list = as.data.table(pair.exp_list)
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+  print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
   pair.exp_list = cbind(exp_id, pair.exp_list)
   pair.exp_list = pair.exp_list[order(pair.exp_list$V1)]
   colnames(pair.exp_list) = colname_exp
   return(pair.exp_list)
 }
 
-# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
-all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+#all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+#saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
+all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.exp.RDS")
 print(head(all_pairs.exp))
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
@@ -87,7 +88,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     # for (j in 1:1){
     his = histone_type_list[[j]]
     print(his)
-    all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), full.names = TRUE)
+    all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
@@ -96,11 +97,12 @@ get_all_pairs.his_list <- function(histone_type_list){
   }
   return(all_pairs.his_list)
 }
-histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
-# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
-all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-head(all_pairs.his_list[[1]])
+#histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
+histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
+#all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+#saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list.RDS")
+head(all_pairs.his_list[[1]], 50)
 
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
@@ -124,7 +126,9 @@ pearcor_p <- function(exp, his){
 analyze_array <- function(all_pairs.exp, all_pairs.his){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
-  print(subset_name)
+  print(paste('XYZ: ', subset_name))
+  print(colnames(all_pairs.exp))
+  colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
   print(dim(all_pairs.exp_subset))
   print(dim(all_pairs.his))
@@ -161,4 +165,4 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
 
 print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/utilities/all_res_list.pearcor_p.RDS")
