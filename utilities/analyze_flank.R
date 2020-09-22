@@ -55,7 +55,7 @@ get_all_res_list_sig <- function(all_res_list, method, r_sig=0.5, p_sig= 0.05){
   }
   return(all_res_list_sig)
 }
-all_res_list.pearcor_p_sig = get_all_res_list_sig(all_res_list.pearcor_p, "pearcor_p", p_sig=0.05)
+all_res_list.pearcor_p_sig = get_all_res_list_sig(all_res_list.pearcor_p, "pearcor_p", p_sig=0.1)
 lapply(all_res_list.pearcor_p_sig, length)
 lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) length(y)))
 lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) paste(y, collapse = ', ')))

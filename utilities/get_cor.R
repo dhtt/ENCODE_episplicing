@@ -115,8 +115,8 @@ p_value_calculator <- function(r, nrow){
 pearcor_p <- function(exp, his){
   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
     p_val = p_value_calculator(cor(exp, his, method = "pearson"), nrow = length(exp))
-    p_adj = p.adjust(p_val, method = "fdr", n=nrow(all_genes))
-    return(p_adj)
+    p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
+    return(p_val)
   }
   else {
     return(NA)
@@ -126,14 +126,11 @@ pearcor_p <- function(exp, his){
 analyze_array <- function(all_pairs.exp, all_pairs.his){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
-  print(paste('XYZ: ', subset_name))
-  print(colnames(all_pairs.exp))
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
-  print(dim(all_pairs.exp_subset))
-  print(dim(all_pairs.his))
+  
   #for (i in 1:n_pairs){
-  all_res_pair <- foreach( i=1:(length(subset_name)-2), .combine='c', .packages=c('dplyr') ) %dopar% { #325 if other than H3K27ac and 231
+  all_res_pair <- foreach( i=1:(length(subset_name)-2), .combine='c', .packages=c('dplyr') ) %dopar% {
     print(paste("Pair: ", i, sep=''))
     exp = all_pairs.exp_subset[[i+2]]
     his = all_pairs.his[[i+2]]
