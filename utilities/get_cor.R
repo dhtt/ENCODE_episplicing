@@ -52,7 +52,9 @@ get_all_pairs.exp <- function(all_pairs.exp){
 #all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
 #saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("all_pairs.exp.RDS")
 print(head(all_pairs.exp))
+paste("CONTROL: ", length(unique(all_pairs.exp[all_pairs.exp$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -68,8 +70,8 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = pair.his %>%
       mutate(temp_val = abs(as.numeric(as.character(V10))),
 	     temp_p = as.numeric(as.character(V11)),
-             m_val = if_else(!is.na(temp_val) & temp_val >= 1 & !is.na(temp_p) & temp_p <= 0.05, 
-			     true = temp_val, false = 0)) %>%
+	     m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
+	                     true = temp_val, false = 0)) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
@@ -99,9 +101,10 @@ get_all_pairs.his_list <- function(histone_type_list){
 }
 #histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
-#all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-#saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+# all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+# all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]], 50)
 
 #===== CORRELATION WITH RANDOMIZATION =====
@@ -115,7 +118,7 @@ p_value_calculator <- function(r, nrow){
 pearcor_p <- function(exp, his){
   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
     p_val = p_value_calculator(cor(exp, his, method = "pearson"), nrow = length(exp))
-    p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
+    # p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
     return(p_val)
   }
   else {
