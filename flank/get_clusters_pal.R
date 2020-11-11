@@ -144,18 +144,20 @@ for (k in 1:length(all_genewise_cluster)){
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
     }
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = list(names(gene_cluster), check_cluster(all_tissues_combi, adj_mat_H))
+    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
   }
   print(length(all_results))
   print(all_genewise_cluster_H_names[1:5])
+  names(all_results) = all_genewise_cluster_H_names[1:5]
   print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
 
 saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
 print(head(all_genes_clusters[[1]]))
-print(head(all_genes_clusters[[6]]))
-# all_genes_clusters = readRDS("all_genes_clusters_pal_named.RDS")[[1]]
+# print(head(all_genes_clusters[[6]]))
+# all_genes_clusters = readRDS("all_genes_clusters_pal_named1.RDS")
+# all_genes_clusters[[1]]
 # length_all = sapply(all_genes_clusters[[1]], length)
 # summary(length_all)
 # all_genes_clusters[[1]][sapply(all_genes_clusters[[1]], length) == 4]
