@@ -59,10 +59,10 @@ check_cluster <- function(clusters, adj_mat){
         }
         if (break_sig == TRUE) break
       }
-      if (!is.null(new_cluster)){
-        new_cluster = unique(new_cluster)
-        all_cluster_str[[i]] = new_cluster
-      }
+    }
+    if (!is.null(new_cluster)){
+      new_cluster = unique(new_cluster)
+      all_cluster_str[[i]] = new_cluster
     }
   }
   all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
@@ -132,7 +132,7 @@ for (k in 1:length(all_genewise_cluster)){
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:5, .combine='list', .packages=c('dplyr') ) %dopar% {
+  all_results <- foreach( h=1:5, .combine='c', .packages=c('dplyr') ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
@@ -144,9 +144,10 @@ for (k in 1:length(all_genewise_cluster)){
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
     }
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
+    gene_cluster_list = list(names(gene_cluster), check_cluster(all_tissues_combi, adj_mat_H))
   }
   print(length(all_results))
+  print(all_genewise_cluster_H_names[1:5])
   print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
@@ -154,7 +155,7 @@ for (k in 1:length(all_genewise_cluster)){
 saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
 print(head(all_genes_clusters[[1]]))
 print(head(all_genes_clusters[[6]]))
-# all_genes_clusters = readRDS("all_genes_clusters_pal.RDS")[[1]]
+# all_genes_clusters = readRDS("all_genes_clusters_pal_named.RDS")[[1]]
 # length_all = sapply(all_genes_clusters[[1]], length)
 # summary(length_all)
 # all_genes_clusters[[1]][sapply(all_genes_clusters[[1]], length) == 4]
@@ -165,7 +166,7 @@ print(head(all_genes_clusters[[6]]))
 # length(all_genewise_cluster[[1]])
 
 
-
+all_genes_clusters[[1]][[1]]
 
 
 
