@@ -99,6 +99,9 @@ for (k in 1:length(all_genewise_cluster)){
   }
   all_mat_hist[[k]] = all_adj_mat
 }
+saveRDS(all_mat_hist, "all_mat_hist.RDS")
+all_mat_hist = readRDS("all_mat_hist.RDS")
+
 print("====================================================")
 all_genes_clusters = vector("list")
 for (k in 1:1){
@@ -108,16 +111,16 @@ for (k in 1:1){
   all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% {  
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
-    all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = all_mat_hist[[h]][[k]]
-    if (length(all_tissues) >= 3) {
-      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
-    }
-    else {
-      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
-    }
-    all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat)
+    # all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+    # adj_mat = all_mat_hist[[h]][[k]]
+    # if (length(all_tissues) >= 3) {
+    #   all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+    # }
+    # else {
+    #   all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+    # }
+    # all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
+    # gene_cluster_list = check_cluster(all_tissues_combi, adj_mat)
   }
   all_genes_clusters[[k]] = all_results
 }
