@@ -146,8 +146,7 @@ for (k in 1:length(all_genewise_cluster)){
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
     gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
   }
-  print(all_results)
-  names(all_results) = all_genewise_cluster_H_names[1:5]
+  print(length(all_results))
   print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
