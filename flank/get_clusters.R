@@ -77,10 +77,10 @@ get_genewise_summary <- function(all_genes_joined){
   }
   return(all_genewise_cluster)
 }
-all_res_list.pearcor_padj_sig = loadRDS("all_res_list.pearcor_padj_sig.RDS")
-all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
-saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
-# all_genewise_cluster = load("all_genewise_cluster.RDS")
+# all_res_list.pearcor_padj_sig = loadRDS("all_res_list.pearcor_padj_sig.RDS")
+# all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
+# saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
+all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
 
 all_genes_clusters = vector("list")
 for (k in 1:length(all_genewise_cluster)){
