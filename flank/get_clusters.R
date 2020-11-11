@@ -2,10 +2,6 @@ library(data.table, quietly=TRUE)
 library(tidyverse)
 library(dplyr, quietly=TRUE)
 library(plyr)
-library(rtracklayer)
-library(ggplot2)
-library(reshape2)
-library(NMF)
 check_edge <- function(adj_mat, t1, t2){
   if (t2 %in% adj_mat[[t1]] | t1 %in% adj_mat[[t2]] ) return(TRUE)
   else return(FALSE)
@@ -94,11 +90,14 @@ for (k in 1:length(all_genewise_cluster)){
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = get_adj_mat(gene_cluster)
-    all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
-    all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi)
-    all_results[[h]] = gene_cluster_list
+    if (length(all_tissues) >= 3) {
+      adj_mat = get_adj_mat(gene_cluster)
+      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+      all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
+      gene_cluster_list = check_cluster(all_tissues_combi)
+      all_results[[h]] = gene_cluster_list
+    }
+    else all_results[[h]] = c("none")
   }
   all_genes_clusters[[k]] = all_results
 }
