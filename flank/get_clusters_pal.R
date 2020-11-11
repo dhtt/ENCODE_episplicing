@@ -126,16 +126,12 @@ sapply(all_tissues_hist, function(x) print(length(x)))
 print("====================================================")
 all_genes_clusters = vector("list")
 # for (k in 1:length(all_genewise_cluster)){
-for (k in 1:2){
+for (k in 1:6){
   print(paste("HISTONE: ", histone_type_list[k], sep=''))
   all_genewise_cluster_H = all_genewise_cluster[[k]]
-  all_genewise_cluster_H_names = names(all_genewise_cluster_H)
-  # all_results = vector("list")
-  # for (h in 1:length(all_genewise_cluster_H)){
-  # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:100 ) %dopar% {
+  all_results <- foreach( h=1:(length(all_genewise_cluster_H)) ) %dopar% {
+  # all_results <- foreach( h=1:100 ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
-    print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
     adj_mat_H = all_mat_hist[[k]][[h]]
     if (length(all_tissues) >= 3) {
@@ -149,29 +145,19 @@ for (k in 1:2){
   }
   print("FINALLY FINISHED")
   print(paste("LENGTH RESULT: ", length(all_results), sep=''))
+  file_names = paste("all_results_", k, ".RDS", sep='')
+  saveRDS(all_results, file_names)
   all_genes_clusters[[k]] = all_results
 }
 
-saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
+saveRDS(all_genes_clusters, "all_genes_clusters_pal.RDS")
+print("EXAMPLE")
 print(head(all_genes_clusters[[1]]))
-# print(head(all_genes_clusters[[6]]))
-# all_genes_clusters = readRDS("all_genes_clusters_pal_named1.RDS")
-# all_genes_clusters[[1]]
-# length_all = sapply(all_genes_clusters[[1]], length)
-# summary(length_all)
-# all_genes_clusters[[1]][sapply(all_genes_clusters[[1]], length) == 4]
-# length(all_genes_clusters[[1]])
-# a = vector("list")
-# a['fhak'] = c("lfadskf")
-# a
-# length(all_genewise_cluster[[1]])
 
-
-all_genes_clusters[[1]][[1]]
-
-
-
-
+for (k in 1:6){
+  names(all_genes_clusters[[k]]) = names(all_genewise_cluster[[k]])
+}
+saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
 
 
 
