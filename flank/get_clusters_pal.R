@@ -38,7 +38,8 @@ get_adj_mat <- function(all_pairs, all_tissues){
   return(adj_mat)
 }
 check_cluster <- function(clusters, adj_mat, tissue_name){
-  all_cluster_str = list(c(tissue_name))
+  all_cluster_str = vector("list")
+  all_cluster_str[[1]] = c(tissue_name)
   for (i in 1:length(clusters)){
     cluster = clusters[[i]]
     break_sig = FALSE
@@ -62,12 +63,13 @@ check_cluster <- function(clusters, adj_mat, tissue_name){
     }
     if (!is.null(new_cluster)){
       new_cluster = unique(new_cluster)
-      all_cluster_str[[i+1]] = new_cluster
+      all_cluster_str[[i]] = c(tissue_name, new_cluster)
     }
   }
-  all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
+  # all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
   return(all_cluster_str)
 }
+
 get_genewise_summary <- function(all_genes_joined){
   all_genewise_cluster = vector("list")
   for (idx in (1:6)){
@@ -125,14 +127,15 @@ sapply(all_tissues_hist, function(x) print(length(x)))
 
 print("====================================================")
 all_genes_clusters = vector("list")
-for (k in 1:length(all_genewise_cluster)){
+# for (k in 1:length(all_genewise_cluster)){
+for (k in 1:2){
   print(paste("HISTONE: ", histone_type_list[k], sep=''))
   all_genewise_cluster_H = all_genewise_cluster[[k]]
   all_genewise_cluster_H_names = names(all_genewise_cluster_H)
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:5, .combine='c', .packages=c('dplyr') ) %dopar% {
+  all_results <- foreach( h=1:5, .combine='list', .packages=c('dplyr') ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
