@@ -101,7 +101,7 @@ for (k in 1:length(all_genewise_cluster)){
 }
 print("====================================================")
 all_genes_clusters = vector("list")
-for (k in 1:length(all_genewise_cluster[[1]])){
+for (k in 1:length(all_genewise_cluster))[[1]]{
   all_genewise_cluster_H = all_genewise_cluster[[k]]
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
