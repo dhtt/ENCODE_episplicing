@@ -6,6 +6,10 @@ library(rtracklayer)
 library(ggplot2)
 library(reshape2)
 library(NMF)
+check_edge <- function(adj_mat, t1, t2){
+  if (t2 %in% adj_mat[[t1]] | t1 %in% adj_mat[[t2]] ) return(TRUE)
+  else return(FALSE)
+}
 check_subcluster <- function(cluster1, all_cluster_str){
   if (TRUE %in% unique(sapply(all_cluster_str, function(x) all(cluster1 %in% x)))) return(TRUE)
   else return(FALSE)
