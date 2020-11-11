@@ -135,7 +135,7 @@ for (k in 1:2){
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:5, .combine='list', .packages=c('dplyr') ) %dopar% {
+  all_results <- foreach( h=1:5, .packages=c('dplyr') ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
