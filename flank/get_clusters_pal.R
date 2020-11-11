@@ -8,6 +8,7 @@ library(parallel)
 library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
+histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 
 check_edge <- function(adj_mat, t1, t2){
   if (t2 %in% adj_mat[[t1]] | t1 %in% adj_mat[[t2]] ) return(TRUE)
@@ -85,34 +86,57 @@ get_genewise_summary <- function(all_genes_joined){
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
 all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
+# 
+# all_mat_hist = vector("list")
+# for (k in 1:length(all_genewise_cluster)){
+#   all_genewise_cluster_H = all_genewise_cluster[[k]]
+#   all_adj_mat = vector("list")
+#   for (h in 1:length(all_genewise_cluster_H)){
+#     gene_cluster = all_genewise_cluster_H[h]
+#     print(names(gene_cluster))
+#     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+#     adj_mat = get_adj_mat(gene_cluster, all_tissues)
+#     all_adj_mat[[h]] = adj_mat
+#   }
+#   all_mat_hist[[k]] = all_adj_mat
+# }
+# saveRDS(all_mat_hist, "all_mat_hist.RDS")
+all_mat_hist = readRDS("all_mat_hist.RDS")
+print("Length all_mat_hist")
+print(length(all_mat_hist))
+sapply(all_mat_hist, function(x) print(length(x)))
 
-all_mat_hist = vector("list")
+all_tissues_hist = vector("list")
 for (k in 1:length(all_genewise_cluster)){
   all_genewise_cluster_H = all_genewise_cluster[[k]]
-  all_adj_mat = vector("list")
+  all_tissues_H = vector("list")
   for (h in 1:length(all_genewise_cluster_H)){
     gene_cluster = all_genewise_cluster_H[h]
-    print(names(gene_cluster))
-    all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = get_adj_mat(gene_cluster, all_tissues)
-    all_adj_mat[[h]] = adj_mat
+    all_tissues_H[[h]] = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
   }
-  all_mat_hist[[k]] = all_adj_mat
+  all_tissues_hist[[k]] = all_tissues_H
 }
-saveRDS(all_mat_hist, "all_mat_hist.RDS")
-all_mat_hist = readRDS("all_mat_hist.RDS")
+saveRDS(all_tissues_hist, "all_tissues_hist.RDS")
+all_tissues_hist = readRDS("all_tissues_hist.RDS")
+print("Length all_tissues_hist")
+print(length(all_tissues_hist))
+sapply(all_tissues_hist, function(x) print(length(x)))
+
 
 print("====================================================")
 all_genes_clusters = vector("list")
-for (k in 1:1){
+for (k in 1:length(all_genewise_cluster)){
+  print(paste("HISTONE: ", histone_type_list[k], sep=''))
   all_genewise_cluster_H = all_genewise_cluster[[k]]
+  all_genewise_cluster_H_names = names(all_genewise_cluster[[k]])
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
-  all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% {  
+  # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
+  all_results <- foreach( h=1:5, .combine='c', .packages=c('dplyr') ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
-    all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = all_mat_hist[[k]][[h]]
+    all_tissues = all_tissues_hist[[k]][[h]]
+    adj_mat_H = all_mat_hist[[k]][[h]]
     if (length(all_tissues) >= 3) {
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
     }
@@ -120,14 +144,34 @@ for (k in 1:1){
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
     }
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat)
+    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
   }
+  names(all_results) = all_genewise_cluster_H_names
+  print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
-saveRDS(all_genes_clusters, "all_genes_clusters_pal.RDS")
 
-# all_genes_clusters = readRDS("all_genes_clusters_pal.RDS")
+saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
+print(head(all_genes_clusters[[1]]))
+print(head(all_genes_clusters[[6]]))
+# all_genes_clusters = readRDS("all_genes_clusters_pal.RDS")[[1]]
+# length_all = sapply(all_genes_clusters[[1]], length)
+# summary(length_all)
+# all_genes_clusters[[1]][sapply(all_genes_clusters[[1]], length) == 4]
+# length(all_genes_clusters[[1]])
+# a = vector("list")
+# a['fhak'] = c("lfadskf")
+# a
+# length(all_genewise_cluster[[1]])
 
-# all_genes_clusters
+
+
+
+
+
+
+
+
+
 
 
