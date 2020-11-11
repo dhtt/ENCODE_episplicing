@@ -37,8 +37,8 @@ get_adj_mat <- function(all_pairs, all_tissues){
   adj_mat = adj_mat[order(sapply(adj_mat, length), decreasing=T)]
   return(adj_mat)
 }
-check_cluster <- function(clusters, adj_mat){
-  all_cluster_str = vector("list")
+check_cluster <- function(clusters, adj_mat, tissue_name){
+  all_cluster_str = list(c(tissue_name))
   for (i in 1:length(clusters)){
     cluster = clusters[[i]]
     break_sig = FALSE
@@ -62,7 +62,7 @@ check_cluster <- function(clusters, adj_mat){
     }
     if (!is.null(new_cluster)){
       new_cluster = unique(new_cluster)
-      all_cluster_str[[i]] = new_cluster
+      all_cluster_str[[i+1]] = new_cluster
     }
   }
   all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
@@ -144,11 +144,8 @@ for (k in 1:length(all_genewise_cluster)){
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
     }
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
+    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H, names(gene_cluster))
   }
-  print(length(all_results))
-  print(all_genewise_cluster_H_names[1:5])
-  names(all_results) = all_genewise_cluster_H_names[1:5]
   print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
