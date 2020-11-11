@@ -101,11 +101,11 @@ for (k in 1:length(all_genewise_cluster)){
 }
 print("====================================================")
 all_genes_clusters = vector("list")
-for (k in 1:length(all_genewise_cluster)){
+for (k in 1:length(all_genewise_cluster[[1]])){
   all_genewise_cluster_H = all_genewise_cluster[[k]]
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
-  all_results <- foreach( h=1:(length(all_genewise_cluster_H[[1]])), .combine='c', .packages=c('dplyr') ) %dopar% {  
+  all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% {  
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
@@ -122,3 +122,9 @@ for (k in 1:length(all_genewise_cluster)){
   all_genes_clusters[[k]] = all_results
 }
 saveRDS(all_genes_clusters, "all_genes_clusters_pal.RDS")
+
+all_genes_clusters = readRDS("all_genes_clusters_pal.RDS")
+
+
+
+
