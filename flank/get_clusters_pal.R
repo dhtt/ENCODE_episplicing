@@ -60,10 +60,8 @@ check_cluster <- function(clusters, adj_mat){
         if (break_sig == TRUE) break
       }
     }
-    if (!is.null(new_cluster)){
-      new_cluster = unique(new_cluster)
-      all_cluster_str[[i]] = new_cluster
-    }
+    new_cluster = unique(new_cluster)
+    all_cluster_str[[i]] = new_cluster
   }
   # all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
   return(all_cluster_str)
