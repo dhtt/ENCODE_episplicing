@@ -124,10 +124,6 @@ print(length(all_tissues_hist))
 sapply(all_tissues_hist, function(x) print(length(x)))
 
 print("====================================================")
-
-all_genewise_cluster[[1]][1] = "a_d,a_c,c_d,b_d,b_c,d_e,a_e,c_e"
-all_tissues_hist[[1]][1] = c("a", "b", "c", "d", "e")
-all_mat_hist[[1]][1] = get_adj_mat(all_genewise_cluster[[1]][1], all_tissues_hist[[1]][1])
 all_genes_clusters = vector("list")
 # for (k in 1:length(all_genewise_cluster)){
 for (k in 1:2){
@@ -137,7 +133,7 @@ for (k in 1:2){
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:5 ) %dopar% {
+  all_results <- foreach( h=1:100 ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
@@ -152,6 +148,7 @@ for (k in 1:2){
     gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
   }
   print("FINALLY FINISHED")
+  print(paste("LENGTH RESULT: ", length(all_results), sep=''))
   all_genes_clusters[[k]] = all_results
 }
 
