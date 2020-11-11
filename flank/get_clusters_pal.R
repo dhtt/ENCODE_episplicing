@@ -98,14 +98,15 @@ for (k in 1:length(all_genewise_cluster)){
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+    adj_mat = get_adj_mat(gene_cluster)
     if (length(all_tissues) >= 3) {
-      adj_mat = get_adj_mat(gene_cluster)
       all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
-      all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-      gene_cluster_list = check_cluster(all_tissues_combi)
-      # all_results[[h]] = gene_cluster_list
     }
-    else gene_cluster_list = c("none")
+    else {
+      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+    }
+    all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
+    gene_cluster_list = check_cluster(all_tissues_combi)
   }
   all_genes_clusters[[k]] = all_results
 }
