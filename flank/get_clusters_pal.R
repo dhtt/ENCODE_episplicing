@@ -15,9 +15,11 @@ check_edge <- function(adj_mat, t1, t2){
   else return(FALSE)
 }
 check_subcluster <- function(cluster1, all_cluster_str){
-  if (TRUE %in% unique(sapply(all_cluster_str, function(x) all(cluster1 %in% x)))) return(TRUE)
+  # if (TRUE %in% unique(sapply(all_cluster_str, function(x) all(cluster1 %in% x)))) return(TRUE)
+  if (TRUE %in% lapply(all_cluster_str, function(y) all(sapply(cluster1, function(x) length(grep(x, y))) > 0))) return(TRUE)
   else return(FALSE)
 }
+
 get_adj_mat <- function(all_pairs, all_tissues){
   all_pairs = str_split(all_pairs, ',')[[1]]
   
@@ -38,7 +40,7 @@ get_adj_mat <- function(all_pairs, all_tissues){
   return(adj_mat)
 }
 check_cluster <- function(clusters, adj_mat){
-  all_cluster_str = vector("list")
+  all_cluster_str = c()
   for (i in 1:length(clusters)){
     cluster = clusters[[i]]
     break_sig = FALSE
@@ -61,7 +63,8 @@ check_cluster <- function(clusters, adj_mat){
       }
     }
     new_cluster = unique(new_cluster)
-    all_cluster_str[[i]] = new_cluster
+    new_cluster = paste(new_cluster, collapse = '_')
+    all_cluster_str = c(all_cluster_str, new_cluster)
   }
   # all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
   return(all_cluster_str)
