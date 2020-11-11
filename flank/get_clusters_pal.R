@@ -128,7 +128,7 @@ all_genes_clusters = vector("list")
 for (k in 1:length(all_genewise_cluster)){
   print(paste("HISTONE: ", histone_type_list[k], sep=''))
   all_genewise_cluster_H = all_genewise_cluster[[k]]
-  all_genewise_cluster_H_names = names(all_genewise_cluster[[k]])
+  all_genewise_cluster_H_names = names(all_genewise_cluster_H)
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
@@ -146,7 +146,8 @@ for (k in 1:length(all_genewise_cluster)){
     all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
     gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
   }
-  names(all_results) = all_genewise_cluster_H_names
+  print(all_results)
+  names(all_results) = all_genewise_cluster_H_names[1:5]
   print("FINALLY FINISHED")
   all_genes_clusters[[k]] = all_results
 }
