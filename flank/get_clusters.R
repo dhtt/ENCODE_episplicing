@@ -6,17 +6,6 @@ library(rtracklayer)
 library(ggplot2)
 library(reshape2)
 library(NMF)
-library(formattable)
-#Annotation
-library(clusterProfiler)
-library(org.Hs.eg.db)
-library(DOSE)
-library(viridis)
-library(ggplot2)
-library(ggraph)
-
-library(ggpubr) #plot1 plot2 are in analyze_flank.R 
-
 check_subcluster <- function(cluster1, all_cluster_str){
   if (TRUE %in% unique(sapply(all_cluster_str, function(x) all(cluster1 %in% x)))) return(TRUE)
   else return(FALSE)
