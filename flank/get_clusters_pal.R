@@ -62,11 +62,11 @@ check_cluster <- function(clusters, adj_mat){
         if (break_sig == TRUE) break
       }
     }
-    new_cluster = unique(new_cluster)
-    new_cluster = paste(new_cluster, collapse = '_')
-    all_cluster_str = c(all_cluster_str, new_cluster)
+    new_cluster = paste(unique(new_cluster), collapse = '_')
+    if (!is.null(new_cluster)) all_cluster_str = c(all_cluster_str, new_cluster)
   }
   # all_cluster_str = all_cluster_str[sapply(all_cluster_str, length) > 0]
+  all_cluster_str = paste(all_cluster_str, collapse = '.')
   return(all_cluster_str)
 }
 
@@ -135,7 +135,7 @@ for (k in 1:2){
   # all_results = vector("list")
   # for (h in 1:length(all_genewise_cluster_H)){
   # all_results <- foreach( h=1:(length(all_genewise_cluster_H)), .combine='c', .packages=c('dplyr') ) %dopar% { 
-  all_results <- foreach( h=1:5, .combine='list', .packages=c('dplyr') ) %dopar% {
+  all_results <- foreach( h=1:5, .combine='c', .packages=c('dplyr') ) %dopar% {
     gene_cluster = all_genewise_cluster_H[h]
     print(names(gene_cluster))
     all_tissues = all_tissues_hist[[k]][[h]]
