@@ -123,8 +123,9 @@ print("Length all_tissues_hist")
 print(length(all_tissues_hist))
 sapply(all_tissues_hist, function(x) print(length(x)))
 
-
 print("====================================================")
+
+all_genewise_cluster[[1]][1] = "a_d,a_c,c_d,b_d,b_c,d_e,a_e,c_e"
 all_genes_clusters = vector("list")
 # for (k in 1:length(all_genewise_cluster)){
 for (k in 1:2){
