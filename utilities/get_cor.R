@@ -69,7 +69,10 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    print(head(pair.his))
+    # print(head(pair.his))
+    if (i == 2) {
+      print(pair.his[grep("TASOR2", pair.his$V9), ])
+      print (all_pairs.his[2])}
     pair.his = pair.his %>%
       mutate(
         temp_val = abs(as.numeric(as.character(V10))),
