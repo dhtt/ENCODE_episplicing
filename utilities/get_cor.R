@@ -68,10 +68,12 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = fread(pair.his)
     print(head(pair.his))
     pair.his = pair.his %>%
-      mutate(temp_val = abs(as.numeric(as.character(V10))),
+      mutate(
+        temp_val = abs(as.numeric(as.character(V10))),
 	     temp_p = as.numeric(as.character(V11)),
-	     m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
-	                     true = temp_val, false = 0)) %>%
+	     # m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
+	     #                 true = temp_val, false = 0),
+	     m_val = temp_val) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
@@ -102,7 +104,7 @@ get_all_pairs.his_list <- function(histone_type_list){
 #histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_M.RDS")
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]], 50)
