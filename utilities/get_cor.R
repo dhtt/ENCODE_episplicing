@@ -85,6 +85,7 @@ get_all_pairs.his <- function(all_pairs.his){
   #   summarise_all(max) %>%
   #   dplyr::select(-group)
   pair.his_list = cbind(his_id, pair.his_list)
+  print(head(pair.his_list))
   # pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
