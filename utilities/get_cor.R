@@ -101,11 +101,41 @@ get_all_pairs.his_list <- function(histone_type_list){
   }
   return(all_pairs.his_list)
 }
+
+a = c("dsa", 'fdsa', "dada")
+grep("dada", a)
+custom <- function(){
+  all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", "H3K27ac", "flank", sep='/'), pattern = '.txt', full.names = TRUE)
+  print(all_pairs.his)
+  colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
+  i = grep("CD4positivealphabetaTcell_endodermalcell", all_pairs.his)
+  pair.his = all_pairs.his[[i]]
+  pair.his = fread(pair.his)
+  pair.his = pair.his %>%
+    mutate(
+      temp_val = abs(as.numeric(as.character(V10))),
+      temp_p = as.numeric(as.character(V11)),
+      # m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
+      #                 true = temp_val, false = 0),
+      m_val = temp_val) %>%
+    dplyr::select(m_val)
+  pair.his = as.data.table(pair.his)
+  print(pair.his[pair.his[[1]] == "TASOR2", ])
+  pair.his = pair.his %>%
+  group_by(group = gl(n()/2, 2)) %>%
+  summarise_all(max) %>%
+  dplyr::select(-group)
+  pair.his = cbind(his_id, pair.his)
+  pair.his = pair.his[order(pair.his$V1)]
+  colnames(pair.his) = colname_his
+  return(pair.his)
+}
+temp = custom()
 #histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_M.RDS")
-print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
+print(temp$CD4positivealphabetaTcell_endodermalcell[temp$gene_id == "TASOR2"])
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
