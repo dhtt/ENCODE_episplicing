@@ -58,7 +58,10 @@ get_all_pairs.exp <- function(all_pairs.exp){
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
-his_id = fread("flank_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+his_id = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/flank_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+a = rep(his_id$V1, each = 2)
+b = rep(his_id$V2, each = 2)
+his_id = as.data.frame(cbind(a, b))
 get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
