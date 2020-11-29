@@ -72,7 +72,8 @@ get_all_pairs.his <- function(all_pairs.his){
     # print(head(pair.his))
     if (i == 2) {
       print (all_pairs.his[2])
-      print(grep("TASOR2", pair.his$V9))}
+      idx = grep("TASOR2", pair.his$V9)
+      print(idx)} 
     pair.his = pair.his %>%
       mutate(
         temp_val = abs(as.numeric(as.character(V10))),
@@ -116,6 +117,9 @@ all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_M.RDS")
 # print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
 print(grep("TASOR2", all_pairs.his_list[[1]]$gene_id))
+print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[idx])
+
+
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
