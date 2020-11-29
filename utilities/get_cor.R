@@ -71,9 +71,8 @@ get_all_pairs.his <- function(all_pairs.his){
       mutate(
         temp_val = abs(as.numeric(as.character(V10))),
 	     temp_p = as.numeric(as.character(V11)),
-	     # m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
-	     #                 true = temp_val, false = 0),
-	     m_val = temp_val) %>%
+	     m_val = if_else(!is.na(temp_val) & temp_val >= 1 , #& !is.na(temp_p) & temp_p <= 0.1
+	                     true = temp_val, false = 0)) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
