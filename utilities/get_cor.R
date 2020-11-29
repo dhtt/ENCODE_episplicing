@@ -6,6 +6,7 @@ library(parallel)
 library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
+#setwd("/home/dhthutrang/ENCODE/flank")
 
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
@@ -101,10 +102,10 @@ get_all_pairs.his_list <- function(histone_type_list){
 }
 #histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-# all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-# all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
+#all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+#saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+#all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 head(all_pairs.his_list[[1]], 50)
 
 #===== CORRELATION WITH RANDOMIZATION =====
@@ -126,7 +127,22 @@ pearcor_p <- function(exp, his){
   }
 }
 
-analyze_array <- function(all_pairs.exp, all_pairs.his){
+pearcor_r <- function(exp, his, n_his){
+  df = data.frame(cbind(exp, his))
+  n_points = nrow(unique(df))
+  if (0 %in% apply(df, 1, unique)) n_points = n_points-1
+  #print(n_points)
+  if (n_points > 2 & length(unique(exp)) > 1 & length(unique(his)) > n_his){
+    r_val = cor(exp, his, method = "pearson")
+    # p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
+    return(r_val)
+  }
+  else {
+    return(NA)
+  }
+}
+
+analyze_array <- function(all_pairs.exp, all_pairs.his, n_his){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
@@ -142,7 +158,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his){
     
     res_table = data_table %>%
       group_by(all_pairs.exp$gene_id) %>%
-      summarise(res = pearcor_p(exp, his)) %>%
+      summarise(res = pearcor_r(exp, his, n_his)) %>%
       dplyr::select(res)
     #all_res_pair[[i]] = res_table
   }
@@ -152,17 +168,24 @@ analyze_array <- function(all_pairs.exp, all_pairs.his){
   print(head(all_res_pair))
   return(as.data.frame(all_res_pair))
 }
-analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method){
+analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, n_his){
   all_res_list = vector("list", length(histone_type_list)-1 )
   for (j in 1:length(histone_type_list)){
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
     all_pairs.his = all_pairs.his_list[[j]]
-    all_res_pair = analyze_array(all_pairs.exp, all_pairs.his)
+    all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, n_his)
     all_res_list[[j]] = all_res_pair
   }
   return(all_res_list)
 }
 
 print("Pearsons-p correlation")
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+#all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
+#saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp, all_pairs.his_list, 9)
+saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r_10.RDS")
+
+
+
+
