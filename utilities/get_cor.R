@@ -44,13 +44,13 @@ get_all_pairs.exp <- function(all_pairs.exp){
   pair.exp_list = as.data.table(pair.exp_list)
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
-  pair.exp_list = as.data.table(cbind(exp_id, pair.exp_list))
-  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
+  pair.exp_list = cbind(exp_id, pair.exp_list)
   colnames(pair.exp_list) = colname_exp
-  return(pair.exp_list)
+  return(as.data.table(pair.exp_list))
 }
 
 all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id), ]
 saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("all_pairs.exp.RDS")
@@ -79,8 +79,7 @@ get_all_pairs.his <- function(all_pairs.his){
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
     dplyr::select(-group)
-  pair.his_list = as.data.table(cbind(his_id, pair.his_list))
-  pair.his_list = pair.his_list[order(pair.his_list$V1), ]
+  pair.his_list = cbind(his_id, pair.his_list)
   return(pair.his_list)
 }
 get_all_pairs.his_list <- function(histone_type_list){
@@ -93,7 +92,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     print(head(all_pairs.his.sig))
     colnames(all_pairs.his.sig) = colname_his
-    all_pairs.his_list[[j]] = all_pairs.his.sig
+    all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
   return(all_pairs.his_list)
 }
@@ -101,8 +100,8 @@ get_all_pairs.his_list <- function(histone_type_list){
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+all_pairs.his_list = lapply(all_pairs.his_list, function(x) x = x[order(x$gene_id), ]) 
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
 
 print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
 
