@@ -93,7 +93,7 @@ get_genewise_summary <- function(all_genes_joined){
   }
   return(all_genewise_cluster)
 }
-all_res_list.pearcor_padj_sig = loadRDS("all_res_list.pearcor_padj_sig.RDS")
+all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
 # all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
@@ -319,7 +319,7 @@ saveRDS(ck_bp_005_gene, "annot_genes_gene_cluster_bp005_new.RDS")
 #                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.001,
 #                                 pAdjustMethod = "fdr", readable =TRUE)
 # saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
-ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
+# ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
 
 plot5 = dotplot(ck_bp_005_gene, showCategory = 25) +
   scale_color_viridis(option = "D") +
