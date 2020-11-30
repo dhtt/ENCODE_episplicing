@@ -44,16 +44,16 @@ get_all_pairs.exp <- function(all_pairs.exp){
   pair.exp_list = as.data.table(pair.exp_list)
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
-  pair.exp_list = cbind(exp_id, pair.exp_list)
+  pair.exp_list = as.data.table(cbind(exp_id, pair.exp_list))
+  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
   colnames(pair.exp_list) = colname_exp
-  pair.exp_list = pair.exp_list[order(pair.exp_list$gene_id), ]
   return(pair.exp_list)
 }
 
-# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
-all_pairs.exp = readRDS("all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("all_pairs.exp.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
