@@ -84,11 +84,11 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
-  # pair.his_list = pair.his_list %>%
-  #   group_by(group = gl(n()/2, 2)) %>%
-  #   summarise_all(max) %>%
-  #   dplyr::select(-group)
-  pair.his_list = cbind(his_id_temp, pair.his_list)
+  pair.his_list = pair.his_list %>%
+    group_by(group = gl(n()/2, 2)) %>%
+    summarise_all(max) %>%
+    dplyr::select(-group)
+  pair.his_list = cbind(his_id, pair.his_list)
   print(head(pair.his_list))
   print(tail(pair.his_list))
   # pair.his_list = pair.his_list[order(pair.his_list$V1)]
@@ -115,9 +115,10 @@ get_all_pairs.his_list <- function(histone_type_list){
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_M.RDS")
-# print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
-print(grep("TASOR2", all_pairs.his_list[[1]]$gene_id))
-print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[c(294239,294240, 294241, 294242, 294243, 294244, 294245, 294246, 294247, 294248)])
+print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
+# print(grep("TASOR2", all_pairs.his_list[[1]]$gene_id))
+# print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[c(294239,294240, 294241, 294242, 294243, 294244, 294245, 294246, 294247, 294248)])
+# print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[c(294239,294240, 294241, 294242, 294243, 294244, 294245, 294246, 294247, 294248)])
 
 
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
