@@ -16,7 +16,7 @@ library(ggplot2)
 library(ggraph)
 
 library(ggpubr) #plot1 plot2 are in analyze_flank.R 
-setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
+# setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 # doMC::registerDoMC(cores = 17)
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 
