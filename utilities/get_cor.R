@@ -167,7 +167,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points=n
         summarise(res = pearcor_p(exp, his)) %>%
         dplyr::select(res)
     }
-    else {
+    else if (option == "r") {
       res_table = data_table %>%
         group_by(all_pairs.exp$gene_id) %>%
         summarise(res = pearcor_r(exp, his, n_points)) %>%
@@ -189,7 +189,7 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
     if (method == "p") {
       all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, "p")
     }
-    else (method == "r") {
+    else if (method == "r") {
       all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, "r", n_points=n_points)
     }
     all_res_list[[j]] = all_res_pair
