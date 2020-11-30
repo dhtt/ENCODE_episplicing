@@ -78,6 +78,7 @@ get_all_pairs.his <- function(all_pairs.his){
     summarise_all(max) %>%
     dplyr::select(-group)
   pair.his_list = cbind(his_id, pair.his_list)
+  print(head(pair.his_list))
   pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
@@ -96,12 +97,13 @@ get_all_pairs.his_list <- function(histone_type_list){
 }
 
 
-histone_type_list = list("H3K4me1", "H3K4me3", "H3K9me3", "H3K27me3", "H3K36me3", "H3K27ac")
+histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
+histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "STIM1"])
 
-
+print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
 
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
@@ -202,4 +204,34 @@ saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pear
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
 saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
+
+
+# temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
+# temp[grep("STIM1", temp$V9), `V10`]
+# name = temp$V9[seq(1, nrow(temp), 2)]
+# 
+# ids = lapply(name, function(x){
+#   split_name = str_split(x, '\"')[[1]]
+#   gene_id = split_name[2]
+#   exon_id = split_name[length(split_name) -1]
+#   return(c(gene_id, exon_id))
+# })
+# tail(ids)
+# his_id2 = as.data.frame(do.call("rbind", ids))
+# head(his_id2)
+# unquote(his_id2[1,1])
+# 
+# temp1 = temp %>%
+#   dplyr::select(V10) %>%
+#   group_by(group = gl(n()/2, 2)) %>%
+#   summarise_all(max) %>%
+#   dplyr::select(-group)
+# head(temp3)
+# his_id2 = read.csv("flank_id.txt", sep='\t', header = FALSE)
+# temp2 = cbind(temp1, his_id)
+# temp3 = cbind(temp1, his_id2)
+# temp2[temp2$V1 == "STIM1", 1]
+# temp3[temp3$V1 == "STIM1", 1]
+# 
+# fwrite(his_id2, "flank_id.txt", quote = FALSE, col.names = FALSE, sep='\t')
 
