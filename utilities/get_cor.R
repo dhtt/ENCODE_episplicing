@@ -127,11 +127,11 @@ pearcor_p <- function(exp, his){
 }
 
 
-pearcor_r <- function(exp, his){
+pearcor_r <- function(exp, his, n_points){
   df = as.data.frame(cbind(exp, his))
   n_sep_point = nrow(unique(df))
   if (0 %in% apply(df, 1, unique)) n_sep_point = n_sep_point - 1
-  if (n_sep_point > 2 & length(unique(exp)) > 1 & length(unique(his)) > 1){
+  if (n_sep_point > n_points & length(unique(exp)) > 1 & length(unique(his)) > 1){
     r_val = cor(exp, his, method = "pearson")
     return(r_val)
   }
@@ -140,7 +140,7 @@ pearcor_r <- function(exp, his){
   }
 }
 
-analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p"){
+analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points=n_points){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
@@ -163,7 +163,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p"){
     else {
       res_table = data_table %>%
         group_by(all_pairs.exp$gene_id) %>%
-        summarise(res = pearcor_r(exp, his)) %>%
+        summarise(res = pearcor_r(exp, his, n_points)) %>%
         dplyr::select(res)
     }
     #all_res_pair[[i]] = res_table
@@ -174,7 +174,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p"){
   print(head(all_res_pair))
   return(as.data.frame(all_res_pair))
 }
-analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p"){
+analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", n_points=2){
   all_res_list = vector("list", length(histone_type_list)-1 )
   for (j in 1:length(histone_type_list)){
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
@@ -183,7 +183,7 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p"){
       all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, "p")
     }
     else {
-      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, "r")
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, "r", n_points=n_points)
     }
     all_res_list[[j]] = all_res_pair
   }
@@ -196,4 +196,10 @@ saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pear
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_r")
 saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=4)
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r5.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
 
