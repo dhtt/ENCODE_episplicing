@@ -69,11 +69,11 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    # print(head(pair.his))
+    
     if (i == 2) {
       print (all_pairs.his[2])
-      idx = grep("TASOR2", pair.his$V9)
-      pair.his = pair.his[idx,]} 
+      idx = grep("STIM1", pair.his$V9)
+      print(pair.his[idx, ])} 
     pair.his = pair.his %>%
       mutate(
         temp_val = abs(as.numeric(as.character(V10))),
@@ -84,13 +84,13 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
-  print(pair.his_list[, 2])
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
     dplyr::select(-group)
-  # pair.his_list = cbind(his_id, pair.his_list)
-  print(pair.his_list[, 2])
+  pair.his_list = cbind(his_id, pair.his_list)
+  print(head(pair.his_list))
+  print(tail(pair.his_list))
   # pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
@@ -102,9 +102,9 @@ get_all_pairs.his_list <- function(histone_type_list){
     print(his)
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
-    # colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
+    colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
-    # colnames(all_pairs.his.sig) = colname_his
+    colnames(all_pairs.his.sig) = colname_his
     all_pairs.his_list[[j]] = all_pairs.his.sig
   }
   return(all_pairs.his_list)
@@ -115,10 +115,8 @@ get_all_pairs.his_list <- function(histone_type_list){
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_M.RDS")
-print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
-# print(grep("TASOR2", all_pairs.his_list[[1]]$gene_id))
-# print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[c(294239,294240, 294241, 294242, 294243, 294244, 294245, 294246, 294247, 294248)])
-# print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[c(294239,294240, 294241, 294242, 294243, 294244, 294245, 294246, 294247, 294248)])
+print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "STIM1"])
+
 
 
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
