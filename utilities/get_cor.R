@@ -58,7 +58,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
-his_id = fread("flank_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+his_id = read.csv("flank_id.txt", sep='\t', header = FALSE)
 a = rep(his_id$V1, each = 2)
 b = rep(his_id$V2, each = 2)
 his_id_temp = as.data.frame(cbind(a, b))
@@ -89,8 +89,6 @@ get_all_pairs.his <- function(all_pairs.his){
     summarise_all(max) %>%
     dplyr::select(-group)
   pair.his_list = cbind(his_id, pair.his_list)
-  print(head(pair.his_list))
-  print(tail(pair.his_list))
   # pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
