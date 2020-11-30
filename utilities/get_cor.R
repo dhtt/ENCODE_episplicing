@@ -37,10 +37,11 @@ get_all_pairs.exp <- function(all_pairs.exp){
                          function(x) {
                            x = x %>%
                              mutate(
-                               exp = if_else(padj <= 0.1 & !is.na(padj), true = stat,
-                                                  false = 0.0)) %>%
+                               exp = dplyr::if_else(padj <= 0.1 & !is.na(padj), 
+                                                    true = stat, false = 0.0)) %>%
                              dplyr::select(exp)
                          })
+  pair.exp_list = as.data.frame(pair.exp_list)
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   # print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
   pair.exp_list = as.data.frame(cbind(exp_id, pair.exp_list))
@@ -67,8 +68,8 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
-        m_val = if_else(p_val <= 0.05, 
-                        abs(as.numeric(as.character(V10))), 0)
+        m_val = dplyr::if_else(p_val <= 0.05, 
+                               true = abs(as.numeric(as.character(V10))), false = 0)
         ) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
