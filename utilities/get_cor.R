@@ -84,14 +84,13 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
-  print(pair.his_list[,, 2])
+  print(pair.his_list[, 2])
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
     dplyr::select(-group)
-  pair.his_list = cbind(his_id, pair.his_list)
-  print(head(pair.his_list))
-  print(tail(pair.his_list))
+  # pair.his_list = cbind(his_id, pair.his_list)
+  print(pair.his_list[, 2])
   # pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
