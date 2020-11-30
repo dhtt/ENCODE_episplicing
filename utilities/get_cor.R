@@ -50,12 +50,10 @@ get_all_pairs.exp <- function(all_pairs.exp){
   return(pair.exp_list)
 }
 
-all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-# all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-# all_pairs.exp = readRDS("all_pairs.exp.RDS")
-print(head(all_pairs.exp))
-paste("CONTROL: ", length(unique(all_pairs.exp[all_pairs.exp$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
+# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
+all_pairs.exp = readRDS("all_pairs.exp.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -81,7 +79,8 @@ get_all_pairs.his <- function(all_pairs.his){
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
     dplyr::select(-group)
-  pair.his_list = cbind(his_id, pair.his_list)
+  pair.his_list = as.data.table(cbind(his_id, pair.his_list))
+  pair.his_list = pair.his_list[order(pair.his_list$V1), ]
   return(pair.his_list)
 }
 get_all_pairs.his_list <- function(histone_type_list){
@@ -94,12 +93,10 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     print(head(all_pairs.his.sig))
     colnames(all_pairs.his.sig) = colname_his
-    all_pairs.his.sig = all_pairs.his.sig[order(all_pairs.his.sig$gene_id), ]
     all_pairs.his_list[[j]] = all_pairs.his.sig
   }
   return(all_pairs.his_list)
 }
-
 
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 histone_type_list = list("H3K27ac")
@@ -195,19 +192,19 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
   }
   return(all_res_list)
 }
-
-print("Pearsons-p correlation")
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_r")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=4)
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r5.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
+# 
+# print("Pearsons-p correlation")
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_r")
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=4)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r5.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
 
 
 # temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
