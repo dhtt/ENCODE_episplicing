@@ -44,7 +44,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
   pair.exp_list = cbind(exp_id, pair.exp_list)
-  pair.exp_list = pair.exp_list[order(pair.exp_list$V1)]
+  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
   colnames(pair.exp_list) = colname_exp
   return(pair.exp_list)
 }
@@ -52,6 +52,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
 #all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
 #saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id), ]
 # all_pairs.exp = readRDS("all_pairs.exp.RDS")
 print(head(all_pairs.exp))
 paste("CONTROL: ", length(unique(all_pairs.exp[all_pairs.exp$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
@@ -90,7 +91,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     print(head(all_pairs.his.sig))
     colnames(all_pairs.his.sig) = colname_his
-    all_pairs.his.sig = all_pairs.his.sig[order(all_pairs.his.sig$gene_id)]
+    all_pairs.his.sig = all_pairs.his.sig[order(all_pairs.his.sig$gene_id), ]
     all_pairs.his_list[[j]] = all_pairs.his.sig
   }
   return(all_pairs.his_list)
