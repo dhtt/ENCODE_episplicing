@@ -44,7 +44,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   # print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
   pair.exp_list = as.data.frame(cbind(exp_id, pair.exp_list))
-  pair.exp_list = pair.exp_list[order(pair.exp_list$V1, pair.exp_list$V2), ]
+  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
   colnames(pair.exp_list) = colname_exp
   return(as.data.table(pair.exp_list))
 }
@@ -79,7 +79,7 @@ get_all_pairs.his <- function(all_pairs.his){
     summarise_all(max) %>%
     dplyr::select(-group)
   pair.his_list = as.data.frame(cbind(his_id, pair.his_list))
-  pair.his_list = pair.his_list[order(pair.his_list$V1, pair.his_list$V2),]
+  pair.his_list = pair.his_list[order(pair.his_list$V1),]
   return(pair.his_list)
 }
 get_all_pairs.his_list <- function(histone_type_list){
