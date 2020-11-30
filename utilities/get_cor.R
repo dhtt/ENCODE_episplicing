@@ -41,16 +41,15 @@ get_all_pairs.exp <- function(all_pairs.exp){
                                                   false = 0.0)) %>%
                              dplyr::select(exp)
                          })
-  pair.exp_list = as.data.table(pair.exp_list)
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
-  print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
-  pair.exp_list = cbind(exp_id, pair.exp_list)
+  # print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
+  pair.exp_list = as.data.frame(cbind(exp_id, pair.exp_list))
+  pair.exp_list = pair.exp_list[order(pair.exp_list$V1, pair.exp_list$V2), ]
   colnames(pair.exp_list) = colname_exp
   return(as.data.table(pair.exp_list))
 }
 
 all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id), ]
 saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("all_pairs.exp.RDS")
@@ -79,7 +78,8 @@ get_all_pairs.his <- function(all_pairs.his){
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
     dplyr::select(-group)
-  pair.his_list = cbind(his_id, pair.his_list)
+  pair.his_list = as.data.frame(cbind(his_id, pair.his_list))
+  pair.his_list = pair.his_list[order(pair.his_list$V1, pair.his_list$V2),]
   return(pair.his_list)
 }
 get_all_pairs.his_list <- function(histone_type_list){
@@ -90,7 +90,6 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), pattern = '.txt', full.names = TRUE)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
-    print(head(all_pairs.his.sig))
     colnames(all_pairs.his.sig) = colname_his
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
@@ -100,7 +99,6 @@ get_all_pairs.his_list <- function(histone_type_list){
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-all_pairs.his_list = lapply(all_pairs.his_list, function(x) x = x[order(x$gene_id), ]) 
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 
 print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
@@ -108,6 +106,14 @@ print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
 # all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
+# 
+# his_ids = as.data.frame(read.csv("flank_id.txt", header= FALSE, sep='\t'))
+# his_ids = his_ids[order(his_ids$V1, his_ids$V2),]
+# all_pairs.exp = as.data.frame(all_pairs.exp)
+# all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id, all_pairs.exp$exon_id),]
+# table(all_pairs.exp$gene_id ==his_ids$V1)
+
+
 
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
