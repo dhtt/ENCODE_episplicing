@@ -21,7 +21,7 @@ library(boot)
 library(stats)
 library(parallel)
 library("doMC")
-doMC::registerDoMC(cores = 17)
+doMC::registerDoMC(cores = 50)
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 
 check_edge <- function(adj_mat, t1, t2){
