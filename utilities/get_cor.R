@@ -36,7 +36,8 @@ get_all_pairs.exp <- function(all_pairs.exp){
   pair.exp_list = lapply(pair.exp_list,
                          function(x) {
                            x = x %>%
-                             mutate(exp = if_else(padj <= 0.1 & !is.na(padj), true = stat,
+                             mutate(
+                               exp = if_else(padj <= 0.1 & !is.na(padj), true = stat,
                                                   false = 0.0)) %>%
                              dplyr::select(exp)
                          })
@@ -44,15 +45,14 @@ get_all_pairs.exp <- function(all_pairs.exp){
   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
   print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
   pair.exp_list = cbind(exp_id, pair.exp_list)
-  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
   colnames(pair.exp_list) = colname_exp
+  pair.exp_list = pair.exp_list[order(pair.exp_list$gene_id), ]
   return(pair.exp_list)
 }
 
-#all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-#saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id), ]
+all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("all_pairs.exp.RDS")
 print(head(all_pairs.exp))
 paste("CONTROL: ", length(unique(all_pairs.exp[all_pairs.exp$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
@@ -69,7 +69,10 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = fread(pair.his)
     pair.his = pair.his %>%
       mutate(
-        m_val = abs(as.numeric(as.character(V10)))) %>%
+        p_val = as.numeric(as.character(V11)),
+        m_val = if_else(p_val <= 0.05, 
+                        abs(as.numeric(as.character(V10))), 0)
+        ) %>%
       dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
@@ -102,7 +105,7 @@ histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3"
 histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "STIM1"])
+print(all_pairs.his_list[[1]]$CD4positivealphabetaTcell_endodermalcell[all_pairs.his_list[[1]]$gene_id == "TASOR2"])
 
 print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
 
@@ -157,7 +160,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points=n
     data_table = as.data.table(cbind(exp, his))
     head(data_table)
     
-    if (option = "p"){
+    if (option == "p"){
       res_table = data_table %>%
         group_by(all_pairs.exp$gene_id) %>%
         summarise(res = pearcor_p(exp, his)) %>%
