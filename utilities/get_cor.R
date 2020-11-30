@@ -78,8 +78,6 @@ get_all_pairs.his <- function(all_pairs.his){
     summarise_all(max) %>%
     dplyr::select(-group)
   pair.his_list = cbind(his_id, pair.his_list)
-  print(head(pair.his_list))
-  pair.his_list = pair.his_list[order(pair.his_list$V1)]
   return(pair.his_list)
 }
 get_all_pairs.his_list <- function(histone_type_list){
@@ -90,7 +88,9 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank", sep='/'), pattern = '.txt', full.names = TRUE)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
+    print(head(all_pairs.his.sig))
     colnames(all_pairs.his.sig) = colname_his
+    all_pairs.his.sig = all_pairs.his.sig[order(all_pairs.his.sig$gene_id)]
     all_pairs.his_list[[j]] = all_pairs.his.sig
   }
   return(all_pairs.his_list)
