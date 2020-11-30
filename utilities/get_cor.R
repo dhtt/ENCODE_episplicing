@@ -73,7 +73,7 @@ get_all_pairs.his <- function(all_pairs.his){
     if (i == 2) {
       print (all_pairs.his[2])
       idx = grep("TASOR2", pair.his$V9)
-      print(pair.his[idx, ])} 
+      pair.his = pair.his[idx,]} 
     pair.his = pair.his %>%
       mutate(
         temp_val = abs(as.numeric(as.character(V10))),
@@ -84,6 +84,7 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
+  print(pair.his_list[,, 2])
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
