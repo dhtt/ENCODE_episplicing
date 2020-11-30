@@ -98,7 +98,6 @@ get_all_pairs.his_list <- function(histone_type_list){
 }
 
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
-histone_type_list = list("H3K27ac")
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 
@@ -198,19 +197,19 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
   }
   return(all_res_list)
 }
-# 
-# print("Pearsons-p correlation")
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
-# 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_r")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
-# 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=4)
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r5.RDS")
-# 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
+
+print("Pearsons-p correlation")
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_p")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, "pearcor_r")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=4)
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r5.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="pearcor_r", n_points=9)
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r10.RDS")
 
 
 # temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
@@ -226,7 +225,6 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 # tail(ids)
 # his_id2 = as.data.frame(do.call("rbind", ids))
 # head(his_id2)
-# unquote(his_id2[1,1])
 # 
 # temp1 = temp %>%
 #   dplyr::select(V10) %>%
