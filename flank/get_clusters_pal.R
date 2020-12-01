@@ -266,7 +266,7 @@ plot2 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues 
   xlab("Number of tissue clusters") + ylab("Occurences") +
   theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
   scale_y_continuous(breaks=seq(0, 250, 25)) +
-  scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_clusters), 1)) +
+  # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_clusters), 1)) +
   theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
 # plot2
 
@@ -276,7 +276,7 @@ plot3 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues 
   xlab("Number of tissues") + ylab("Occurences") +
   theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
   scale_y_continuous(breaks=seq(0, 225, 25)) +
-  scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_tissues), 1)) +
+  # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_tissues), 1)) +
   theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
 # plot3
 
