@@ -99,8 +99,8 @@ get_genewise_summary <- function(all_genes_joined){
 }
 all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
-saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
-# all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
+# saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
+all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
 
 all_mat_hist = vector("list")
 for (k in 1:length(all_genewise_cluster)){
@@ -115,8 +115,8 @@ for (k in 1:length(all_genewise_cluster)){
   }
   all_mat_hist[[k]] = all_adj_mat
 }
-saveRDS(all_mat_hist, "all_mat_hist.RDS")
-# all_mat_hist = readRDS("all_mat_hist.RDS")
+# saveRDS(all_mat_hist, "all_mat_hist.RDS")
+all_mat_hist = readRDS("all_mat_hist.RDS")
 # print("Length all_mat_hist")
 # print(length(all_mat_hist))
 # sapply(all_mat_hist, function(x) print(length(x)))
@@ -131,8 +131,8 @@ for (k in 1:length(all_genewise_cluster)){
   }
   all_tissues_hist[[k]] = all_tissues_H
 }
-saveRDS(all_tissues_hist, "all_tissues_hist.RDS")
-# all_tissues_hist = readRDS("all_tissues_hist.RDS")
+# saveRDS(all_tissues_hist, "all_tissues_hist.RDS")
+all_tissues_hist = readRDS("all_tissues_hist.RDS")
 # print("Length all_tissues_hist")
 # print(length(all_tissues_hist))
 # sapply(all_tissues_hist, function(x) print(length(x)))
@@ -166,9 +166,9 @@ for (k in 1:6){
 for (k in 1:6){
   names(all_genes_clusters[[k]]) = names(all_genewise_cluster[[k]])
 }
-saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
+# saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
 
-# all_genes_clusters = readRDS("all_genes_clusters_pal_named.RDS")
+all_genes_clusters = readRDS("all_genes_clusters_pal_named.RDS")
 print(head(all_genes_clusters[[1]]))
 n_clusters = sapply(all_genes_clusters[[1]], length)
 print(summary(n_clusters))
@@ -186,6 +186,16 @@ make_upairs <- function(list_tissue){
   }
   return(all_pairs)
 }
+
+official_name = c("Adipose tissue", "Aorta", "CD4-positive alpha beta T cell", 
+                  "CD8 positive alpha beta T cell", "Ectodermal cell", "Endodermal cell", 
+                  "Esophagus", "H1 cell", "Mesenchymal stem cell", "Mesendoderm", "Mesodermal cell", 
+                  "Neuronal stem cell", "Pancreas", "Psoas muscle", "Sigmoid colon", 
+                  "Small intestine", "Spleen", "Stomach", "Trophoblast")
+epigenomes_annot = read.csv("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/epi_info.csv", 
+                            header = TRUE, sep=';', row.names = 1)
+rownames(epigenomes_annot)[rownames(epigenomes_annot) == "trophoblastcell"] = "trophoblast"
+epigenomes_annot$official_name = official_name
 
 get_genewise_clusters_df <- function(all_genes_clusters, all_genewise_cluster){
   all_genewise_clusters = vector("list")
