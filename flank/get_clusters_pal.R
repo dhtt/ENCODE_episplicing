@@ -243,42 +243,43 @@ get_genewise_clusters_df <- function(all_genes_clusters, all_genewise_cluster){
   all_genewise_clusters$n_tissues = lapply(all_genewise_clusters$tissues, length)
   return(all_genewise_clusters)
 }
-all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters, all_genewise_cluster)
-saveRDS(all_genewise_clusters_df, "all_genewise_clusters_df.RDS")
+# all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters, all_genewise_cluster)
+# saveRDS(all_genewise_clusters_df, "all_genewise_clusters_df.RDS")
+all_genewise_clusters_df = readRDS("all_genewise_clusters_df.RDS")
 
 # all_genewise_clusters_df = readRDS("all_genewise_clusters_df.RDS")
-plot1 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_genes, fill = histone_type)) + 
-  geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black", boundary=0) +  
-  labs(fill = "Histone mark", title = "Number of gene sets shared between more than 2 tissues") + 
-  xlab("Size of genes set") + ylab("Occurences") +
-  scale_y_continuous(breaks=seq(0, 325, 25)) +
-  theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
-  theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
+# plot1 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_genes, fill = histone_type)) + 
+#   geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black", boundary=0) +  
+#   labs(fill = "Histone mark", title = "Number of gene sets shared between more than 2 tissues") + 
+#   xlab("Size of genes set") + ylab("Occurences") +
+#   scale_y_continuous(breaks=seq(0, 325, 25)) +
+#   theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
+#   theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
 # plot1
 
 # as.character(all_genewise_clusters_df[all_genewise_clusters_df$n_genes == 5, "clusters"])
 # as.character(all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 15, "clusters"])
 
-
-plot2 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_clusters, fill = histone_type)) + 
-  geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black") +  
-  labs(fill = "Histone mark", title = "Number of tissues clusters sharing the same genes sets") + 
-  xlab("Number of tissue clusters") + ylab("Occurences") +
-  theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
-  scale_y_continuous(breaks=seq(0, 250, 25)) +
-  # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_clusters), 1)) +
-  theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
-# plot2
-
-plot3 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_tissues, fill = histone_type)) + 
-  geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black") +  
-  labs(fill = "Histone mark", title = "Total number of tissues in all clusters sharing a set of genes") + 
-  xlab("Number of tissues") + ylab("Occurences") +
-  theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
-  scale_y_continuous(breaks=seq(0, 225, 25)) +
-  # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_tissues), 1)) +
-  theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
-# plot3
+# 
+# plot2 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_clusters, fill = histone_type)) + 
+#   geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black") +  
+#   labs(fill = "Histone mark", title = "Number of tissues clusters sharing the same genes sets") + 
+#   xlab("Number of tissue clusters") + ylab("Occurences") +
+#   theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
+#   scale_y_continuous(breaks=seq(0, 250, 25)) +
+#   # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_clusters), 1)) +
+#   theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
+# # plot2
+# 
+# plot3 = ggplot(data=all_genewise_clusters_df[all_genewise_clusters_df$n_tissues > 2,], aes(x = n_tissues, fill = histone_type)) + 
+#   geom_histogram(binwidth = 1, position = "dodge", alpha = 0.9, col = "black") +  
+#   labs(fill = "Histone mark", title = "Total number of tissues in all clusters sharing a set of genes") + 
+#   xlab("Number of tissues") + ylab("Occurences") +
+#   theme_bw() + scale_fill_viridis_d(begin = 0.25, end = 1) +
+#   scale_y_continuous(breaks=seq(0, 225, 25)) +
+#   # scale_x_continuous(breaks=seq(0, max(all_genewise_clusters_df$n_tissues), 1)) +
+#   theme(aspect.ratio=1, plot.margin	= unit(c(0.2,0,3.15,0), "cm"))
+# # plot3
 
 get_all_tissue_counts <- function(all_genewise_clusters_df){
   tissue_counts = vector("list")
@@ -297,14 +298,14 @@ get_all_tissue_counts <- function(all_genewise_clusters_df){
 }
 all_tissues_counts = get_all_tissue_counts(all_genewise_clusters_df)
 head(all_tissues_counts)
-
-plot4 = ggplot(data=all_tissues_counts, aes(x = tissue , fill = histone_type)) +
-  geom_histogram(position = "dodge", alpha = 1, col = "black", stat="count", orientation='x') +
-  labs(fill = "Histone mark", title="Occurences of tissue in all tissue clusters") + 
-  xlab("Tissue") + ylab("Occurences in tissue clusters") +
-  theme_bw() + scale_fill_viridis_d(begin = 0, end = 1, option="D")  +
-  theme(axis.text.x=element_text(colour="black", size = 10, angle = 45, vjust=0.9, hjust = 1),
-        aspect.ratio=1)
+# 
+# plot4 = ggplot(data=all_tissues_counts, aes(x = tissue , fill = histone_type)) +
+#   geom_histogram(position = "dodge", alpha = 1, col = "black", stat="count", orientation='x') +
+#   labs(fill = "Histone mark", title="Occurences of tissue in all tissue clusters") + 
+#   xlab("Tissue") + ylab("Occurences in tissue clusters") +
+#   theme_bw() + scale_fill_viridis_d(begin = 0, end = 1, option="D")  +
+#   theme(axis.text.x=element_text(colour="black", size = 10, angle = 45, vjust=0.9, hjust = 1),
+#         aspect.ratio=1)
 # plot4
 
 #------Get genes for annot------
@@ -328,14 +329,14 @@ get_entrez_id <-function(gene_list){
 
 gene_list_gene = lapply(annot_genes_gene_cluster, get_entrez_id)
 names(gene_list_gene) = histone_type_list
-ck_bp_005_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
-                                OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.05,
-                                pAdjustMethod = "fdr", readable =TRUE)
-saveRDS(ck_bp_005_gene, "annot_genes_gene_cluster_bp005_new.RDS")
-# ck_bp_0001_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
-#                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.001,
+# ck_bp_005_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
+#                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.05,
 #                                 pAdjustMethod = "fdr", readable =TRUE)
-# saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
+# saveRDS(ck_bp_005_gene, "annot_genes_gene_cluster_bp005_new.RDS")
+ck_bp_0001_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
+                                OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.001,
+                                pAdjustMethod = "fdr", readable =TRUE)
+saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
 # ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
 
 plot5 = dotplot(ck_bp_005_gene, showCategory = 25) +
@@ -352,8 +353,8 @@ tiff("annot.tiff", width = 12, height = 12, units = "in", res = 200) #save pdf 2
 plot5
 dev.off()
 
-
-tiff("sup1.tiff", width = 18, height = 6, units = "in", res = 200) #save pdf 20*8
-figure <- ggarrange(plot1, plot2, plot4, labels = c("A", "B", "C"), ncol = 3)
-figure
-dev.off()
+# 
+# tiff("sup1.tiff", width = 18, height = 6, units = "in", res = 200) #save pdf 20*8
+# figure <- ggarrange(plot1, plot2, plot4, labels = c("A", "B", "C"), ncol = 3)
+# figure
+# dev.off()
