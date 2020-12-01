@@ -192,7 +192,7 @@ official_name = c("Adipose tissue", "Aorta", "CD4-positive alpha beta T cell",
                   "Esophagus", "H1 cell", "Mesenchymal stem cell", "Mesendoderm", "Mesodermal cell", 
                   "Neuronal stem cell", "Pancreas", "Psoas muscle", "Sigmoid colon", 
                   "Small intestine", "Spleen", "Stomach", "Trophoblast")
-epigenomes_annot = read.csv("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/epi_info.csv", 
+epigenomes_annot = read.csv("/home/dhthutrang/ENCODE/utilities/epi_info.csv", 
                             header = TRUE, sep=';', row.names = 1)
 rownames(epigenomes_annot)[rownames(epigenomes_annot) == "trophoblastcell"] = "trophoblast"
 epigenomes_annot$official_name = official_name
