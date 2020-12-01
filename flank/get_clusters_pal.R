@@ -333,13 +333,13 @@ names(gene_list_gene) = histone_type_list
 #                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.05,
 #                                 pAdjustMethod = "fdr", readable =TRUE)
 # saveRDS(ck_bp_005_gene, "annot_genes_gene_cluster_bp005_new.RDS")
-ck_bp_0001_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
-                                OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.001,
-                                pAdjustMethod = "fdr", readable =TRUE)
-saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
-# ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
+# ck_bp_0001_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
+#                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.001,
+#                                 pAdjustMethod = "fdr", readable =TRUE)
+# saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
+ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
 
-plot5 = dotplot(ck_bp_005_gene, showCategory = 25) +
+plot5 = dotplot(ck_bp_0001_gene, showCategory = 25) +
   scale_color_viridis(option = "D") +
   ggtitle(label = "Enriched GO Terms for Tissue-specific Epispliced Genes (Biological Process)") +
   theme(
