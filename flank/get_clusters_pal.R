@@ -97,8 +97,8 @@ get_genewise_summary <- function(all_genes_joined){
   }
   return(all_genewise_cluster)
 }
-all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
-all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
+# all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
+# all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
 all_genewise_cluster = readRDS("all_genewise_cluster.RDS")
 
@@ -138,34 +138,37 @@ all_tissues_hist = readRDS("all_tissues_hist.RDS")
 # sapply(all_tissues_hist, function(x) print(length(x)))
 
 print("====================================================")
-all_genes_clusters = vector("list")
-# for (k in 1:length(all_genewise_cluster)){
-for (k in 1:6){
-  print(paste("HISTONE: ", histone_type_list[k], sep=''))
-  all_genewise_cluster_H = all_genewise_cluster[[k]]
-  all_results <- foreach( h=1:(length(all_genewise_cluster_H)) ) %dopar% {
-  # all_results <- foreach( h=1:100 ) %dopar% {
-    gene_cluster = all_genewise_cluster_H[h]
-    all_tissues = all_tissues_hist[[k]][[h]]
-    adj_mat_H = all_mat_hist[[k]][[h]]
-    if (length(all_tissues) >= 3) {
-      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+make_cluster_pal <- function(){
+  all_genes_clusters = vector("list")
+  # for (k in 1:length(all_genewise_cluster)){
+  for (k in 1:6){
+    print(paste("HISTONE: ", histone_type_list[k], sep=''))
+    all_genewise_cluster_H = all_genewise_cluster[[k]]
+    all_results <- foreach( h=1:(length(all_genewise_cluster_H)) ) %dopar% {
+      # all_results <- foreach( h=1:100 ) %dopar% {
+      gene_cluster = all_genewise_cluster_H[h]
+      all_tissues = all_tissues_hist[[k]][[h]]
+      adj_mat_H = all_mat_hist[[k]][[h]]
+      if (length(all_tissues) >= 3) {
+        all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(3, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+      }
+      else {
+        all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
+      }
+      all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
+      gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
     }
-    else {
-      all_tissues_combi = unlist(Map(combn, list(all_tissues), seq(2, length(all_tissues)), simplify = FALSE), recursive=FALSE)
-    }
-    all_tissues_combi = all_tissues_combi[order(sapply(all_tissues_combi, length), decreasing=T)]
-    gene_cluster_list = check_cluster(all_tissues_combi, adj_mat_H)
+    print("FINALLY FINISHED")
+    print(paste("LENGTH RESULT: ", length(all_results), sep=''))
+    file_names = paste("all_results_", k, ".RDS", sep='')
+    saveRDS(all_results, file_names)
+    all_genes_clusters[[k]] = all_results
   }
-  print("FINALLY FINISHED")
-  print(paste("LENGTH RESULT: ", length(all_results), sep=''))
-  file_names = paste("all_results_", k, ".RDS", sep='')
-  saveRDS(all_results, file_names)
-  all_genes_clusters[[k]] = all_results
+  for (k in 1:6){
+    names(all_genes_clusters[[k]]) = names(all_genewise_cluster[[k]])
+  }
 }
-for (k in 1:6){
-  names(all_genes_clusters[[k]]) = names(all_genewise_cluster[[k]])
-}
+
 # saveRDS(all_genes_clusters, "all_genes_clusters_pal_named.RDS")
 
 all_genes_clusters = readRDS("all_genes_clusters_pal_named.RDS")
