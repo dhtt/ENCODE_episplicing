@@ -100,9 +100,9 @@ get_genewise_summary <- function(all_genes_joined){
 # all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
-all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r_sig.RDS")
-all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_r)
-saveRDS(all_genewise_cluster, "all_genewise_cluster_r.RDS")
+# all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r_sig.RDS")
+# all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_r)
+# saveRDS(all_genewise_cluster, "all_genewise_cluster_r.RDS")
 
 all_genewise_cluster = readRDS("all_genewise_cluster_r.RDS")
 
@@ -143,12 +143,12 @@ print(length(all_tissues_hist))
 sapply(all_tissues_hist, function(x) print(length(x)))
 
 print("====================================================")
-make_cluster_pal <- function(){
+make_cluster_pal <- function(all_genewise_cluster_list){
   all_genes_clusters = vector("list")
-  # for (k in 1:length(all_genewise_cluster)){
+  # for (k in 1:length(all_genewise_cluster_list)){
   for (k in 1:6){
     print(paste("HISTONE: ", histone_type_list[k], sep=''))
-    all_genewise_cluster_H = all_genewise_cluster[[k]]
+    all_genewise_cluster_H = all_genewise_cluster_list[[k]]
     all_results <- foreach( h=1:(length(all_genewise_cluster_H)) ) %dopar% {
       # all_results <- foreach( h=1:100 ) %dopar% {
       gene_cluster = all_genewise_cluster_H[h]
@@ -170,15 +170,15 @@ make_cluster_pal <- function(){
     all_genes_clusters[[k]] = all_results
   }
   for (k in 1:6){
-    names(all_genes_clusters[[k]]) = names(all_genewise_cluster[[k]])
+    names(all_genes_clusters[[k]]) = names(all_genewise_cluster_list[[k]])
   }
 }
+all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster)
+saveRDS(all_genes_clusters_pal_named, "all_genes_clusters_pal_named_r.RDS")
 
-saveRDS(all_genes_clusters, "all_genes_clusters_pal_named_r.RDS")
-
-all_genes_clusters = readRDS("all_genes_clusters_pal_named_r.RDS")
-print(head(all_genes_clusters[[1]]))
-n_clusters = sapply(all_genes_clusters[[1]], length)
+all_genes_clusters_pal_named = readRDS("all_genes_clusters_pal_named_r.RDS")
+print(head(all_genes_clusters_pal_named[[1]]))
+n_clusters = sapply(all_genes_clusters_pal_named[[1]], length)
 print(summary(n_clusters))
 n_clusters = n_clusters[order(n_clusters, decreasing = TRUE)]
 head(n_clusters)
@@ -206,14 +206,14 @@ epigenomes_annot = read.csv("/home/dhthutrang/ENCODE/utilities/epi_info.csv",
 rownames(epigenomes_annot)[rownames(epigenomes_annot) == "trophoblastcell"] = "trophoblast"
 epigenomes_annot$official_name = official_name
 
-get_genewise_clusters_df <- function(all_genes_clusters, all_genewise_cluster){
+get_genewise_clusters_df <- function(all_genes_clusters_pal_named_list, all_genewise_cluster_list){
   all_genewise_clusters = vector("list")
   all_pairs_id = make_upairs(rownames(epigenomes_annot))
   for (k in 1:6){
     histone_type = histone_type_list[k]
     print(histone_type)
-    all_genes_clusters_H = all_genes_clusters[[k]] #for clusters >= 3
-    all_genewise_cluster_H = all_genewise_cluster[[k]] #for [pairs]
+    all_genes_clusters_H = all_genes_clusters_pal_named_list[[k]] #for clusters >= 3
+    all_genewise_cluster_H = all_genewise_cluster_list[[k]] #for [pairs]
     
     temp = lapply(all_genes_clusters_H, function(x) unlist(lapply(x, function(y) paste(y, collapse = "_"))) )
     all_clusters = Reduce(union, temp)
@@ -249,7 +249,7 @@ get_genewise_clusters_df <- function(all_genes_clusters, all_genewise_cluster){
   all_genewise_clusters$n_tissues = lapply(all_genewise_clusters$tissues, length)
   return(all_genewise_clusters)
 }
-all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters, all_genewise_cluster)
+all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters_pal_named, all_genewise_cluster)
 saveRDS(all_genewise_clusters_df, "all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df = readRDS("all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df$n_tissues = unlist(all_genewise_clusters_df$n_tissues)
