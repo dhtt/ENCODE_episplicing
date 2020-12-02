@@ -100,7 +100,7 @@ get_genewise_summary <- function(all_genes_joined){
 # all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
-all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r.RDS")
+all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r_sig.RDS")
 all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_r)
 saveRDS(all_genewise_cluster, "all_genewise_cluster_r.RDS")
 
