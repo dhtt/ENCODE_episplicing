@@ -135,44 +135,46 @@ all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r.RDS")
 # all_res_list.pearcor_r = filter_by_p(all_res_list.pearcor_r, all_res_list.pearcor_padj)
 # all_res_list.pearcor_r_sig = get_all_res_list_sig(all_res_list.pearcor_r, "pearcor", r_sig=0.5)
 # saveRDS(all_res_list.pearcor_r_sig, "all_res_list.pearcor_r_sig.RDS")
+all_res_list.pearcor_r_sig = readRDS("all_res_list.pearcor_r_sig.RDS")
 
 # all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_r_sig)
 # saveRDS(all_genewise_cluster_r, "all_genewise_cluster_r.RDS")
+all_genewise_cluster_r = readRDS("all_genewise_cluster_r.RDS")
 
 # all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
 
 
-all_mat_hist = vector("list")
-for (k in 1:length(all_genewise_cluster_r)){
-  all_genewise_cluster_H = all_genewise_cluster_r[[k]]
-  all_adj_mat = vector("list")
-  for (h in 1:length(all_genewise_cluster_H)){
-    gene_cluster = all_genewise_cluster_H[h]
-    print(names(gene_cluster))
-    all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = get_adj_mat(gene_cluster, all_tissues)
-    all_adj_mat[[h]] = adj_mat
-  }
-  all_mat_hist[[k]] = all_adj_mat
-}
+# all_mat_hist = vector("list")
+# for (k in 1:length(all_genewise_cluster_r)){
+#   all_genewise_cluster_H = all_genewise_cluster_r[[k]]
+#   all_adj_mat = vector("list")
+#   for (h in 1:length(all_genewise_cluster_H)){
+#     gene_cluster = all_genewise_cluster_H[h]
+#     print(names(gene_cluster))
+#     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+#     adj_mat = get_adj_mat(gene_cluster, all_tissues)
+#     all_adj_mat[[h]] = adj_mat
+#   }
+#   all_mat_hist[[k]] = all_adj_mat
+# }
 # saveRDS(all_mat_hist, "all_mat_hist_r.RDS")
 all_mat_hist = readRDS("all_mat_hist_r.RDS")
 # print("Length all_mat_hist")
 # print(length(all_mat_hist))
 # sapply(all_mat_hist, function(x) print(length(x)))
 
-all_tissues_hist = vector("list")
-for (k in 1:length(all_genewise_cluster_r)){
-  all_genewise_cluster_H = all_genewise_cluster_r[[k]]
-  all_tissues_H = vector("list")
-  for (h in 1:length(all_genewise_cluster_H)){
-    gene_cluster = all_genewise_cluster_H[h]
-    all_tissues_H[[h]] = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-  }
-  all_tissues_hist[[k]] = all_tissues_H
-}
+# all_tissues_hist = vector("list")
+# for (k in 1:length(all_genewise_cluster_r)){
+#   all_genewise_cluster_H = all_genewise_cluster_r[[k]]
+#   all_tissues_H = vector("list")
+#   for (h in 1:length(all_genewise_cluster_H)){
+#     gene_cluster = all_genewise_cluster_H[h]
+#     all_tissues_H[[h]] = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+#   }
+#   all_tissues_hist[[k]] = all_tissues_H
+# }
 # saveRDS(all_tissues_hist, "all_tissues_hist_r.RDS")
 all_tissues_hist = readRDS("all_tissues_hist_r.RDS")
 # head(all_tissues_hist[[1]])
