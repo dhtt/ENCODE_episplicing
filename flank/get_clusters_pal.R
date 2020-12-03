@@ -132,12 +132,12 @@ filter_by_p <- function(pear_df, pear_p_df) {
 }
 all_res_list.pearcor_padj = readRDS("all_res_list.pearcor_padj.RDS")
 all_res_list.pearcor_r = readRDS("all_res_list.pearcor_r.RDS")
-all_res_list.pearcor_r = filter_by_p(all_res_list.pearcor_r, all_res_list.pearcor_padj)
-all_res_list.pearcor_r_sig = get_all_res_list_sig(all_res_list.pearcor_r, "pearcor", r_sig=0.5)
-saveRDS(all_res_list.pearcor_r_sig, "all_res_list.pearcor_r_sig.RDS")
+# all_res_list.pearcor_r = filter_by_p(all_res_list.pearcor_r, all_res_list.pearcor_padj)
+# all_res_list.pearcor_r_sig = get_all_res_list_sig(all_res_list.pearcor_r, "pearcor", r_sig=0.5)
+# saveRDS(all_res_list.pearcor_r_sig, "all_res_list.pearcor_r_sig.RDS")
 
-all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_r_sig)
-saveRDS(all_genewise_cluster_r, "all_genewise_cluster_r.RDS")
+# all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_r_sig)
+# saveRDS(all_genewise_cluster_r, "all_genewise_cluster_r.RDS")
 
 # all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
@@ -157,7 +157,7 @@ for (k in 1:length(all_genewise_cluster_r)){
   }
   all_mat_hist[[k]] = all_adj_mat
 }
-saveRDS(all_mat_hist, "all_mat_hist_r.RDS")
+# saveRDS(all_mat_hist, "all_mat_hist_r.RDS")
 all_mat_hist = readRDS("all_mat_hist_r.RDS")
 # print("Length all_mat_hist")
 # print(length(all_mat_hist))
@@ -173,12 +173,12 @@ for (k in 1:length(all_genewise_cluster_r)){
   }
   all_tissues_hist[[k]] = all_tissues_H
 }
-saveRDS(all_tissues_hist, "all_tissues_hist_r.RDS")
+# saveRDS(all_tissues_hist, "all_tissues_hist_r.RDS")
 all_tissues_hist = readRDS("all_tissues_hist_r.RDS")
-head(all_tissues_hist[[1]])
-print("Length all_tissues_hist")
-print(length(all_tissues_hist))
-sapply(all_tissues_hist, function(x) print(length(x)))
+# head(all_tissues_hist[[1]])
+# print("Length all_tissues_hist")
+# print(length(all_tissues_hist))
+# sapply(all_tissues_hist, function(x) print(length(x)))
 
 print("====================================================")
 make_cluster_pal <- function(all_genewise_cluster_list){
@@ -211,8 +211,8 @@ make_cluster_pal <- function(all_genewise_cluster_list){
     names(all_genes_clusters[[k]]) = names(all_genewise_cluster_list[[k]])
   }
 }
-all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
-saveRDS(all_genes_clusters_pal_named, "all_genes_clusters_pal_named_r.RDS")
+# all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
+# saveRDS(all_genes_clusters_pal_named, "all_genes_clusters_pal_named_r.RDS")
 
 all_genes_clusters_pal_named = readRDS("all_genes_clusters_pal_named_r.RDS")
 print(head(all_genes_clusters_pal_named[[1]]))
@@ -287,7 +287,7 @@ get_genewise_clusters_df <- function(all_genes_clusters_pal_named_list, all_gene
   all_genewise_clusters$n_tissues = lapply(all_genewise_clusters$tissues, length)
   return(all_genewise_clusters)
 }
-all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters_pal_named, all_genewise_cluster)
+all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters_pal_named, all_genewise_cluster_r)
 saveRDS(all_genewise_clusters_df, "all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df = readRDS("all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df$n_tissues = unlist(all_genewise_clusters_df$n_tissues)
