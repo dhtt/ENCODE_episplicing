@@ -212,9 +212,10 @@ make_cluster_pal <- function(all_genewise_cluster_list){
   for (k in 1:6){
     names(all_genes_clusters[[k]]) = names(all_genewise_cluster_list[[k]])
   }
+  return(all_genes_clusters)
 }
-# all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
-# saveRDS(all_genes_clusters_pal_named, "all_genes_clusters_pal_named_r.RDS")
+all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
+saveRDS(all_genes_clusters_pal_named, "all_genes_clusters_pal_named_r.RDS")
 
 all_genes_clusters_pal_named = readRDS("all_genes_clusters_pal_named_r.RDS")
 print(head(all_genes_clusters_pal_named[[1]]))
