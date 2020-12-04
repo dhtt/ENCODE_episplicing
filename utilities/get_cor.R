@@ -50,8 +50,8 @@ get_all_pairs.exp <- function(all_pairs.exp){
   return(as.data.table(pair.exp_list))
 }
 
-# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 
@@ -98,8 +98,8 @@ get_all_pairs.his_list <- function(histone_type_list){
 }
 
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
-# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 
 print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
