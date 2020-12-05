@@ -140,7 +140,7 @@ pearcor_r <- function(exp, his, n_points){
   df = as.data.frame(cbind(exp, his))
   n_sep_point = nrow(unique(df))
   if (0 %in% apply(df, 1, unique)) n_sep_point = n_sep_point - 1
-  if (n_sep_point >= n_points & length(unique(exp)) > 1 & length(unique(his)) > 1){
+  if (n_sep_point >= 3 & length(unique(exp)) > 1 & length(unique(his)) >= n_points){
     r_val = cor(exp, his, method = "pearson")
     return(r_val)
   }
@@ -200,11 +200,11 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 }
 
 print("Pearsons-p correlation")
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "p")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
-# 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "r")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "p")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "r")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
 saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
