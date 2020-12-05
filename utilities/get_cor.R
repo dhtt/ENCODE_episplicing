@@ -201,10 +201,10 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 
 print("Pearsons-p correlation")
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_p.RDS")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p.RDS")
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "r")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/all_res_list.pearcor_r.RDS")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r.RDS")
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
 saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
