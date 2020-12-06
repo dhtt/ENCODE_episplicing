@@ -135,49 +135,49 @@ filter_by_p <- function(pear_df, pear_p_df) {
 # all_res_list.pearcor_r = filter_by_p(all_res_list.pearcor_r, all_res_list.pearcor_padj)
 # all_res_list.pearcor_r_sig = get_all_res_list_sig(all_res_list.pearcor_r, "pearcor", r_sig=0.5)
 # saveRDS(all_res_list.pearcor_r_sig, "new_df/all_res_list.pearcor_r_sig.RDS")
-all_res_list.pearcor_sig = readRDS("new_df/all_res_list.pearcor_sig.RDS")
-
-all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_sig)
-saveRDS(all_genewise_cluster_r, "new_df/all_genewise_cluster_r.RDS")
-all_genewise_cluster_r = readRDS("new_df/all_genewise_cluster_r.RDS")
-
+# all_res_list.pearcor_sig = readRDS("new_df/all_res_list.pearcor_sig.RDS")
+# 
+# all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_sig)
+# saveRDS(all_genewise_cluster_r, "new_df/all_genewise_cluster_r.RDS")
+# all_genewise_cluster_r = readRDS("new_df/all_genewise_cluster_r.RDS")
+# 
 # all_res_list.pearcor_padj_sig = readRDS("all_res_list.pearcor_padj_sig.RDS")
 # all_genewise_cluster = get_genewise_summary(all_res_list.pearcor_padj_sig)
 # saveRDS(all_genewise_cluster, "all_genewise_cluster.RDS")
-
-
-all_mat_hist = vector("list")
-for (k in 1:length(all_genewise_cluster_r)){
-  all_genewise_cluster_H = all_genewise_cluster_r[[k]]
-  all_adj_mat = vector("list")
-  for (h in 1:length(all_genewise_cluster_H)){
-    gene_cluster = all_genewise_cluster_H[h]
-    print(names(gene_cluster))
-    all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-    adj_mat = get_adj_mat(gene_cluster, all_tissues)
-    all_adj_mat[[h]] = adj_mat
-  }
-  all_mat_hist[[k]] = all_adj_mat
-}
-saveRDS(all_mat_hist, "new_df/all_mat_hist_r.RDS")
-all_mat_hist = readRDS("new_df/all_mat_hist_r.RDS")
-
+# 
+# 
+# all_mat_hist = vector("list")
+# for (k in 1:length(all_genewise_cluster_r)){
+#   all_genewise_cluster_H = all_genewise_cluster_r[[k]]
+#   all_adj_mat = vector("list")
+#   for (h in 1:length(all_genewise_cluster_H)){
+#     gene_cluster = all_genewise_cluster_H[h]
+#     print(names(gene_cluster))
+#     all_tissues = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+#     adj_mat = get_adj_mat(gene_cluster, all_tissues)
+#     all_adj_mat[[h]] = adj_mat
+#   }
+#   all_mat_hist[[k]] = all_adj_mat
+# }
+# saveRDS(all_mat_hist, "new_df/all_mat_hist_r.RDS")
+# all_mat_hist = readRDS("new_df/all_mat_hist_r.RDS")
+# 
 # print("Length all_mat_hist")
 # print(length(all_mat_hist))
 # sapply(all_mat_hist, function(x) print(length(x)))
-
-all_tissues_hist = vector("list")
-for (k in 1:length(all_genewise_cluster_r)){
-  all_genewise_cluster_H = all_genewise_cluster_r[[k]]
-  all_tissues_H = vector("list")
-  for (h in 1:length(all_genewise_cluster_H)){
-    gene_cluster = all_genewise_cluster_H[h]
-    all_tissues_H[[h]] = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
-  }
-  all_tissues_hist[[k]] = all_tissues_H
-}
-saveRDS(all_tissues_hist, "new_df/all_tissues_hist_r.RDS")
-all_tissues_hist = readRDS("new_df/all_tissues_hist_r.RDS")
+# 
+# all_tissues_hist = vector("list")
+# for (k in 1:length(all_genewise_cluster_r)){
+#   all_genewise_cluster_H = all_genewise_cluster_r[[k]]
+#   all_tissues_H = vector("list")
+#   for (h in 1:length(all_genewise_cluster_H)){
+#     gene_cluster = all_genewise_cluster_H[h]
+#     all_tissues_H[[h]] = Reduce(union, sapply(str_split(gene_cluster, ',')[[1]], function(x) str_split(x, '_')))
+#   }
+#   all_tissues_hist[[k]] = all_tissues_H
+# }
+# saveRDS(all_tissues_hist, "new_df/all_tissues_hist_r.RDS")
+# all_tissues_hist = readRDS("new_df/all_tissues_hist_r.RDS")
 # head(all_tissues_hist[[1]])
 # print("Length all_tissues_hist")
 # print(length(all_tissues_hist))
@@ -215,15 +215,15 @@ make_cluster_pal <- function(all_genewise_cluster_list){
   }
   return(all_genes_clusters)
 }
-all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
-saveRDS(all_genes_clusters_pal_named, "new_df/all_genes_clusters_pal_named_r.RDS")
-
-all_genes_clusters_pal_named = readRDS("new_df/all_genes_clusters_pal_named_r.RDS")
-print(head(all_genes_clusters_pal_named[[1]]))
-n_clusters = sapply(all_genes_clusters_pal_named[[1]], length)
-print(summary(n_clusters))
-n_clusters = n_clusters[order(n_clusters, decreasing = TRUE)]
-head(n_clusters)
+# all_genes_clusters_pal_named = make_cluster_pal(all_genewise_cluster_r)
+# saveRDS(all_genes_clusters_pal_named, "new_df/all_genes_clusters_pal_named_r.RDS")
+# 
+# all_genes_clusters_pal_named = readRDS("new_df/all_genes_clusters_pal_named_r.RDS")
+# print(head(all_genes_clusters_pal_named[[1]]))
+# n_clusters = sapply(all_genes_clusters_pal_named[[1]], length)
+# print(summary(n_clusters))
+# n_clusters = n_clusters[order(n_clusters, decreasing = TRUE)]
+# head(n_clusters)
 # n_clusters[1:4]
 
 make_upairs <- function(list_tissue){
@@ -291,8 +291,8 @@ get_genewise_clusters_df <- function(all_genes_clusters_pal_named_list, all_gene
   all_genewise_clusters$n_tissues = lapply(all_genewise_clusters$tissues, length)
   return(all_genewise_clusters)
 }
-all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters_pal_named, all_genewise_cluster_r)
-saveRDS(all_genewise_clusters_df, "new_df/all_genewise_clusters_df_r.RDS")
+# all_genewise_clusters_df = get_genewise_clusters_df(all_genes_clusters_pal_named, all_genewise_cluster_r)
+# saveRDS(all_genewise_clusters_df, "new_df/all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df = readRDS("new_df/all_genewise_clusters_df_r.RDS")
 all_genewise_clusters_df$n_tissues = unlist(all_genewise_clusters_df$n_tissues)
 
@@ -380,11 +380,11 @@ names(gene_list_gene) = histone_type_list
 ck_bp_005_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
                                 OrgDb='org.Hs.eg.db', ont = "BP", pvalueCutoff = 0.05,
                                 pAdjustMethod = "fdr", readable =TRUE)
-# saveRDS(ck_bp_005_gene, "annot_genes_gene_cluster_bp005_new.RDS")
+saveRDS(ck_bp_005_gene, "new_res/annot_genes_gene_cluster_bp005_new.RDS")
 ck_bp_0001_gene = compareCluster(geneCluster = gene_list_gene, fun = "enrichGO",
                                 OrgDb='org.Hs.eg.db', ont = "BP", qvalueCutoff = 0.01,
                                 pAdjustMethod = "fdr", readable =TRUE)
-# saveRDS(ck_bp_0001_gene, "annot_genes_gene_cluster_bp0001_new.RDS")
+saveRDS(ck_bp_0001_gene, "new_res/annot_genes_gene_cluster_bp0001_new.RDS")
 # ck_bp_0001_gene = readRDS("annot_genes_gene_cluster_bp0001_new.RDS")
 
 plot5 = dotplot(ck_bp_005_gene, showCategory = 25) +
