@@ -41,15 +41,13 @@ print(RData_files)
 for (file in RData_files){
   load(file)
   plot_name = paste(paste("/home/dhthutrang/ENCODE/utilities/plot", file, sep = '/'), gene_ID, 'tiff', sep = '.')
-  plot = plotDEXSeq(dxd.res, gene_ID, legend=TRUE,
+  tiff(plot_name,
+       units="in", width=image_width, height=image_height, res=image_res)
+  plotDEXSeq(dxd.res, gene_ID, legend=TRUE,
              FDR = 0.05,
              norCounts=TRUE, splicing=TRUE, expression=TRUE,
              color=c("#EE442F", "#63ACBE"), lwd=1.8)
-  tiff(plot_name,
-       units="in", width=image_width, height=image_height, res=image_res)
-  plot
   dev.off()
-  saveRDS(plot, paste(paste("/home/dhthutrang/ENCODE/flank/new_res", file, sep = '/'), gene_ID, 'RDS', sep = '.'))
 }
 
 
