@@ -135,7 +135,7 @@ filter_by_p <- function(pear_df, pear_p_df) {
 # all_res_list.pearcor_r = filter_by_p(all_res_list.pearcor_r, all_res_list.pearcor_padj)
 # all_res_list.pearcor_r_sig = get_all_res_list_sig(all_res_list.pearcor_r, "pearcor", r_sig=0.5)
 # saveRDS(all_res_list.pearcor_r_sig, "new_df/all_res_list.pearcor_r_sig.RDS")
-all_res_list.pearcor_sig = readRDS("all_res_list.pearcor_sig.RDS")
+all_res_list.pearcor_sig = readRDS("new_df/all_res_list.pearcor_sig.RDS")
 
 all_genewise_cluster_r = get_genewise_summary(all_res_list.pearcor_sig)
 saveRDS(all_genewise_cluster_r, "new_df/all_genewise_cluster_r.RDS")
