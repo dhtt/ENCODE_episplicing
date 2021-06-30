@@ -60,6 +60,22 @@ class LSV:
 
         return self.sig_LSV
 
+    # def trim_sig_LSV(self):
+    #     remove_idx = []
+    #     if len(self.sig_LSV['loc_LSV']) != 0:
+    #         all_coords = [x.split(':')[2] for x in self.sig_LSV['loc_LSV']]
+    #         for i, x in enumerate(all_coords):
+    #             for j, y in enumerate(all_coords):
+    #                 if j > i and x == y:
+    #                     remove_idx.append(i) if self.sig_LSV['e_dPSI'][i] < self.sig_LSV['e_dPSI'][j] \
+    #                         else remove_idx.append(j)
+    #     remove_idx.sort()
+    #
+    #     for k_, v_ in self.sig_LSV.items():
+    #         self.sig_LSV[k_] = [x for i, x in enumerate(v_) if i not in remove_idx]
+    #
+    #     return self.sig_LSV
+
     def trim_sig_LSV(self):
         remove_idx = []
         if len(self.sig_LSV['loc_LSV']) != 0:
@@ -150,26 +166,25 @@ if __name__ == "__main__":
         LSV1 = LSVParser(delta_psi_path=input_dir, mapping_path=refgen_map)
 
         LSV_list = LSV1.LSV
-        LSV1.get_sig_LSV()
+        LSV1.get_sig_LSV(trim=True)
         LSV1.sig_LSV_to_DF()
 
         output_dir = result_folder + input_dir.split('/')[-1]
         LSV1.to_gtf(output_dir)
 
     # # TESTING
-    # LSV1 = LSVParser(delta_psi_path='/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/majiq/'
-    #                                 'CD8positivealphabetaTcell_mesendoderm.deltapsi.tsv')
+    # LSV1 = LSVParser(delta_psi_path='/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/majiq/aorta_adiposetissue/temp.tsv')
     # LSV_list = LSV1.LSV
-    # 
+    #
     # # for key, val in LSV_list.items():
     # #     print('_' * 80)
     # #     print(key)
     # #     print(val.loc_LSV, val.no_exons, val.AS_types)
-    # 
+    #
     # # setd5 = LSV_list['SETD5']
     # # setd5.get_sig_LSV()
     # # setd5.trim_sig_LSV()
-    # sig_LSV = LSV1.get_sig_LSV(trim=True)
+    # sig_LSV = LSV1.get_sig_LSV(trim=False)
     # temp = len(sig_LSV)
     # df = LSV1.sig_LSV_to_DF()
     # temp = len(df)
