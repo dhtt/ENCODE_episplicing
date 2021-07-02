@@ -123,7 +123,7 @@ class LSVParser:
                     # If there are IR, store coordinates, else store "_"
                     ir_coords = line[num_col - 1] if len(line) == num_col else "_"
                     LSV_info[gene_name][col_name[num_col - 1]].append(ir_coords)
-                    
+
         self.LSV = {gene: LSV(gene, info) for gene, info in LSV_info.items()}  # Each gene has an LSV info list
         self.all_genes = self.LSV.keys()
         self.no_genes = len(self.all_genes)
@@ -152,7 +152,10 @@ class LSVParser:
         # self.sig_LSV_df = self.sig_LSV_df[['chr', 'none', 'none', 'start', 'end', 'none', 'strand', 'none', 'gene',
         #                                    'LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS',
         #                                    'ES']]
-        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS', 'ES']].agg(';'.join, axis=1)
+        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['p_dPSI']] + ';' + self.sig_LSV_df[['e_dPSI']] + ';' + \
+                                      self.sig_LSV_df[['no_junctions']] + ';' + self.sig_LSV_df[['no_exons']] + ';' + \
+                                      self.sig_LSV_df[['A5SS']] + ';' + self.sig_LSV_df[['A3SS']] + ';' + \
+                                      self.sig_LSV_df[['ES']]
         self.sig_LSV_df = self.sig_LSV_df[['chr', 'start', 'end', 'strand', 'gene', 'LSV_type', 'PSI_info']]
         self.sig_LSV_df.to_csv(output_path, sep='\t', header=False, index=False)
 
@@ -192,4 +195,3 @@ if __name__ == "__main__":
     # temp = len(df)
     # print(df.head(25))
     # LSV1.to_gtf('/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/majiq/temp_res/temp.txt')
-
