@@ -168,7 +168,7 @@ if __name__ == "__main__":
         LSV1 = LSVParser(delta_psi_path=input_dir, mapping_path=refgen_map)
 
         LSV_list = LSV1.LSV
-        LSV1.get_sig_LSV(trim=True)
+        LSV1.get_sig_LSV(trim=False)
         LSV1.sig_LSV_to_DF()
 
         output_dir = result_folder + input_dir.split('/')[-1]
