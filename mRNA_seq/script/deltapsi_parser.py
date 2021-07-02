@@ -152,10 +152,13 @@ class LSVParser:
         # self.sig_LSV_df = self.sig_LSV_df[['chr', 'none', 'none', 'start', 'end', 'none', 'strand', 'none', 'gene',
         #                                    'LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS',
         #                                    'ES']]
-        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['p_dPSI']] + ';' + self.sig_LSV_df[['e_dPSI']] + ';' + \
-                                      self.sig_LSV_df[['no_junctions']] + ';' + self.sig_LSV_df[['no_exons']] + ';' + \
-                                      self.sig_LSV_df[['A5SS']] + ';' + self.sig_LSV_df[['A3SS']] + ';' + \
-                                      self.sig_LSV_df[['ES']]
+        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['p_dPSI']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['e_dPSI']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['no_junctions']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['no_exons']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['A5SS']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['A3SS']].astype(str) + ';' + \
+                                      self.sig_LSV_df[['ES']].astype(str)
         self.sig_LSV_df = self.sig_LSV_df[['chr', 'start', 'end', 'strand', 'gene', 'LSV_type', 'PSI_info']]
         self.sig_LSV_df.to_csv(output_path, sep='\t', header=False, index=False)
 
