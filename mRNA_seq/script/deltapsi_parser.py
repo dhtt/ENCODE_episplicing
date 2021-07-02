@@ -152,8 +152,8 @@ class LSVParser:
         # self.sig_LSV_df = self.sig_LSV_df[['chr', 'none', 'none', 'start', 'end', 'none', 'strand', 'none', 'gene',
         #                                    'LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS',
         #                                    'ES']]
-        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS', 'ES']].astype(str).agg(';'.join, axis=1)
-        self.sig_LSV_df = self.sig_LSV_df[['chr', 'start', 'end', 'strand', 'gene', 'LSV_type', 'PSI_info']]
+        self.sig_LSV_df['PSI_info'] = self.sig_LSV_df[['LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS', 'ES']].astype(str).agg(';'.join, axis=1)
+        self.sig_LSV_df = self.sig_LSV_df[['chr', 'start', 'end', 'strand', 'gene', 'PSI_info']]
         self.sig_LSV_df.to_csv(output_path, sep='\t', header=False, index=False)
 
 
