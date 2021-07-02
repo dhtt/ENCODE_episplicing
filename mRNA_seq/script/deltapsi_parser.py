@@ -149,7 +149,10 @@ class LSVParser:
 
     def to_gtf(self, output_path):
         self.sig_LSV_df['none'] = '.'
-        self.sig_LSV_df = self.sig_LSV_df[['chr', 'none', 'none', 'start', 'end', 'none', 'strand', 'none', 'gene',
+        # self.sig_LSV_df = self.sig_LSV_df[['chr', 'none', 'none', 'start', 'end', 'none', 'strand', 'none', 'gene',
+        #                                    'LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS',
+        #                                    'ES']]
+        self.sig_LSV_df = self.sig_LSV_df[['chr', 'start', 'end', 'strand', 'gene',
                                            'LSV_type', 'p_dPSI', 'e_dPSI', 'no_junctions', 'no_exons', 'A5SS', 'A3SS',
                                            'ES']]
         self.sig_LSV_df.to_csv(output_path, sep='\t', header=False, index=False)
