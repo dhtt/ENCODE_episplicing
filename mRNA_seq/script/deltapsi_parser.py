@@ -29,7 +29,7 @@ class LSV:
                         'p_dPSI': [], 'e_dPSI': [], 'no_junctions': [], 'no_exons': [], 'A5SS': [], 'A3SS': [], 'ES': []
                         }
 
-    def get_sig_LSV(self, mapping_info, PSI_threshold=0.2, PSI_probability=0.95):
+    def get_sig_LSV(self, mapping_info, PSI_threshold=0.0, PSI_probability=0):
         for i, LSV_ in enumerate(self.e_dPSI):
             sig_e_dPSI = abs(max(LSV_, key=abs))
             sig_idx = LSV_.index(max(LSV_, key=abs))
