@@ -25,21 +25,20 @@ official_name = c("Adipose tissue", "Aorta", "CD4-positive alpha beta T cell",
 #============START here============
 #------- Read in results ------- 
 all_res_list.pearcor_p = readRDS("all_res_list.pearcor_p.RDS")
-get_p_adj <- function(all_res_list.pearcor_p){
-  all_res_list.pearcor_p_adj = vector("list")
-  for (i in 1:length(all_res_list.pearcor_p)){
-    gene_id = all_res_list.pearcor_p[[i]]$gene_id
-    res_list = all_res_list.pearcor_p[[i]]
-    res_list_p = apply(res_list[, 2:ncol(res_list)], 1, p.adjust, method = "fdr")
-    res_list_p = as.data.frame(cbind(gene_id, t(res_list_p)))
-    all_res_list.pearcor_p_adj[[i]] = res_list_p
-  }
-  return(all_res_list.pearcor_p_adj)
-  }
-all_res_list.pearcor_padj = get_p_adj(all_res_list.pearcor_p)
-saveRDS(all_res_list.pearcor_padj, "all_res_list.pearcor_padj.RDS")
-table(all_res_list.pearcor_padj[[1]] <= 0.05)
-
+# get_p_adj <- function(all_res_list.pearcor_p){
+#   all_res_list.pearcor_p_adj = vector("list")
+#   for (i in 1:length(all_res_list.pearcor_p)){
+#     gene_id = all_res_list.pearcor_p[[i]]$gene_id
+#     res_list = all_res_list.pearcor_p[[i]]
+#     res_list_p = apply(res_list[, 2:ncol(res_list)], 1, p.adjust, method = "fdr")
+#     res_list_p = as.data.frame(cbind(gene_id, t(res_list_p)))
+#     all_res_list.pearcor_p_adj[[i]] = res_list_p
+#   }
+#   return(all_res_list.pearcor_p_adj)
+#   }
+# all_res_list.pearcor_padj = get_p_adj(all_res_list.pearcor_p)
+# saveRDS(all_res_list.pearcor_padj, "all_res_list.pearcor_padj.RDS")
+# table(all_res_list.pearcor_padj[[1]] <= 0.05)
 
 get_tissue_spec_ref <- function(){
   RPKM = read.csv("~/Documents/BIOINFO/Episplicing/files/flank/57epigenomes.RPKM.pc", row.names=1, sep="")
@@ -85,15 +84,21 @@ get_all_res_list_sig <- function(all_res_list, method, r_sig=0.5, p_sig= 0.05){
   }
   return(all_res_list_sig)
 }
-all_res_list.pearcor_p_sig = get_all_res_list_sig(all_res_list.pearcor_p, "pearcor_p", p_sig=0.05)
-all_res_list.pearcor_padj_sig = get_all_res_list_sig(all_res_list.pearcor_padj, "pearcor_p", p_sig=0.05)
+# all_res_list.pearcor_p_sig = get_all_res_list_sig(all_res_list.pearcor_p, "pearcor_p", p_sig=0.05)
+# all_res_list.pearcor_padj_sig = get_all_res_list_sig(all_res_list.pearcor_padj, "pearcor_p", p_sig=0.05)
 
-lapply(all_res_list.pearcor_p_sig, length)
-lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) length(y)))
-lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) paste(y, collapse = ', ')))
-temp = sapply(all_res_list.pearcor_padj_sig, function(x) sapply(x, function(y) grep('FGFR2', y)))
-temp1 = unlist(temp[[6]])
-temp1 #his6 ncam1
+all_res_list.pearcor_sig = readRDS("new_df/all_res_list.pearcor_sig.RDS")
+all_res_list.pearcor_padj_sig = all_res_list.pearcor_sig
+paste(all_res_list.pearcor_padj_sig[[6]]$neuronalstemcell_spleen, collapse = ', ')
+lapply(all_res_list.pearcor_padj_sig, function(x) paste(x$neuronalstemcell_spleen, collapse = '\',\''))
+# 'SEPTIN9' %in% all_res_list.pearcor_padj_sig[[5]]$neuronalstemcell_spleen
+
+# lapply(all_res_list.pearcor_p_sig, length)
+# lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) length(y)))
+# lapply(all_res_list.pearcor_p_sig, function(x) lapply(x, function(y) paste(y, collapse = ', ')))
+# temp = sapply(all_res_list.pearcor_padj_sig, function(x) sapply(x, function(y) grep('FGFR2', y)))
+# temp1 = unlist(temp[[6]])
+# temp1 #his6 ncam1
 
 # ----Tissue spec array-----
 get_tissue_spec_array <- function(all_res_list.pearcor_p_sig){
@@ -108,9 +113,8 @@ get_tissue_spec_array <- function(all_res_list.pearcor_p_sig){
   }
   return(temp2)
 }
-tissue_type_list = get_tissue_spec_array(all_res_list.pearcor_p_sig)
+tissue_type_list = get_tissue_spec_array(all_res_list.pearcor_padj_sig)
 names(tissue_type_list) = histone_type_list
-tissue_type_list$H3K27ac$H1
 
 get_genes_for_tissue <- function(res_list){
   all_genes_joined = vector("list") #List of 6 histone, each has sig genes for 25 tissues
@@ -124,13 +128,13 @@ get_genes_for_tissue <- function(res_list){
   names(all_genes_joined) = histone_type_list
   return(all_genes_joined)
 }
-all_genes_joined = get_genes_for_tissue(all_res_list.pearcor_p_sig)
+# all_genes_joined = get_genes_for_tissue(all_res_list.pearcor_p_sig)
 all_genes_joined_padj = get_genes_for_tissue(all_res_list.pearcor_padj_sig)
-length(all_genes_joined)
-lapply(all_genes_joined, length)
-lapply(all_genes_joined[[5]], length)
-lapply(all_genes_joined, function(x) lapply(x, function(y) length(y)))
-length(all_res_list.pearcor_padj_sig[[1]]$adiposetissue_aorta)
+# length(all_genes_joined)
+# lapply(all_genes_joined, length)
+# lapply(all_genes_joined[[5]], length)
+# lapply(all_genes_joined, function(x) lapply(x, function(y) length(y)))
+# length(all_res_list.pearcor_padj_sig[[1]]$adiposetissue_aorta)
 
 get_all_len_before <- function(all_genes_joined){
   all_len_before = lapply(all_genes_joined, function(x) lapply(x, function(y) length(y)))
@@ -139,7 +143,7 @@ get_all_len_before <- function(all_genes_joined){
   colnames(all_len_before) = c('Tissue', histone_type_list)
   return(all_len_before)
 }
-all_len_before = get_all_len_before(all_genes_joined)
+# all_len_before = get_all_len_before(all_genes_joined)
 all_len_before_padj = get_all_len_before(all_genes_joined_padj)
 all_len_before_padj$Tissue = official_name
 # saveRDS(all_len_before_padj, "all_len_before_padj.RDS")
@@ -159,11 +163,11 @@ get_genes_for_tissue_filtered <- function(all_genes_joined){
   } #List of 6 histone, each has FILTERED sig genes for 25 tissues
   return(all_genes_joined)
 }
-all_genes_joined_filtered = get_genes_for_tissue_filtered(all_genes_joined)
+# all_genes_joined_filtered = get_genes_for_tissue_filtered(all_genes_joined)
 all_genes_joined_filtered_padj = get_genes_for_tissue_filtered(all_genes_joined_padj)
-length(all_genes_joined) #gene names
-lapply(all_genes_joined, length)
-lapply(all_genes_joined[[6]], length) 
+# length(all_genes_joined) #gene names
+# lapply(all_genes_joined, length)
+# lapply(all_genes_joined[[6]], length) 
 
 get_all_len_after <- function(all_genes_joined){
  
@@ -173,7 +177,7 @@ get_all_len_after <- function(all_genes_joined){
   colnames(all_len_after) = c('Tissue', histone_type_list)
   return(all_len_after)
 }
-all_len_after = get_all_len_after(all_genes_joined_filtered)
+# all_len_after = get_all_len_after(all_genes_joined_filtered)
 all_len_after_padj = get_all_len_after(all_genes_joined_filtered_padj)
 
 # ----- Summ after overlap -----
