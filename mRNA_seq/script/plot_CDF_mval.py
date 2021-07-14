@@ -25,6 +25,7 @@ if __name__ == "__main__":
         his_col = histone_col[i]
         his_data = []
         for file in all_files:
+            print(file)
             data = pd.read_csv(file, header=None, sep=' ').iloc[:, 0].tolist()
             his_data.append(data)
             sns.ecdfplot(data=data, color=his_col, alpha=0.05)
@@ -32,7 +33,7 @@ if __name__ == "__main__":
 
     for i, his_data in enumerate(all_his_data):
         his_col = histone_col[i]
-        print(his_data)
+        # print(his_data)
         sns.ecdfplot(data=his_data, color=histone_col[i], alpha=0.9, label=i)
 
     plt.xticks(fontsize=12)
