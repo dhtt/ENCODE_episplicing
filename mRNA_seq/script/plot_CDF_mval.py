@@ -28,7 +28,7 @@ if __name__ == "__main__":
             print(file)
             data = pd.read_csv(file, header=None, sep=' ').iloc[:, 0].tolist()
             his_data.append(data)
-            sns.ecdfplot(data=data, color=histone_col[i], alpha=0.00075)
+            sns.ecdfplot(data=data, color=histone_col[i], alpha=0.0075)
         all_his_data.append(flatten_list(his_data))
 
     for i, his_data in enumerate(all_his_data):
