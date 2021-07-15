@@ -21,6 +21,7 @@ def add_blank_subplot(ax):
     ax.spines['left'].set_color('white')
     return ax
 
+
 if __name__ == "__main__":
     histone_types = ['H3K27ac', 'H3K27me3', 'H3K36me3', 'H3K4me1', 'H3K4me3', 'H3K9me3']
     histone_col = sns.color_palette("Set2", 6)
@@ -58,7 +59,9 @@ if __name__ == "__main__":
     h, l = ax1.get_legend_handles_labels()
 
     # Remove zero
-    sorted_all_his_data = [[i for i in his_data if i != 0] for his_data in sorted_all_his_data]
+    sorted_all_his_data = [np.asarray([i for i in his_data if i != 0]) for his_data in sorted_all_his_data]
+    sorted_all_his_data = [np.interp(his_data, (his_data.min(), his_data.max()), (-1, +1)) for his_data in sorted_all_his_data]
+    # print([i for i in sorted_all_his_data])
     sorted_all_his_data_his = [len(data) * [sorted_histone_types[i]] for i, data in enumerate(sorted_all_his_data)]
     sorted_all_his_data = pd.DataFrame(flatten_list(sorted_all_his_data))
     sorted_all_his_data_his = pd.DataFrame(flatten_list(sorted_all_his_data_his))
@@ -93,4 +96,4 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.xticks(fontsize=12)
-    plt.savefig('mval_whitney.tiff', dpi=300)
+    plt.savefig('mval_whitney_no0_scaled.tiff', dpi=300)
