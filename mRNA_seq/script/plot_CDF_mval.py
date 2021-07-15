@@ -25,8 +25,8 @@ if __name__ == "__main__":
     histone_types = ['H3K27ac', 'H3K27me3', 'H3K36me3', 'H3K4me1', 'H3K4me3', 'H3K9me3']
     histone_col = sns.color_palette("Set2", 6)
     # histone_col_light = sns.color_palette("hls", 8)
-    # path = '/home/dhthutrang/ENCODE/mRNA_seq/script/majiq_annotated/'
-    path = '/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/mRNA_seq/script/majiq_res/correl/temp/'
+    path = '/home/dhthutrang/ENCODE/mRNA_seq/script/majiq_annotated/'
+    # path = '/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/mRNA_seq/script/majiq_res/correl/temp/'
 
     fig = plt.figure(figsize=(10, 10))
     ax1 = plt.subplot2grid((5, 4), (0, 0), colspan=2, rowspan=2)
