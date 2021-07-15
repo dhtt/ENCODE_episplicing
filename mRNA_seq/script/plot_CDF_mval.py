@@ -30,7 +30,7 @@ if __name__ == "__main__":
             print(file)
             data = pd.read_csv(file, header=None, sep=' ').iloc[:, 0].tolist()
             his_data.append(data)
-            sns.ecdfplot(data=data, color=histone_col[i], alpha=0.008, linewidth=0.75)
+            sns.ecdfplot(data=data, color=histone_col[i], alpha=0.01, linewidth=0.75)
         all_his_data.append(flatten_list(his_data))
 
     no_nonzero = [1*(np.count_nonzero(his_data)) for his_data in all_his_data]
