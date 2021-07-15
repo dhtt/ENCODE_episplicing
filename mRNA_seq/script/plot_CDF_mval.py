@@ -43,7 +43,7 @@ if __name__ == "__main__":
             sns.ecdfplot(data=data, color=histone_col[i], alpha=0.01, linewidth=0.75)
         all_his_data.append(flatten_list(his_data))
 
-    no_nonzero = [-1 * (np.count_nonzero(his_data)) for his_data in all_his_data]
+    no_nonzero = [1 * (np.count_nonzero(his_data)) for his_data in all_his_data]
     new_idx = np.argsort(no_nonzero)
     sorted_histone_types = [histone_types[i] for i in new_idx]
     sorted_all_his_data = [all_his_data[i] for i in new_idx]
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     h, l = ax1.get_legend_handles_labels()
 
     # Remove zero
-    # sorted_all_his_data = [[i for i in his_data if i != 0] for his_data in sorted_all_his_data]
+    sorted_all_his_data = [[i for i in his_data if i != 0] for his_data in sorted_all_his_data]
     sorted_all_his_data_his = [len(data) * [sorted_histone_types[i]] for i, data in enumerate(sorted_all_his_data)]
     sorted_all_his_data = pd.DataFrame(flatten_list(sorted_all_his_data))
     sorted_all_his_data_his = pd.DataFrame(flatten_list(sorted_all_his_data_his))
@@ -76,7 +76,7 @@ if __name__ == "__main__":
                    linewidth=0.75, inner=None, dodge=False)
     ax2.legend([], [], frameon=False)
     ax2, test_results = add_stat_annotation(ax2, data=sorted_all_his_df, x='Histone', y='M-val', box_pairs=boxpairs,
-                                           test='Kruskal', text_format='star', loc='inside', linewidth=0.9)
+                                           test='Mann-Whitney', text_format='star', loc='inside', linewidth=0.9)
 
     ax2.set_title('B', loc='left', fontweight='bold', fontsize=18)
     ax2.set_xlabel(None)
@@ -93,4 +93,4 @@ if __name__ == "__main__":
 
     plt.tight_layout()
     plt.xticks(fontsize=12)
-    plt.savefig('mval.tiff', dpi=300)
+    plt.savefig('mval_whitney.tiff', dpi=300)
