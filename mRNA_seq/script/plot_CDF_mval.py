@@ -33,7 +33,7 @@ if __name__ == "__main__":
             sns.ecdfplot(data=data, color=histone_col[i], alpha=0.008, linewidth=0.75)
         all_his_data.append(flatten_list(his_data))
 
-    no_nonzero = [-1*(np.count_nonzero(his_data)) for his_data in all_his_data]
+    no_nonzero = [1*(np.count_nonzero(his_data)) for his_data in all_his_data]
     new_idx = np.argsort(no_nonzero)
     sorted_all_his_data = [all_his_data[i] for i in new_idx]
     sorted_histone_types = [histone_types[i] for i in new_idx]
