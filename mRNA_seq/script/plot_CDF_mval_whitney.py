@@ -21,6 +21,7 @@ def add_blank_subplot(ax):
     ax.spines['left'].set_color('white')
     return ax
 
+
 if __name__ == "__main__":
     histone_types = ['H3K27ac', 'H3K27me3', 'H3K36me3', 'H3K4me1', 'H3K4me3', 'H3K9me3']
     histone_col = sns.color_palette("Set2", 6)
