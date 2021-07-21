@@ -6,7 +6,7 @@ all_files = list.files(pattern = '*.csv')
 
 
 all_DEU_genes = vector("list", length(all_files))
-for (i in length(all_files)){
+for (i in 1:length(all_files)){
   file = all_files[i]
   print(file)
   data = data.table(read.csv(file, sep='\t'))
