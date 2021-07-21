@@ -9,7 +9,7 @@ library("BiocParallel")
 suppressPackageStartupMessages( library( "DEXSeq" ) )
 
 option_list = list(
-  make_option(c("-f", "--countfolder"), type="character", default="/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/count",
+  make_option(c("-f", "--countfolder"), type="character", default="/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/count",
               help="path to folder of counts", metavar="character"),
   make_option(c("-g", "--referencegenome"), type="character", default="/home/dhthutrang/ENCODE/refgen/reference_genome.gtf",
               help="path to flattened reference genome", metavar="character"),
