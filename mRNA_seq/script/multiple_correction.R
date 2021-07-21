@@ -4,7 +4,6 @@ library(dplyr, quietly=TRUE)
 setwd("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res")
 all_files = list.files(pattern = '*.csv')
 
-
 all_DEU_genes = vector("list", length(all_files))
 for (i in 1:length(all_files)){
   file = all_files[i]
@@ -16,5 +15,12 @@ for (i in 1:length(all_files)){
 all_DEU_genes = unique(Reduce(union, all_DEU_genes))
 all_DEU_genes = all_DEU_genes[grep('+', all_DEU_genes, fixed = TRUE, invert = TRUE)]
 all_DEU_genes = all_DEU_genes[grep('_', all_DEU_genes, fixed = TRUE, invert = TRUE)]
-all_DEU_genes = paste(all_DEU_genes, collapse = "';")
-print(all_DEU_genes)
+
+print('Before intersect: ')
+print(length(all_DEU_genes))
+ref_genes = readRDS('all_genes.2021.RDS') 
+all_DEU_genes = intersect(all_DEU_genes, ref_genes)
+print('After intersect: ')
+print(length(all_DEU_genes))
+
+print(paste(all_DEU_genes, collapse = "';"))
