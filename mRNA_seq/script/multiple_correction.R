@@ -13,5 +13,5 @@ for (i in length(all_files)){
 }
   
 all_DEU_genes = Reduce(union, all_DEU_genes)
-all_DEU_genes = paste(all_DEU_genes, collapse = '\|')
+all_DEU_genes = paste(all_DEU_genes, collapse = "';")
 print(all_DEU_genes)
