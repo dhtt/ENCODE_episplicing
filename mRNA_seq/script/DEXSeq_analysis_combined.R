@@ -47,18 +47,22 @@ sampleTable = data.frame(
 print("====================================")
 print("sampleTable")
 print(sampleTable)
-# #===== RUN DEXSEQ =====
-# # cat("\n---> Inputting to DEXSeq", append = TRUE)
-# dxd = DEXSeqDataSetFromHTSeq(
-#   count_files,
-#   sampleData = sampleTable,
-#   design = ~ sample + exon + condition:exon,
-#   flattenedfile= normalizePath(gtf_files)
-# )
-# 
-# # cat("\n---> Getting DEXSeq result", append = TRUE)
-# dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
-# 
+#===== RUN DEXSEQ =====
+# cat("\n---> Inputting to DEXSeq", append = TRUE)
+dxd = DEXSeqDataSetFromHTSeq(
+  count_files,
+  sampleData = sampleTable,
+  design = ~ sample + exon + condition:exon,
+  flattenedfile= normalizePath(gtf_files)
+)
+saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
+# dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
+
+# cat("\n---> Getting DEXSeq result", append = TRUE)
+dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
+saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
+# dxd.res = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
+
 # #===== SAVING RESULTS =====
 # # cat("\n---> Saving DEXSeq normalized counts", append = TRUE)
 # dxd.count = data.frame(cbind(dxd.res[c(1,2)], counts(dxd.res, normalized = TRUE)))
