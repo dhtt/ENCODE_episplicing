@@ -12,6 +12,6 @@ for (i in length(all_files)){
   all_DEU_genes[[i]] = unique(data[abs(data[[7]]) >= 2.0 & data[[6]] <= 0.05, 'groupID'][[1]])
 }
   
-all_DEU_genes = reduce(all_DEU_genes, union)
+all_DEU_genes = Reduce(union, all_DEU_genes)
 all_DEU_genes = paste(all_DEU_genes, collapse = '\|')
 print(all_DEU_genes)
