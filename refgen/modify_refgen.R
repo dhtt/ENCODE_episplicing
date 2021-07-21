@@ -18,6 +18,8 @@ head(refgen.exon)
 length(unique(refgen.exon$gene_id)) #19240
 # Overlapping genes
 overlapping_genes = unique(refgen.exon$gene_id[grep('+', refgen.exon$gene_id, fixed = TRUE)]) #275
+overlapping_genes_split = unique(unlist(lapply(overlapping_genes, function(x) strsplit(x, '+', fixed = T)[[1]]))) #679
+
 # Dupplicated genes
 dup_genes = unique(refgen.exon$gene_id[grep('_', refgen.exon$gene_id, fixed = TRUE)]) #17
 new_refgen = refgen.exon[refgen.exon$gene_id %in% c(overlapping_genes, dup_genes) == F,]
@@ -31,7 +33,7 @@ new_refgen_df_multiexon = new_refgen_df %>%
 length(unique(new_refgen_df$gene_id)) - length(unique(new_refgen_df_multiexon$gene_id)) #1050 
 setdiff(unique(new_refgen_df$gene_id), unique(new_refgen_df_multiexon$gene_id))
 #Before: 19240 - After: 17900
-  
+export(new_refgen_df_multiexon[1:12], "reference_genome.2021_.gtf") 
 
 #==== Exon/Transcript statistics ====
 # Exon data new
