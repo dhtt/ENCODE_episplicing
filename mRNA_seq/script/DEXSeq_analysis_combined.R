@@ -57,11 +57,13 @@ dxd = DEXSeqDataSetFromHTSeq(
 )
 saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
 # dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
+print(paste('dxd done: ', Sys.time()))
 
 # cat("\n---> Getting DEXSeq result", append = TRUE)
 dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
 saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
 # dxd.res = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
+print(paste('dxd.res done: ', Sys.time()))
 
 # #===== SAVING RESULTS =====
 # # cat("\n---> Saving DEXSeq normalized counts", append = TRUE)
