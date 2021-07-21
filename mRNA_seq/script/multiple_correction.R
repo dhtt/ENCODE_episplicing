@@ -14,5 +14,7 @@ for (i in 1:length(all_files)){
 }
   
 all_DEU_genes = unique(Reduce(union, all_DEU_genes))
+all_DEU_genes = all_DEU_genes[grep('+', all_DEU_genes, fixed = TRUE, invert = TRUE)]
+all_DEU_genes = all_DEU_genes[grep('_', all_DEU_genes, fixed = TRUE, invert = TRUE)]
 all_DEU_genes = paste(all_DEU_genes, collapse = "';")
 print(all_DEU_genes)
