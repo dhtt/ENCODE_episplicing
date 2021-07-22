@@ -7,8 +7,20 @@ import numpy as np
 from statannot import add_stat_annotation
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 from mpl_toolkits.axes_grid1.colorbar import colorbar
+import pickle
 
 sns.set_style("white")
+
+
+def save_list(my_list, filename):
+    with open(filename, 'wb') as fp:
+        pickle.dump(my_list, fp)
+
+
+def read_list(filename):
+    with open(filename, 'rb') as fp:
+        itemlist = pickle.load(fp)
+    return(itemlist)
 
 
 def flatten_list(input_list: List[list]):
@@ -31,7 +43,7 @@ if __name__ == "__main__":
     path = '/home/dhthutrang/ENCODE/mRNA_seq/script/majiq_annotated/'
     # path = '/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/mRNA_seq/script/majiq_res/correl/temp/'
 
-    fig = plt.figure(figsize=(16, 12))
+    fig = plt.figure(figsize=(16, 16))
     ax = plt.subplot2grid((1,1), (0, 0), rowspan=1, colspan=1)
 
     all_his_data, all_his_data_arr, all_pair = [], [], []
@@ -47,15 +59,23 @@ if __name__ == "__main__":
             # ECDF plot
             # sns.ecdfplot(data=data, color=histone_col[i], alpha=0.01, linewidth=0.75)
         all_his_data.append(his_data)
+    #Save data
+    save_list(all_his_data, "all_his_data.txt")
+    save_list(all_his_data_arr, "all_his_data_arr.txt")
+    #Load data
+    all_his_data = read_list("all_his_data.txt")
+    all_his_data_arr = read_list("all_his_data_arr.txt")
+
     all_his_data_arr = pd.DataFrame(np.transpose(np.array(all_his_data_arr)))
     all_his_data_arr.columns = all_pair
     all_his_data_arr_cor = all_his_data_arr.corr()
-    mask = np.triu(np.ones_like(all_his_data_arr_cor, dtype=bool))
-    print(all_his_data_arr_cor.H3K27ac_spleen_stomach)
+    all_his_data_arr_cor.DataFrame.to_csv('all_his_data_arr_cor.csv', sep='\t')
+    print("Done correlation")
+    # mask = np.triu(np.ones_like(all_his_data_arr_cor, dtype=bool))
 
-    # fig, ax = plt.subplots(figsize=(15, 15))
     sns.heatmap(all_his_data_arr_cor, cmap="RdYlGn", center=0, vmax=1, vmin=-1, square=True, linewidths=.5, ax=ax,
                 xticklabels=False, cbar=False)
+    print("Done heatmap")
     ax_divider = make_axes_locatable(ax)
     colorbar(ax.get_children()[0],
              cax=ax_divider.append_axes('bottom', size='2.5%', pad='2%'),
@@ -64,10 +84,6 @@ if __name__ == "__main__":
     ax.tick_params(labelright=True, labelleft=False)
     ax.set_yticklabels(labels=all_pair, rotation=0, fontsize=6)
 
-    # ax1 = plt.subplot2grid((7, 20), (0, 0), rowspan=2, colspan=4)
-    # ax2 = plt.subplot2grid((7, 20), (2, 0), rowspan=4, colspan=4)
-    # ax3 = plt.subplot2grid((7, 20), (6, 0), rowspan=1, colspan=4)
-    # plt.tight_layout()
     plt.savefig('mval_cor.tiff', dpi=300)
 
     # all_his_data = pd.DataFrame all_his_data)
