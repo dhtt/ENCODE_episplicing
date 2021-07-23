@@ -53,27 +53,32 @@ if __name__ == "__main__":
         for file in all_files:
             print(file)
             all_pair.append(his + '_' + file.split('/')[-1].split('.')[0])
-            data = pd.read_csv(file, header=None, sep=' ').iloc[:, 0].tolist()
-            his_data.append(data)
-            all_his_data_arr.append(data)
+            #data = pd.read_csv(file, header=None, sep=' ').iloc[:, 0].tolist()
+            #his_data.append(data)
+            #all_his_data_arr.append(data)
             # ECDF plot
             # sns.ecdfplot(data=data, color=histone_col[i], alpha=0.01, linewidth=0.75)
-        all_his_data.append(his_data)
+        #all_his_data.append(his_data)
     #Save data
-    save_list(all_his_data, "all_his_data.txt")
-    save_list(all_his_data_arr, "all_his_data_arr.txt")
+    #save_list(all_his_data, "all_his_data.pickle")
+    #save_list(all_his_data_arr, "all_his_data_arr.pickle")
     #Load data
-    all_his_data = read_list("all_his_data.txt")
-    all_his_data_arr = read_list("all_his_data_arr.txt")
+    #all_his_data = read_list("all_his_data.pickle")
+    #all_his_data_arr = read_list("all_his_data_arr.pickle")
 
-    all_his_data_arr = pd.DataFrame(np.transpose(np.array(all_his_data_arr)))
-    all_his_data_arr.columns = all_pair
-    all_his_data_arr_cor = all_his_data_arr.corr()
-    all_his_data_arr_cor.DataFrame.to_csv('all_his_data_arr_cor.csv', sep='\t')
+    #print("Start tranposing")
+    #all_his_data_arr = pd.DataFrame(np.transpose(np.array(all_his_data_arr)))
+    #all_his_data_arr.columns = all_pair
+    #print(all_his_data_arr.head(5))
+    #print("Start correlation")
+    #all_his_data_arr_cor = all_his_data_arr.corr()
+    #all_his_data_arr_cor = pd.DataFrame(np.corrcoef(all_his_data_arr.values, rowvar=False), columns=all_his_data_arr.columns)
+    #all_his_data_arr_cor.to_csv('all_his_data_arr_cor.csv', sep='\t')
     print("Done correlation")
+    all_his_data_arr_cor = pd.read_csv("all_his_data_arr_cor.csv",  sep='\t')
     # mask = np.triu(np.ones_like(all_his_data_arr_cor, dtype=bool))
 
-    sns.heatmap(all_his_data_arr_cor, cmap="RdYlGn", center=0, vmax=1, vmin=-1, square=True, linewidths=.5, ax=ax,
+    sns.heatmap(all_his_data_arr_cor, cmap="RdYlGn", center=0, vmax=1, vmin=-1, square=True, linewidths=0, ax=ax,
                 xticklabels=False, cbar=False)
     print("Done heatmap")
     ax_divider = make_axes_locatable(ax)
