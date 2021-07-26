@@ -5,19 +5,19 @@ library(dplyr, quietly=TRUE)
 setwd("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res")
 all_files = list.files(pattern = '*.csv')
 
-all_DEU_genes = vector("list", length(all_files))
-for (i in 1:length(all_files)){
-  file = all_files[i]
-  print(file)
-  data = data.table(read.csv(file, sep='\t'))
-  sig_exon = data[abs(data[[7]]) >= 2.0 & data[[6]] <= 0.0001, ]
-  sig_exon = sig_exon %>%
-  mutate(id = paste(groupID, featureID, sep=';'))
-  all_DEU_genes[[i]] = sig_exon$id
-}
-all_DEU_genes = Reduce(c, all_DEU_genes)
-saveRDS(all_DEU_genes, "all_DEU_genes.RDS")
-# all_DEU_genes = readRDS("all_DEU_genes.RDS")
+#all_DEU_genes = vector("list", length(all_files))
+#for (i in 1:length(all_files)){
+#  file = all_files[i]
+#  print(file)
+#  data = data.table(read.csv(file, sep='\t'))
+#  sig_exon = data[abs(data[[7]]) >= 2.0 & data[[6]] <= 0.0001, ]
+#  sig_exon = sig_exon %>%
+#  mutate(id = paste(groupID, featureID, sep=';'))
+#  all_DEU_genes[[i]] = sig_exon$id
+#}
+#all_DEU_genes = Reduce(c, all_DEU_genes)
+#saveRDS(all_DEU_genes, "all_DEU_genes.RDS")
+all_DEU_genes = readRDS("all_DEU_genes.RDS")
 
 freq = table(all_DEU_genes)
 freq = freq[order(freq, decreasing=TRUE)]
@@ -28,9 +28,9 @@ print(head(freq))
 tiff("ecdf.pdf") 
 plot(ecdf(freq))
 dev.off()
-tiff("ecdf.pdf") 
-plot(hist(freq))
-dev.off()
+#tiff("ecdf.pdf") 
+#plot(hist(freq))
+#dev.off()
 
 all_DEU_genes = unique(all_DEU_genes)
 all_DEU_genes = unique(unlist(lapply(all_DEU_genes, function(x) strsplit(x, split = ';')[[1]][1])))
