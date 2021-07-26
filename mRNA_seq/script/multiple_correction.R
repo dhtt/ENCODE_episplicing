@@ -1,7 +1,8 @@
 library(data.table, quietly=TRUE)
 library(dplyr, quietly=TRUE)
 
-setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/mRNA_seq/script/temp")
+# setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/mRNA_seq/script/temp")
+setwd("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res")
 all_files = list.files(pattern = '*.csv')
 
 all_DEU_genes = vector("list", length(all_files))
@@ -16,7 +17,8 @@ for (i in 1:length(all_files)){
     select(id)
   all_DEU_genes[[i]] = sig_exon$id
 }
-all_DEU_genes = unique(Reduce(intersect, all_DEU_genes))[[1]]
+all_DEU_genes = unique(Reduce(intersect, all_DEU_genes))
+all_DEU_genes = unique(unlist(lapply(all_DEU_genes, function(x) strsplit(x, split = ';')[[1]][1])))
 all_DEU_genes = all_DEU_genes[grep('+', all_DEU_genes, fixed = TRUE, invert = TRUE)]
 all_DEU_genes = all_DEU_genes[grep('_', all_DEU_genes, fixed = TRUE, invert = TRUE)]
 
