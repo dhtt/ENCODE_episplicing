@@ -17,7 +17,7 @@ all_files = list.files(pattern = '*.csv')
 #}
 #all_DEU_genes = Reduce(c, all_DEU_genes)
 #saveRDS(all_DEU_genes, "all_DEU_genes.RDS")
-# all_DEU_genes = readRDS("all_DEU_genes.RDS")
+all_DEU_genes = readRDS("all_DEU_genes.RDS")
 
 freq = table(all_DEU_genes)
 freq = freq[order(freq, decreasing=TRUE)]
@@ -34,7 +34,9 @@ print(head(freq))
 
 freq = freq[names(freq)[grep('+', names(freq), fixed = TRUE, invert = TRUE)]]
 freq = freq[names(freq)[grep('_', names(freq), fixed = TRUE, invert = TRUE)]]
-filtered_exon = names(freq[1:round(length(freq)*0.2)])
+filtered_exon = names(freq[1:round(length(freq)*0.1)])
+
+print(freq[filtered_exon])
 
 all_DEU_genes = intersect(unique(all_DEU_genes), filtered_exon)
 all_DEU_genes = unique(unlist(lapply(all_DEU_genes, function(x) strsplit(x, split = ';')[[1]][1])))
@@ -48,6 +50,6 @@ all_DEU_genes = intersect(all_DEU_genes, ref_genes)
 print('After intersect: ')
 print(length(all_DEU_genes))
 
-sink("multiple_correction_genes.txt")
-print(paste(all_DEU_genes, collapse = "';"))
+sink("/home/dhthutrang/ENCODE/mRNA_seq/script/multiple_correction_genes.txt")
+print(paste(all_DEU_genes, collapse = ","))
 sink()
