@@ -49,24 +49,26 @@ print("sampleTable")
 print(sampleTable)
 #===== RUN DEXSEQ =====
 # cat("\n---> Inputting to DEXSeq", append = TRUE)
-dxd = DEXSeqDataSetFromHTSeq(
-  count_files,
-  sampleData = sampleTable,
-  design = ~ sample + exon + condition:exon,
-  flattenedfile= normalizePath(gtf_files)
-)
-saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
-# dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.RDS')
+#dxd = DEXSeqDataSetFromHTSeq(
+#  count_files,
+#  sampleData = sampleTable,
+#  design = ~ sample + exon + condition:exon,
+#  flattenedfile= normalizePath(gtf_files)
+#)
+#saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd_90.RDS')
+dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd_90.RDS')
 print(paste('dxd done: ', Sys.time()))
 
 # cat("\n---> Getting DEXSeq result", append = TRUE)
 dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
-saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
+print(paste("dxd.res done: ", Sys.time()))
+#save(dxd.res, file="/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res_90.RDS")
+saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd.res_90.RDS')
 # dxd.res = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
-print(paste('dxd.res done: ', Sys.time()))
+print(paste('dxd.res saved: ', Sys.time()))
 
-# #===== SAVING RESULTS =====
-# # cat("\n---> Saving DEXSeq normalized counts", append = TRUE)
+#===== SAVING RESULTS =====
+# cat("\n---> Saving DEXSeq normalized counts", append = TRUE)
 # dxd.count = data.frame(cbind(dxd.res[c(1,2)], counts(dxd.res, normalized = TRUE)))
 # colnames(dxd.count) = c("groupID", "featureID", paste(file_names$V1, file_names$V2, sep='_'))
 # normedcount_name = paste(paste(epi_id1, epi_id2, sep='_'), "normedcount.csv", sep='_')
