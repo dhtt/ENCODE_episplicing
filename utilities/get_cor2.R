@@ -4,9 +4,9 @@ library(boot)
 library(stats)
 library(parallel)
 library("doMC")
-#setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
+# setwd("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/")
 doMC::registerDoMC(cores = 17)
-#setwd("/home/dhthutrang/ENCODE/flank")
+setwd("/home/dhthutrang/ENCODE/flank")
 
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
@@ -54,8 +54,20 @@ get_all_pairs.exp <- function(all_pairs.exp){
 #saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("all_pairs.exp.RDS")
-print(head(all_pairs.exp))
-paste("CONTROL: ", length(unique(all_pairs.exp[all_pairs.exp$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
+
+# FILTER WITH NEW CORRECTED GENES AND FIRST EXON
+filter_genes = function(df){
+  combined_df_exon = readRDS("combined_df_exon.RDS")
+  filtered_df = as.data.frame(df[df$gene_id %in% unique(combined_df_exon$gene_id), ])
+  filtered_df = filtered_df[order(filtered_df$gene_id), ]
+  combined_df_exon = combined_df_exon[order(combined_df_exon$gene_id), ]
+  print(paste("Gene id overlap: ", table(filtered_df$gene_id == combined_df_exon$gene_id), sep = ''))
+  
+  filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
+  return(as.data.table(filtered_df))
+}
+all_pairs.exp_flt = filter_genes(all_pairs.exp)
+paste("CONTROL: ", length(unique(all_pairs.exp_flt[all_pairs.exp_flt$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -104,9 +116,13 @@ get_all_pairs.his_list <- function(histone_type_list){
 histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 #all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-#all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
+all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+# all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
+all_pairs.his_list_flt = lapply(all_pairs.his_list, function(x) filter_genes(x))
+
+table(all_pairs.his_list_flt[[1]]$gene_id == all_pairs.exp_flt$gene_id)
 head(all_pairs.his_list[[1]], 50)
+
 
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
