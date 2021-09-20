@@ -59,8 +59,34 @@ saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_75low/
 #dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd_90.RDS')
 print(paste('dxd done: ', Sys.time()))
 
+DEXSEQ_custom = function (object, fullModel = design(object), reducedModel = ~sample + 
+  exon, BPPARAM = MulticoreParam(workers = 1), fitExpToVar = "condition", 
+  quiet = TRUE) 
+{
+  stopifnot(is(object, "DEXSeqDataSet"))
+  if (!.hasSlot(object, "rowRanges")) 
+    object <- updateObject(object)
+  object <- estimateSizeFactors(object)
+  print(paste('estimateSizeFactors: ', Sys.time()))
+  saveRDS(object, 'estimateSizeFactors.RDS')
+  object <- estimateDispersions(object, formula = fullModel, 
+    BPPARAM = BPPARAM, quiet = TRUE)
+  print(paste('estimateDispersions: ', Sys.time()))
+  saveRDS(object, 'estimateDispersions.RDS')
+  object <- testForDEU(object, reducedModel = reducedModel, 
+    fullModel = fullModel, BPPARAM = BPPARAM)
+  print(paste('testForDEU: ', Sys.time()))
+  saveRDS(object, 'testForDEU.RDS')
+  object <- estimateExonFoldChanges(object, fitExpToVar = fitExpToVar)
+  print(paste('estimateExonFoldChanges: ', Sys.time()))
+  saveRDS(object, 'estimateExonFoldChanges.RDS')
+  res <- DEXSeqResults(object)
+  return(res)
+}
+
+
 # cat("\n---> Getting DEXSeq result", append = TRUE)
-dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
+dxd.res = DEXSEQ_custom(dxd, quiet = FALSE, BPPARAM=cores)
 print(paste("dxd.res done: ", Sys.time()))
 ###save(dxd.res, file="/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res_90.RDS")
 saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_75low/dxd.res.RDS')
