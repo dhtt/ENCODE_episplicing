@@ -69,7 +69,7 @@ filter_genes = function(df){
 }
 all_pairs.exp_flt = filter_genes(all_pairs.exp_)
 paste("CONTROL: ", length(unique(all_pairs.exp_flt[all_pairs.exp_flt$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
-
+print(colnames(all_pairs.exp_flt))
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -121,7 +121,9 @@ all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.
 
 all_pairs.his_list_flt = lapply(all_pairs.his_list_, function(x) filter_genes(x))
 
-print(table(all_pairs.exp_flt$gene_id == all_pairs.his_list_flt[[1]]$gene_id) )
+print(table(all_pairs.exp_flt$gene_id == all_pairs.his_list_flt[[1]]$gene_id))
+print(head(all_pairs.exp_flt$gene_id))
+print(head(all_pairs.his_list_flt[[1]]$gene_id))
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
 # 
@@ -221,7 +223,7 @@ print("Pearsons-p correlation")
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt, method = "p")
 # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p.RDS")
 
-all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt[[1]], method = "r")
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt[1], method = "r")
 saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r.RDS")
 # 
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
