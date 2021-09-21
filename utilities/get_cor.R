@@ -124,6 +124,7 @@ all_pairs.his_list_flt = lapply(all_pairs.his_list_, function(x) filter_genes(x)
 print(table(all_pairs.exp_flt$gene_id == all_pairs.his_list_flt[[1]]$gene_id))
 print(head(all_pairs.exp_flt$gene_id))
 print(head(all_pairs.his_list_flt[[1]]$gene_id))
+
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
 # 
@@ -138,6 +139,7 @@ print(head(all_pairs.his_list_flt[[1]]$gene_id))
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
 all_genes = fread("gene_id.txt", header = FALSE)
+all_genes = unique(all_pairs.exp_flt$gene_id)
 p_value_calculator <- function(r, nrow){
   P <- r*sqrt(nrow-2)/sqrt(1-r*r)
   P <- 2*pt(-abs(P), nrow-2)
