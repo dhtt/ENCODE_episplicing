@@ -225,7 +225,7 @@ print("Pearsons-p correlation")
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt, method = "p")
 # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p.RDS")
 
-all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt[1], method = "r")
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt, method = "r")
 saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r.RDS")
 # 
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
