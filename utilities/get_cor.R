@@ -169,6 +169,7 @@ pearcor_r <- function(exp, his, n_points){
 analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
+  print(subset_name)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
   
@@ -182,14 +183,14 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points){
     
     if (option == "p"){
       res_table = data_table %>%
-        group_by(all_pairs.exp$gene_id) %>%
-        summarise(res = pearcor_p(exp, his)) %>%
+        dplyr::group_by(all_pairs.exp$gene_id) %>%
+        dplyr::summarise(res = pearcor_p(exp, his)) %>%
         dplyr::select(res)
     }
     else if (option == "r") {
       res_table = data_table %>%
-        group_by(all_pairs.exp$gene_id) %>%
-        summarise(res = pearcor_r(exp, his, n_points)) %>%
+        dplyr::group_by(all_pairs.exp$gene_id) %>%
+        dplyr::summarise(res = pearcor_r(exp, his, n_points)) %>%
         dplyr::select(res)
     }
     #all_res_pair[[i]] = res_table
