@@ -54,7 +54,22 @@ get_all_pairs.exp <- function(all_pairs.exp){
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 all_pairs.exp = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
+# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
+
+# FILTER WITH NEW CORRECTED GENES AND FIRST EXON
+filter_genes = function(df){
+  combined_df_exon = readRDS("combined_df_exon.RDS")
+  filtered_df = as.data.frame(df[df$gene_id %in% unique(combined_df_exon$gene_id), ])
+  filtered_df = filtered_df[order(filtered_df$gene_id), ]
+  combined_df_exon = combined_df_exon[order(combined_df_exon$gene_id), ]
+  print(paste("Gene id overlap: ", table(filtered_df$gene_id == combined_df_exon$gene_id), sep = ''))
+  
+  filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
+  return(as.data.table(filtered_df))
+}
+all_pairs.exp_flt = filter_genes(all_pairs.exp)
+paste("CONTROL: ", length(unique(all_pairs.exp_flt[all_pairs.exp_flt$H1_mesenchymalstemcell > 0, ]$gene_id)), sep ='')
+
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -102,7 +117,9 @@ histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3"
 # all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 all_pairs.his_list = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
+# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
+
+all_pairs.his_list_flt = lapply(all_pairs.his_list, function(x) filter_genes(x))
 
 print(table(all_pairs.exp$gene_id == all_pairs.his_list[[1]]$gene_id) )
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
@@ -200,20 +217,20 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 }
 
 print("Pearsons-p correlation")
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "p")
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt, method = "p")
 saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p.RDS")
 
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method = "r")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=10)
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r10.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=15)
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r15.RDS")
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt, all_pairs.his_list_flt, method = "r")
+saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=10)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r10.RDS")
+# 
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=15)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r15.RDS")
 
 
 # temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
