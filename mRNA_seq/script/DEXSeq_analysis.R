@@ -65,16 +65,19 @@ dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
 dxd.count = data.frame(cbind(dxd.res[c(1,2)], counts(dxd.res, normalized = TRUE)))
 colnames(dxd.count) = c("groupID", "featureID", paste(file_names$V1, file_names$V2, sep='_'))
 normedcount_name = paste(paste(epi_id1, epi_id2, sep='_'), "normedcount.csv", sep='_')
-write.table(dxd.count, normedcount_name, quote=FALSE, sep="\t", dec=".", row.names=FALSE, col.names=TRUE)
+# write.table(dxd.count, normedcount_name, quote=FALSE, sep="\t", dec=".", row.names=FALSE, col.names=TRUE)
 # dxd.count = read.csv("temp_count.csv", header=TRUE, sep = ",")
 
 # cat("\n---> Saving DEXSeq result", append = TRUE)
-r_data_name = paste(paste(epi_id1, epi_id2, sep='_'), "RData", sep='.')
+r_data_name = paste(
+  "/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/Rdata", 
+  paste(paste(epi_id1, epi_id2, sep='_'), "RData", sep='.'), 
+  sep='/')
 save(dxd.res, file=r_data_name)
 
 result_name = paste(paste(epi_id1, epi_id2, sep='_'), "res.csv", sep='_')
-write.table(as.data.frame(dxd.res[c(1,2,3,5,6,7,10)]), result_name,
-            quote=FALSE, sep="\t", dec=".", row.names=FALSE, col.names=TRUE)
+# write.table(as.data.frame(dxd.res[c(1,2,3,5,6,7,10)]), result_name,
+#             quote=FALSE, sep="\t", dec=".", row.names=FALSE, col.names=TRUE)
 # dxd.res = read.csv(result_name, header=TRUE, sep = ",")
 
 #print("---> Exporting HTML DEXSeq result")

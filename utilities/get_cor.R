@@ -9,17 +9,21 @@ library(doMC)
 doMC::registerDoMC(cores = 17)
 exp_id_path = "/home/dhthutrang/ENCODE/utilities/exp_id.txt"
 dexseqcount_path = "/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res"
-all_pairs.exp_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.exp.RDS"
+all_pairs.exp_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_pairs.exp.RDS"
 filter_genes.exp_path = "/home/dhthutrang/ENCODE/utilities/combined_df_exon_90_final.RDS"
-all_pairs.exp_flt_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.exp_flt_90.RDS"
+all_pairs.exp_flt_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_pairs.exp_flt_90.RDS"
 
-all_pairs.his_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.his_list.RDS"
+all_pairs.his_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_pairs.his_list.RDS"
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 filter_genes.his_path = "/home/dhthutrang/ENCODE/utilities/combined_df_exon_90_final.RDS"
-all_pairs.his_flt_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.his_list_flt_90_manorm.RDS"
+all_pairs.his_flt_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_pairs.his_list_flt_90_manorm.RDS"
 
-all_res_list.pearcor_p_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_res_list.pearcor_p_90_manorm.RDS"
-all_res_list.pearcor_r_path = "/home/dhthutrang/ENCODE/flank/110722_1/all_res_list.pearcor_r_90_manorm.RDS"
+all_res_list.pearcor_p_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_res_list.pearcor_p_90_manorm.RDS"
+all_res_list.pearcor_r_path = "/home/dhthutrang/ENCODE/flank/110722_2/all_res_list.pearcor_r_90_manorm.RDS"
+
+option_list = list("spearman", FALSE)
+names(option_list) = c("correlation_type", "absolute_value")
+print(option_list)
 
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
@@ -111,6 +115,8 @@ all_pairs.exp_flt_90 = readRDS(all_pairs.exp_flt_path)
 
 # = PREPARE HIS FILE (6 TOTAL) ====
 print("=============== PREPARE HIS FILE (6 TOTAL) ===============")
+absmax <- function(x) { x[which.max( abs(x)  )]}
+
 get_all_pairs.his <- function(all_pairs.his, his){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
@@ -119,26 +125,32 @@ get_all_pairs.his <- function(all_pairs.his, his){
     pair.his = fread(all_pairs.his[[i]])
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
+
     pair.his = pair.his %>%
       dplyr::mutate(
         gene = id$gene, exon = id$exon, type = V3,
         p_val = as.numeric(as.character(V11)),
         m_val = dplyr::if_else(
           p_val <= 0.05, 
-          true = as.numeric(as.character(V10)), false = 0
-          ) # Transform values to absolute
-      ) 
-      pair.his %>%
+          true = as.numeric(as.character(V10)),
+          false = 0
+          )
+      ) %>%
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
-      dplyr::summarise_all(max, na.rm=T) %>%
+      dplyr::summarise_all(absmax) %>%
       dplyr::na_if(., -Inf) %>% 
       dplyr::na_if(., Inf) %>%
       dplyr::ungroup() 
-    # print(head(pair.his))
     
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     pair.his = pair.his %>% dplyr::select(-gene, -exon)
+
+    if (option_list$absolute_value == TRUE){
+      pair.his =  abs(pair.his)
+    }
+    print(head(pair.his))
+
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
@@ -177,11 +189,15 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   return(all_filtered_df)
 }
 
-# === EXECUTE get_all_pairs.his_list ======
+# # === EXECUTE get_all_pairs.his_list ======
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 saveRDS(all_pairs.his_list, all_pairs.his_path)
 all_pairs.his_list_ = readRDS(all_pairs.his_path)
 names(all_pairs.his_list_) = histone_type_list
+lapply(all_pairs.his_list_, function(x){
+  print(dim(x))
+  print(head(x))
+})
 
 # === EXECUTE file get_all_pairs.his_list ======
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, filter_genes.his_path)
@@ -189,6 +205,7 @@ saveRDS(all_pairs.his_list_flt_90, all_pairs.his_flt_path)
 
 
 all_pairs.his_list_flt_90 = readRDS(all_pairs.his_flt_path)
+print("=============== FINISHED LOADING DATA ===============")
 
 #== Plotting genes ----
 get_plot_dfs = function(gene, tissue_pair){
@@ -285,8 +302,10 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
   # print(head(subset_name))
-  # print(head(all_pairs.exp))
+  print(head(all_pairs.exp))
+  print(colnames(all_pairs.exp))
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
+  print(colnames(all_pairs.exp))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
 
   #for (i in 1:n_pairs){
@@ -351,13 +370,14 @@ all_res_list.pearcor_p = analyze_array_list(
   all_pairs.exp = all_pairs.exp_flt_90,
   all_pairs.his_list = all_pairs.his_list_flt_90, 
   method = "p",
-  cor = "pearson")
+  cor = option_list$correlation_type
+  )
 saveRDS(all_res_list.pearcor_p, all_res_list.pearcor_p_path)
 # 
 all_res_list.pearcor_r = analyze_array_list(
   all_pairs.exp = all_pairs.exp_flt_90, 
   all_pairs.his_list = all_pairs.his_list_flt_90, 
   method = "r", 
-  cor = "pearson"
+  cor = option_list$correlation_type
   )
 saveRDS(all_res_list.pearcor_r, all_res_list.pearcor_r_path)
