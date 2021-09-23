@@ -52,22 +52,23 @@ get_all_pairs.exp <- function(all_pairs.exp){
 
 # all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-# all_pairs.exp = readRDS("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
 filter_genes = function(df, filter_genes_path="combined_df_exon.RDS"){
   combined_df_exon = readRDS(filter_genes_path)
-  filtered_df = as.data.frame(df[df$gene_id %in% unique(combined_df_exon$gene_id), ])
+  corrected_genes = unique(unlist(combined_df_exon[combined_df_exon$deu == T, 'gene_id']))
+  
+  filtered_df = as.data.frame(df[df$gene_id %in% corrected_genes, ]) #Filter by corrected genes[only 10 percs]
+  combined_df_exon = as.data.frame(combined_df_exon[combined_df_exon$gene_id %in% corrected_genes, ])
   filtered_df = filtered_df[order(filtered_df$gene_id), ]
   combined_df_exon = combined_df_exon[order(combined_df_exon$gene_id), ]
-  print(paste("Gene id overlap: ", table(filtered_df$gene_id == combined_df_exon$gene_id), sep = ''))
-  
   filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
   return(as.data.table(filtered_df))
 }
-all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
+all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS")
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
