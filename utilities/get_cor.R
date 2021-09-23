@@ -68,7 +68,7 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS"){
   filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
   return(as.data.table(filtered_df))
 }
-all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS")
+all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
