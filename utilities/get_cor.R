@@ -131,12 +131,10 @@ all_pairs.his_list_flt_90 = lapply(all_pairs.his_list_, function(x) filter_genes
 # all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id, all_pairs.exp$exon_id),]
 # table(all_pairs.exp$gene_id ==his_ids$V1)
 
-
-
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
-all_genes = fread("gene_id.txt", header = FALSE)
-all_genes = unique(all_pairs.exp_flt$gene_id)
+# all_genes = fread("gene_id.txt", header = FALSE)
+# all_genes = unique(all_pairs.exp_flt$gene_id)
 p_value_calculator <- function(r, nrow){
   P <- r*sqrt(nrow-2)/sqrt(1-r*r)
   P <- 2*pt(-abs(P), nrow-2)
@@ -167,7 +165,7 @@ pearcor_r <- function(exp, his, n_points){
   }
 }
 
-analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points){
+analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, all_genes){
   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
   subset_name = colnames(all_pairs.his)
   print(subset_name)
@@ -204,14 +202,15 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points){
 }
 analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", n_points=2){
   all_res_list = vector("list", length(histone_type_list)-1 )
+  all_genes = unique(all_pairs.exp$gene_id)
   for (j in 1:length(histone_type_list)){
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
     all_pairs.his = all_pairs.his_list[[j]]
     if (method == "p") {
-      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p")
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p", all_genes=all_pairs.exp)
     }
     else if (method == "r") {
-      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points)
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points, all_genes=all_pairs.exp)
     }
     all_res_list[[j]] = all_res_pair
   }
