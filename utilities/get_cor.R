@@ -68,11 +68,13 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS"){
   filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
   return(as.data.table(filtered_df))
 }
-all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
-all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
 
-saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
-saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
+# all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
+# all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
+# saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
+# saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
+all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
+all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -122,10 +124,12 @@ histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3"
 all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
 
-all_pairs.his_list_flt_10 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_10perc.RDS"))
-all_pairs.his_list_flt_90 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_90perc.RDS"))
-saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
-saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+# all_pairs.his_list_flt_10 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_10perc.RDS"))
+# all_pairs.his_list_flt_90 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_90perc.RDS"))
+# saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
+# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
+all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
@@ -212,10 +216,10 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
     all_pairs.his = all_pairs.his_list[[j]]
     if (method == "p") {
-      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p", all_genes=all_pairs.exp)
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p", all_genes=all_genes)
     }
     else if (method == "r") {
-      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points, all_genes=all_pairs.exp)
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points, all_genes=all_genes)
     }
     all_res_list[[j]] = all_res_pair
   }
