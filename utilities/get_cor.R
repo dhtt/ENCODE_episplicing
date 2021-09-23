@@ -71,6 +71,9 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS"){
 all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
 
+saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
+saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
+
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
 his_id = read.csv("flank_id.txt", sep='\t', header = FALSE)
@@ -121,6 +124,8 @@ all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.
 
 all_pairs.his_list_flt_10 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_10perc.RDS"))
 all_pairs.his_list_flt_90 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_90perc.RDS"))
+saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
+saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
 
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
