@@ -71,7 +71,7 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
   combined_df = combined_df[combined_df$first_exon == F, ]
   
   final_filtered_df = filtered_df #Filter by deu/dhm
-  final_filtered_df[unlist(combined_df[filter] == F), 3:length(final_filtered_df)] = 0
+  final_filtered_df[unlist(combined_df[[filter]] == F), 3:length(final_filtered_df)] = 0
   
   #------Check if filter by DEU work------
   print("========= CHECK FILTER =========")
