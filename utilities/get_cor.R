@@ -139,6 +139,9 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   for (i in 1:length(histone_type_list)){
     histone = histone_type_list[i]
     his_df = his_list[[i]]
+    print(i)
+    print(histone)
+    print(head(his_df))
     all_filtered_df[[i]] = filter_genes(df = his_df, filter_genes_path = filter_genes_path, filter = histone)
   }
   names(all_filtered_df) = histone_type_list
