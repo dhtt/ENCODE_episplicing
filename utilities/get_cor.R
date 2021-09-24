@@ -7,6 +7,7 @@ library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
 
+histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -57,24 +58,39 @@ all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
-filter_genes = function(df, filter_genes_path="combined_df_exon.RDS"){
-  combined_df_exon = readRDS(filter_genes_path)
-  corrected_genes = unique(unlist(combined_df_exon[combined_df_exon$deu == T, 'gene_id']))
+filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
+  combined_df_exon = readRDS('/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS')
+  # combined_df_exon = readRDS(filter_genes_path)
+  corrected_genes = unique(unlist(combined_df_exon[combined_df_exon['deu'] == T, "gene_id"]))
   
   filtered_df = as.data.frame(df[df$gene_id %in% corrected_genes, ]) #Filter by corrected genes[only 10 percs]
-  combined_df_exon = as.data.frame(combined_df_exon[combined_df_exon$gene_id %in% corrected_genes, ])
-  filtered_df = filtered_df[order(filtered_df$gene_id), ]
-  combined_df_exon = combined_df_exon[order(combined_df_exon$gene_id), ]
-  filtered_df = filtered_df[combined_df_exon$first_exon == F, ]
-  return(as.data.table(filtered_df))
+  combined_df = as.data.frame(combined_df_exon[combined_df_exon$gene_id %in% corrected_genes, ])
+  filtered_df = filtered_df[order(filtered_df$gene_id), ] #Order so rownames overlap
+  combined_df = combined_df[order(combined_df$gene_id), ]
+  filtered_df = filtered_df[combined_df$first_exon == F, ] #Filter out first exons
+  combined_df = combined_df[combined_df$first_exon == F, ]
+  
+  final_filtered_df = filtered_df #Filter by deu/dhm
+  final_filtered_df[unlist(combined_df[filter] == F), 3:length(final_filtered_df)] = 0
+  
+  #------Check if filter by DEU work------
+  # table(final_filtered_df$gene_id == filtered_df$gene_id)
+  # lapply(list(filtered_df, final_filtered_df), function(x) table(x == 0))
+  # table(final_filtered_df == filtered_df)
+  # final_filtered_df[final_filtered_df$adiposetissue_aorta != filtered_df$adiposetissue_aorta, c('gene_id', 'exon_id')]
+  # final_filtered_df$adiposetissue_aorta[final_filtered_df$gene_id == 'DLG1' & final_filtered_df$exon_id == 'E015']
+  # filtered_df$adiposetissue_aorta[filtered_df$gene_id == 'DLG1' & filtered_df$exon_id == 'E015']
+  #------
+
+  return(as.data.table(final_filtered_df))
 }
 
-# all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS")
-# all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS")
-# saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
-# saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
-all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
-all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
+all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS", filter="deu")
+all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS", filter="deu")
+saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
+saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
+# all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
+# all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -117,19 +133,25 @@ get_all_pairs.his_list <- function(histone_type_list){
   }
   return(all_pairs.his_list)
 }
+filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
+  all_filtered_df = lapply(1:length(his_list), function(i){
+    print(histone_type_list[i])
+    filter_genes(his_list[[i]], filter_genes_path=filter_genes_path, filter = histone_type_list[i])
+    })
+  return(all_filtered_df)
+}
 
-histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 # all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
 
-# all_pairs.his_list_flt_10 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_10perc.RDS"))
-# all_pairs.his_list_flt_90 = lapply(all_pairs.his_list_, function(x) filter_genes(x, filter_genes_path="combined_df_exon_90perc.RDS"))
-# saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
-# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
-all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
-all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
+all_pairs.his_list_flt_10 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_10perc.RDS")
+all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
+saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
+saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+# all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
+# all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 # all_pairs.his_list = readRDS("all_pairs.his_list.RDS")
 # head(all_pairs.his_list[[1]], 50)
