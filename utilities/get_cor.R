@@ -300,3 +300,4 @@ saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_li
 # 
 # fwrite(his_id2, "flank_id.txt", quote = FALSE, col.names = FALSE, sep='\t')
 
+
