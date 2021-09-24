@@ -7,7 +7,7 @@ library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
 
-histone_type_list = list("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
+histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -141,7 +141,6 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
     his_df = his_list[[i]]
     print(i)
     print(histone)
-    print(head(his_df))
     all_filtered_df[[i]] = filter_genes(df = his_df, filter_genes_path = filter_genes_path, filter = histone)
   }
   names(all_filtered_df) = histone_type_list
