@@ -59,8 +59,8 @@ all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
 filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
-  combined_df_exon = readRDS('/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS')
-  # combined_df_exon = readRDS(filter_genes_path)
+  # combined_df_exon = readRDS('/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS')
+  combined_df_exon = readRDS(filter_genes_path)
   corrected_genes = unique(unlist(combined_df_exon[combined_df_exon['deu'] == T, "gene_id"]))
   
   filtered_df = as.data.frame(df[df$gene_id %in% corrected_genes, ]) #Filter by corrected genes[only 10 percs]
@@ -74,9 +74,10 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
   final_filtered_df[unlist(combined_df[filter] == F), 3:length(final_filtered_df)] = 0
   
   #------Check if filter by DEU work------
-  # table(final_filtered_df$gene_id == filtered_df$gene_id)
+  print("========= CHECK FILTER =========")
+  print(table(final_filtered_df$gene_id == filtered_df$gene_id))
   # lapply(list(filtered_df, final_filtered_df), function(x) table(x == 0))
-  # table(final_filtered_df == filtered_df)
+  print(table(final_filtered_df == filtered_df))
   # final_filtered_df[final_filtered_df$adiposetissue_aorta != filtered_df$adiposetissue_aorta, c('gene_id', 'exon_id')]
   # final_filtered_df$adiposetissue_aorta[final_filtered_df$gene_id == 'DLG1' & final_filtered_df$exon_id == 'E015']
   # filtered_df$adiposetissue_aorta[filtered_df$gene_id == 'DLG1' & filtered_df$exon_id == 'E015']
