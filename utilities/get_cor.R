@@ -88,10 +88,11 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
 
 # all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS", filter="deu")
 # all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS", filter="deu")
+all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
 # saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
 # saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
 all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
-all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
+# all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -149,14 +150,15 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 
 # all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+# all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
 
-all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
-all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
-all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
-saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
-saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+# all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
+# all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
+# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
+all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
+# saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
+# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
 # all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
@@ -256,17 +258,17 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 }
 
 print("Pearsons-p correlation")
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_10perc.RDS")
-
-all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
-saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "p")
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_10perc.RDS")
+# 
+# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
+# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
 
 all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90perc.RDS")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_final.RDS")
 
 all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
-saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90perc.RDS")
+saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_final.RDS")
 # 
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
 # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
