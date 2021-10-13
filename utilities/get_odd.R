@@ -123,7 +123,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   print(head(all_pairs.exp))
   print(head(all_pairs.his))
   print(head(all_pairs.exp[, subset_name]))
-  all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
+  all_pairs.exp_subset = all_pairs.exp[, subset_name]
   
   #for (i in 1:n_pairs){
   all_res_pair <- foreach( i=1:(length(subset_name)-2), .combine='c', .packages=c('dplyr') ) %dopar% {
