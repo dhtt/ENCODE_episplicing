@@ -120,7 +120,9 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   subset_name = colnames(all_pairs.his)
   print(subset_name)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
-  print(head(all_pairs.exp[, ..subset_name]))
+  print(head(all_pairs.exp))
+  print(head(all_pairs.his))
+  print(head(all_pairs.exp[, subset_name]))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
   
   #for (i in 1:n_pairs){
