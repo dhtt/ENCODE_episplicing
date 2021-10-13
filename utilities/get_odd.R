@@ -54,15 +54,15 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
   return(as.data.table(final_filtered_df))
 }
 
-all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
+# all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
 get_odd_df = function(df){
   df_odd = as.data.frame(apply(df, 2, function(x) x = ifelse(abs(as.numeric(x)) > 0, T, F)))
   df_odd$gene_id = df$gene_id
   df_odd$exon_id = df$exon_id
   return(df_odd)
 }
-all_pairs.exp_flt_90_odd = get_odd_df(all_pairs.exp_flt_90)
-saveRDS(all_pairs.exp_flt_90_odd, "all_pairs.exp_flt_90_odd.RDS")
+# all_pairs.exp_flt_90_odd = get_odd_df(all_pairs.exp_flt_90)
+# saveRDS(all_pairs.exp_flt_90_odd, "all_pairs.exp_flt_90_odd.RDS")
 all_pairs.exp_flt_90_odd = readRDS("all_pairs.exp_flt_90_odd.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
@@ -83,9 +83,9 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 
 all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
-all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
-all_pairs.his_list_flt_90_odd = lapply(all_pairs.his_list_flt_90, function(x) get_odd_df(x))
-saveRDS(all_pairs.his_list_flt_90_odd, "all_pairs.his_list_flt_90_odd.RDS")
+# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
+# all_pairs.his_list_flt_90_odd = lapply(all_pairs.his_list_flt_90, function(x) get_odd_df(x))
+# saveRDS(all_pairs.his_list_flt_90_odd, "all_pairs.his_list_flt_90_odd.RDS")
 all_pairs.his_list_flt_90_odd = readRDS("all_pairs.his_list_flt_90_odd.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
