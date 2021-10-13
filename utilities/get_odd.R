@@ -103,8 +103,8 @@ pearcor_p <- function(exp, his){
   # else {
   #   return(NA)
   # }
+  print(table(exp, his))
   p_val = questionr::odds.ratio(table(exp, his))$p
-  print(p_val)
 }
 pearcor_r <- function(exp, his, n_points){
   df = as.data.frame(cbind(exp, his))
