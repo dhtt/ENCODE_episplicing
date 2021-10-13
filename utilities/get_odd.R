@@ -96,18 +96,15 @@ p_value_calculator <- function(r, nrow){
   return(P)
 }
 pearcor_p <- function(exp, his){
-  # if (length(unique(exp)) > 1 & length(unique(his)) > 1){
-  #   p_val = questionr::odds.ratio(table(exp, his))$p
-  #   return(p_val)
-  # }
-  # else {
-  #   return(NA)
-  # }
-  print(table(exp, his))
-  p_val = questionr::odds.ratio(table(exp, his))$p
+  if (length(unique(exp)) > 1 & length(unique(his)) > 1){
+    p_val = questionr::odds.ratio(table(exp, his))$p
+    return(p_val)
+  }
+  else {
+    return(NA)
+  }
 }
 pearcor_r <- function(exp, his, n_points){
-  df = as.data.frame(cbind(exp, his))
   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
     r_val = questionr::odds.ratio(table(exp, his))$OR
     return(r_val)
@@ -115,7 +112,6 @@ pearcor_r <- function(exp, his, n_points){
   else {
     return(NA)
   }
-  # r_val = questionr::odds.ratio(table(exp, his))$OR
 }
 
 analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, all_genes){
