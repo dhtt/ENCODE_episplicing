@@ -96,23 +96,25 @@ p_value_calculator <- function(r, nrow){
   return(P)
 }
 pearcor_p <- function(exp, his){
-  if (length(unique(exp)) > 1 & length(unique(his)) > 1){
-    p_val = questionr::odds.ratio(table(exp, his))$p
-    return(p_val)
-  }
-  else {
-    return(NA)
-  }
+  # if (length(unique(exp)) > 1 & length(unique(his)) > 1){
+  #   p_val = questionr::odds.ratio(table(exp, his))$p
+  #   return(p_val)
+  # }
+  # else {
+  #   return(NA)
+  # }
+  p_val = questionr::odds.ratio(table(exp, his))$p
 }
 pearcor_r <- function(exp, his, n_points){
-  df = as.data.frame(cbind(exp, his))
-  if (length(unique(exp)) > 1 & length(unique(his)) > 1){
-    r_val = questionr::odds.ratio(table(exp, his))$OR
-    return(r_val)
-  }
-  else {
-    return(NA)
-  }
+  # df = as.data.frame(cbind(exp, his))
+  # if (length(unique(exp)) > 1 & length(unique(his)) > 1){
+  #   r_val = questionr::odds.ratio(table(exp, his))$OR
+  #   return(r_val)
+  # }
+  # else {
+  #   return(NA)
+  # }
+  r_val = questionr::odds.ratio(table(exp, his))$OR
 }
 
 analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, all_genes){
@@ -120,9 +122,8 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   subset_name = colnames(all_pairs.his)
   print(subset_name)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
-  print(head(all_pairs.exp))
-  print(head(all_pairs.his))
-  print(head(all_pairs.exp[, subset_name]))
+  print(table(all_pairs.exp == T))
+  print(table(all_pairs.his  == T))
   all_pairs.exp_subset = all_pairs.exp[, subset_name]
   
   #for (i in 1:n_pairs){
@@ -150,7 +151,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   all_res_pair = as.data.table(all_res_pair)
   all_res_pair = cbind(all_genes, all_res_pair)
   colnames(all_res_pair) = c('gene_id', subset_name[3:length(subset_name)])
-  print(head(all_res_pair))
+  # print(head(all_res_pair))
   return(as.data.frame(all_res_pair))
 }
 analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", n_points=2){
