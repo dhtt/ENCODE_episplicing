@@ -6,7 +6,6 @@ library(parallel)
 library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
-
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
@@ -67,6 +66,18 @@ all_pairs.exp_flt_90_odd = get_odd_df(all_pairs.exp_flt_90)
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
 his_id = read.csv("flank_id.txt", sep='\t', header = FALSE)
+filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
+  all_filtered_df = vector("list")
+  for (i in 1:length(histone_type_list)){
+    histone = histone_type_list[i]
+    his_df = his_list[[i]]
+    print(i)
+    print(histone)
+    all_filtered_df[[i]] = filter_genes(df = his_df, filter_genes_path = filter_genes_path, filter = histone)
+  }
+  names(all_filtered_df) = histone_type_list
+  return(all_filtered_df)
+}
 all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 
 all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
