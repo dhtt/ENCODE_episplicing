@@ -62,6 +62,8 @@ get_odd_df = function(df){
   return(df_odd)
 }
 all_pairs.exp_flt_90_odd = get_odd_df(all_pairs.exp_flt_90)
+saveRDS(all_pairs.exp_flt_90_odd, "all_pairs.exp_flt_90_odd.RDS")
+all_pairs.exp_flt_90_odd = readRDS("all_pairs.exp_flt_90_odd.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -83,9 +85,10 @@ all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.
 all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
 all_pairs.his_list_flt_90_odd = lapply(all_pairs.his_list_flt_90, function(x) get_odd_df(x))
+saveRDS(all_pairs.his_list_flt_90_odd, "all_pairs.his_list_flt_90_odd.RDS")
+all_pairs.his_list_flt_90_odd = readRDS("all_pairs.his_list_flt_90_odd.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
-library(questionr)
 # ------------ Execute analysis ------------
 p_value_calculator <- function(r, nrow){
   P <- r*sqrt(nrow-2)/sqrt(1-r*r)
@@ -101,7 +104,6 @@ pearcor_p <- function(exp, his){
     return(NA)
   }
 }
-
 pearcor_r <- function(exp, his, n_points){
   df = as.data.frame(cbind(exp, his))
   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
@@ -118,6 +120,7 @@ analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, 
   subset_name = colnames(all_pairs.his)
   print(subset_name)
   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
+  print(head(all_pairs.exp[, ..subset_name]))
   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
   
   #for (i in 1:n_pairs){
@@ -167,8 +170,8 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 
 print("Pearsons-p correlation")
 
-all_res_list.odd = analyze_array_list(all_pairs.exp_flt_90_odd, all_pairs.his_list_flt_90_odd, method = "p")
-saveRDS(all_res_list.odd, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.odd_90_final.RDS")
-
-all_res_list.odd_p = analyze_array_list(all_pairs.exp_flt_90_odd, all_pairs.his_list_flt_90_odd, method = "r")
+all_res_list.odd_p = analyze_array_list(all_pairs.exp_flt_90_odd, all_pairs.his_list_flt_90_odd, method = "p")
 saveRDS(all_res_list.odd_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.odd_p_90_final.RDS")
+
+all_res_list.odd_r = analyze_array_list(all_pairs.exp_flt_90_odd, all_pairs.his_list_flt_90_odd, method = "r")
+saveRDS(all_res_list.odd_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.odd_r_90_final.RDS")
