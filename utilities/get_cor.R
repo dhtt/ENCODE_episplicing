@@ -97,7 +97,7 @@ get_colname <- function(filename_list, option='his'){
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
-his_id = read.csv("flank_id.txt", sep='\t', header = FALSE)
+his_id = read.csv("flank_id.2021.txt", sep='\t', header = FALSE)
 get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
