@@ -105,18 +105,21 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
+    if (i==1) {
+      his_id = as.data.frame(lapply(strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
+      colnames(his_id) = c("V1", "V2")
+      print(head(his_id))
+      }
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
         m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
-      dplyr::select(m_val, V9)
+      dplyr::select(m_val)
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
-  print(head(pair.his_list))
-  print(dim(pair.his_list))
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
@@ -125,6 +128,7 @@ get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = pair.his_list[order(pair.his_list$V1),]
   return(pair.his_list)
 }
+
 get_all_pairs.his_list <- function(histone_type_list){
   all_pairs.his_list = vector("list", length(histone_type_list))
   for (j in 1:length(histone_type_list)){
