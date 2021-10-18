@@ -8,7 +8,7 @@ library("doMC")
 doMC::registerDoMC(cores = 17)
 
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-histone_type_list = c("H3K27ac", "H3K36me3")
+histone_type_list = c("H3K36me3", "H3K27ac")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -130,9 +130,10 @@ get_all_pairs.his_list <- function(histone_type_list){
     his = histone_type_list[[j]]
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
-    print(all_pairs.his)
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     colnames(all_pairs.his.sig) = colname_his
+    print(all_pairs.his.sig$aorta_CD8positivealphabetaTcell[all_pairs.his.sig$gene_id = "FGFR2"])
+    
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
   return(all_pairs.his_list)
@@ -151,7 +152,6 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 }
 
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-print(all_pairs.his_list[[1]]$aorta_CD8positivealphabetaTcell[all_pairs.his_list[[1]]$gene_id = "FGFR2"])
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
