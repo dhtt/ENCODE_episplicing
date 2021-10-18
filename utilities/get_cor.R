@@ -111,10 +111,12 @@ get_all_pairs.his <- function(all_pairs.his){
         m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
-      dplyr::select(m_val)
+      dplyr::select(m_val, V9)
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
+  print(head(pair.his_list))
+  print(dim(pair.his_list))
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
     summarise_all(max) %>%
