@@ -108,7 +108,7 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
-        m_val = dplyr::if_else(is.na(p_val), true=NA, false = p_val <= 0.05, 
+        m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
       dplyr::select(m_val)
