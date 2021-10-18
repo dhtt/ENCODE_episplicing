@@ -105,8 +105,7 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    pair.his$his_id = paste(lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]), collapse = ':')
-    
+    pair.his$his_id = lapply(pair.his$V9, function(x) paste(strsplit(x, split='"', fixed=T)[[1]][c(2, 6)], collapse = ':'))
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
