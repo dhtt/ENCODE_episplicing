@@ -105,6 +105,7 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
+    print(head(pair.his))
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
