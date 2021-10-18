@@ -118,6 +118,7 @@ get_all_pairs.his <- function(all_pairs.his){
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
       dplyr::select(m_val)
+    print(length(pair.his))
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
