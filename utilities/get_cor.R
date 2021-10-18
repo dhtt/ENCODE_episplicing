@@ -8,7 +8,7 @@ library("doMC")
 doMC::registerDoMC(cores = 17)
 
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-histone_type_list = c("H3K36me3")
+histone_type_list = c("H3K27ac", "H3K36me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
