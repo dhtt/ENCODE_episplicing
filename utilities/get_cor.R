@@ -106,7 +106,7 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
     if (i==1) {
-      his_id = as.data.frame(lapply(strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
+      his_id = as.data.frame(lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
       colnames(his_id) = c("V1", "V2")
       print(head(his_id))
       }
