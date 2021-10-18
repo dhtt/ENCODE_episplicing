@@ -105,20 +105,17 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    if (i==1) {
-      print(head(pair.his))
-      his_id = do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
-      colnames(his_id) = c("V1", "V2")
-      print(head(his_id))
-      }
+    pair.his$his_id = paste(lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]), collapse = ':')
+    
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
         m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
-      dplyr::select(m_val)
+      dplyr::select(his_id, m_val)
     print(dim(pair.his))
+    print(head(pair.his))
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.table(pair.his_list)
