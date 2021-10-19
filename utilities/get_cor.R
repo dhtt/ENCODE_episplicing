@@ -118,12 +118,14 @@ get_all_pairs.his <- function(all_pairs.his){
       ) %>%
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
-      dplyr::summarise_all(max) 
-    print(dim(pair.his))
-    print(head(pair.his))
+      dplyr::summarise_all(max) %>%
+      dplyr::mutate(id = paste(gene, exon, sep=':')) %>%
+      dplyr::select(-gene, -exon, -id)
     pair.his_list[[i]] = pair.his
   }
-  pair.his_list = pair.his_list %>% reduce(full_join, by = c('gene', 'id'))
+  lapply(pair.his_list, function(x) print(dim(x)))
+  pair.his_list = as.data.frame(do.call(cbind, pair.his_list))
+  # pair.his_list = pair.his_list %>% reduce(full_join, by = c('gene', 'exon'))
   print(dim(pair.his_list))
   print(head(pair.his_list))
   pair.his_list = as.data.table(pair.his_list)
