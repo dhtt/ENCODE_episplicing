@@ -118,6 +118,8 @@ get_all_pairs.his <- function(all_pairs.his){
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
       dplyr::summarise_all(max, na.rm=T) %>%
+      dplyr::na_if(., -Inf) %>% 
+      dplyr::na_if(., Inf) %>%
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     pair.his = pair.his %>% dplyr::select(-gene, -exon)
@@ -130,6 +132,7 @@ get_all_pairs.his <- function(all_pairs.his){
   print(head(pair.his_list))
   return(pair.his_list)
 }
+
 
 get_all_pairs.his_list <- function(histone_type_list){
   all_pairs.his_list = vector("list", length(histone_type_list))
