@@ -120,12 +120,13 @@ get_all_pairs.his <- function(all_pairs.his){
       dplyr::summarise_all(max, na.rm=T) %>%
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
-    pair.his = pair.his %>% dplyr::select(-gene, -exon)
+    pair.his = pair.his %>% 
+      dplyr::mutate(mval = ifelse(is.infinite(mval), yes=NA, no=mval)) %>%
+      dplyr::select(-gene, -exon)
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
-  pair.his_list = apply(pair.his_list, 2, function(x) x[is.infinite(x)] = NA)
   print(dim(pair.his_list))
   print(head(pair.his_list))
   return(pair.his_list)
