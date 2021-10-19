@@ -120,9 +120,7 @@ get_all_pairs.his <- function(all_pairs.his){
       dplyr::summarise_all(max, na.rm=T) %>%
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
-    pair.his = pair.his %>% 
-      dplyr::mutate(mval = dplyr::if_else(is.infinite(mval), true=NA, false=mval)) %>%
-      dplyr::select(-gene, -exon)
+    pair.his = pair.his %>% dplyr::select(-gene, -exon)
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
@@ -142,6 +140,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     colnames(all_pairs.his.sig) = colname_his
+    all_pairs.his.sig[is.infinite(all_pairs.his.sig)] = NA
     print(all_pairs.his.sig$aorta_CD8positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
     
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
