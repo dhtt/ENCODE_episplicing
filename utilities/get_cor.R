@@ -125,6 +125,7 @@ get_all_pairs.his <- function(all_pairs.his){
   }
   lapply(pair.his_list, function(x) print(dim(x)))
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
+  pair.his_list = apply(pair.his_list, 2, function(x) x[is.infinite(x)] = NA)
   print(dim(pair.his_list))
   print(head(pair.his_list))
   return(pair.his_list)
