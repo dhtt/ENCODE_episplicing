@@ -101,7 +101,7 @@ print("===== PREPARE HIS FILE (6 TOTAL) =====")
 his_id = read.csv("flank_id.2021.txt", sep='\t', header = FALSE)
 get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = vector("list", length(all_pairs.his))
-  for (i in 1:1){
+  for (i in 1:length(all_pairs.his)){
     # for (i in 1:1){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
@@ -135,8 +135,8 @@ get_all_pairs.his <- function(all_pairs.his){
 
 get_all_pairs.his_list <- function(histone_type_list){
   all_pairs.his_list = vector("list", length(histone_type_list))
-  for (j in 1:length(histone_type_list)){
-    # for (j in 1:1){
+  # for (j in 1:length(histone_type_list)){
+  for (j in 1:1){
     his = histone_type_list[[j]]
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
