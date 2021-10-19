@@ -121,7 +121,7 @@ get_all_pairs.his <- function(all_pairs.his){
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     pair.his = pair.his %>% 
-      dplyr::mutate(mval = ifelse(is.infinite(mval), yes=NA, no=mval)) %>%
+      dplyr::mutate(mval = dplyr::if_else(is.infinite(mval), true=NA, false=mval)) %>%
       dplyr::select(-gene, -exon)
     pair.his_list[[i]] = pair.his
   }
