@@ -117,7 +117,7 @@ get_all_pairs.his <- function(all_pairs.his){
       ) %>%
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
-      dplyr::summarise_all(max) %>%
+      dplyr::summarise_all(max, na.rm=T) %>%
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     pair.his = pair.his %>% dplyr::select(-gene, -exon)
