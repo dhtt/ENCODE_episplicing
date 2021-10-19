@@ -24,77 +24,77 @@ get_colname <- function(filename_list, option='his'){
   return(name)
 }
 
-# #===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
-# print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
-# # all_pairs.exp = list.files("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res", full.names = TRUE)
-# get_all_pairs.exp <- function(all_pairs.exp){
-#   colname_exp = c("gene_id", "exon_id", get_colname(all_pairs.exp, "exp"))
-#   pair.exp_list = vector("list", length(all_pairs.exp))
-#   for (i in 1:length(all_pairs.exp)){
-#     print(paste("Pair: ",i, sep=''))
-#     pair.exp = all_pairs.exp[[i]]
-#     #fwrite(exp_id, "/home/dhthutrang/ENCODE/utilities/exp_id.txt", col.names = FALSE, row.names = FALSE, quote = FALSE, sep='\t')
-#     pair.exp_list[[i]] = fread(pair.exp)[,c("stat", "padj")]
-#   }
-#   pair.exp_list = lapply(pair.exp_list,
-#                          function(x) {
-#                            x = x %>%
-#                              mutate(
-#                                exp = dplyr::if_else(padj <= 0.1 & !is.na(padj), 
-#                                                     true = stat, false = 0.0)) %>%
-#                              dplyr::select(exp)
-#                          })
-#   pair.exp_list = as.data.frame(pair.exp_list)
-#   exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
-#   # print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
-#   pair.exp_list = as.data.frame(cbind(exp_id, pair.exp_list))
-#   pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
-#   colnames(pair.exp_list) = colname_exp
-#   return(as.data.table(pair.exp_list))
-# }
-# 
-# # all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
-# # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-# # all_pairs.exp = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
-# all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
-# # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
-# 
-# # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
-# filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
-#   # combined_df_exon = readRDS('/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS')
-#   combined_df_exon = readRDS(filter_genes_path)
-#   corrected_genes = unique(unlist(combined_df_exon[combined_df_exon['deu'] == T, "gene_id"]))
-#   
-#   filtered_df = as.data.frame(df[df$gene_id %in% corrected_genes, ]) #Filter by corrected genes[only 10 percs]
-#   combined_df = as.data.frame(combined_df_exon[combined_df_exon$gene_id %in% corrected_genes, ])
-#   filtered_df = filtered_df[order(filtered_df$gene_id), ] #Order so rownames overlap
-#   combined_df = combined_df[order(combined_df$gene_id), ]
-#   filtered_df = filtered_df[combined_df$first_exon == F, ] #Filter out first exons
-#   combined_df = combined_df[combined_df$first_exon == F, ]
-#   
-#   final_filtered_df = filtered_df #Filter by deu/dhm
-#   final_filtered_df[unlist(combined_df[[filter]] == F), 3:length(final_filtered_df)] = 0
-#   
-#   #------Check if filter by DEU work------
-#   print("========= CHECK FILTER =========")
-#   print(paste("Gene IDs match:", table(final_filtered_df$gene_id == filtered_df$gene_id)))
-#   # lapply(list(filtered_df, final_filtered_df), function(x) table(x == 0))
-#   print(paste("Overlap before after:", table(final_filtered_df == filtered_df)))
-#   # final_filtered_df[final_filtered_df$adiposetissue_aorta != filtered_df$adiposetissue_aorta, c('gene_id', 'exon_id')]
-#   # final_filtered_df$adiposetissue_aorta[final_filtered_df$gene_id == 'DLG1' & final_filtered_df$exon_id == 'E015']
-#   # filtered_df$adiposetissue_aorta[filtered_df$gene_id == 'DLG1' & filtered_df$exon_id == 'E015']
-#   #------
-#   
-#   return(as.data.table(final_filtered_df))
-# }
-# 
-# # all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS", filter="deu")
-# # all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS", filter="deu")
-# all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
-# # saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
-# # saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
-# all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
-# # all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
+#===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====
+print("===== PREPARE EXP FILE (1 FOR ALL HIS TYPES) =====")
+# all_pairs.exp = list.files("/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/res", full.names = TRUE)
+get_all_pairs.exp <- function(all_pairs.exp){
+  colname_exp = c("gene_id", "exon_id", get_colname(all_pairs.exp, "exp"))
+  pair.exp_list = vector("list", length(all_pairs.exp))
+  for (i in 1:length(all_pairs.exp)){
+    print(paste("Pair: ",i, sep=''))
+    pair.exp = all_pairs.exp[[i]]
+    #fwrite(exp_id, "/home/dhthutrang/ENCODE/utilities/exp_id.txt", col.names = FALSE, row.names = FALSE, quote = FALSE, sep='\t')
+    pair.exp_list[[i]] = fread(pair.exp)[,c("stat", "padj")]
+  }
+  pair.exp_list = lapply(pair.exp_list,
+                         function(x) {
+                           x = x %>%
+                             mutate(
+                               exp = dplyr::if_else(padj <= 0.1 & !is.na(padj),
+                                                    true = stat, false = 0.0)) %>%
+                             dplyr::select(exp)
+                         })
+  pair.exp_list = as.data.frame(pair.exp_list)
+  exp_id = fread("/home/dhthutrang/ENCODE/utilities/exp_id.txt", sep = '\t', quote=FALSE, header = FALSE)
+  # print(paste("COMPARE LENGTH", dim(exp_id), dim(pair.exp_list), sep=' '))
+  pair.exp_list = as.data.frame(cbind(exp_id, pair.exp_list))
+  pair.exp_list = pair.exp_list[order(pair.exp_list$V1), ]
+  colnames(pair.exp_list) = colname_exp
+  return(as.data.table(pair.exp_list))
+}
+
+# all_pairs.exp = get_all_pairs.exp(all_pairs.exp)
+# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+# all_pairs.exp = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
+all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
+# saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
+
+# FILTER WITH NEW CORRECTED GENES AND FIRST EXON
+filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
+  # combined_df_exon = readRDS('/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/combined_df_exon_10perc.RDS')
+  combined_df_exon = readRDS(filter_genes_path)
+  corrected_genes = unique(unlist(combined_df_exon[combined_df_exon['deu'] == T, "gene_id"]))
+
+  filtered_df = as.data.frame(df[df$gene_id %in% corrected_genes, ]) #Filter by corrected genes[only 10 percs]
+  combined_df = as.data.frame(combined_df_exon[combined_df_exon$gene_id %in% corrected_genes, ])
+  filtered_df = filtered_df[order(filtered_df$gene_id), ] #Order so rownames overlap
+  combined_df = combined_df[order(combined_df$gene_id), ]
+  filtered_df = filtered_df[combined_df$first_exon == F, ] #Filter out first exons
+  combined_df = combined_df[combined_df$first_exon == F, ]
+
+  final_filtered_df = filtered_df #Filter by deu/dhm
+  final_filtered_df[unlist(combined_df[[filter]] == F), 3:length(final_filtered_df)] = 0
+
+  #------Check if filter by DEU work------
+  print("========= CHECK FILTER =========")
+  print(paste("Gene IDs match:", table(final_filtered_df$gene_id == filtered_df$gene_id)))
+  # lapply(list(filtered_df, final_filtered_df), function(x) table(x == 0))
+  print(paste("Overlap before after:", table(final_filtered_df == filtered_df)))
+  # final_filtered_df[final_filtered_df$adiposetissue_aorta != filtered_df$adiposetissue_aorta, c('gene_id', 'exon_id')]
+  # final_filtered_df$adiposetissue_aorta[final_filtered_df$gene_id == 'DLG1' & final_filtered_df$exon_id == 'E015']
+  # filtered_df$adiposetissue_aorta[filtered_df$gene_id == 'DLG1' & filtered_df$exon_id == 'E015']
+  #------
+
+  return(as.data.table(final_filtered_df))
+}
+
+# all_pairs.exp_flt_10 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_10perc.RDS", filter="deu")
+# all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS", filter="deu")
+all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
+# saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
+# saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
+all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
+# all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
@@ -108,7 +108,6 @@ get_all_pairs.his <- function(all_pairs.his){
     pair.his = fread(pair.his)
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
-    print(head(id))
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
@@ -119,25 +118,17 @@ get_all_pairs.his <- function(all_pairs.his){
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
       dplyr::summarise_all(max) %>%
-      dplyr::mutate(id = paste(gene, exon, sep=':')) %>%
-      dplyr::select(-gene, -exon, -id)
+      dplyr::ungroup() 
+    if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
+    pair.his = pair.his %>% dplyr::select(-gene, -exon)
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
-  pair.his_list = as.data.frame(do.call(cbind, pair.his_list))
-  # pair.his_list = pair.his_list %>% reduce(full_join, by = c('gene', 'exon'))
+  pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
   print(dim(pair.his_list))
   print(head(pair.his_list))
-  pair.his_list = as.data.table(pair.his_list)
-  pair.his_list = pair.his_list %>%
-    group_by(group = gl(n()/2, 2)) %>%
-    summarise_all(max) %>%
-    dplyr::select(-group)
-  pair.his_list = as.data.frame(cbind(unique(his_id), pair.his_list))
-  pair.his_list = pair.his_list[order(pair.his_list$V1),]
   return(pair.his_list)
 }
-
 
 get_all_pairs.his_list <- function(histone_type_list){
   all_pairs.his_list = vector("list", length(histone_type_list))
