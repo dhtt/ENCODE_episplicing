@@ -8,8 +8,7 @@ library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
 
-histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-histone_type_list = c("H3K36me3", "H3K27ac")
+histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -173,6 +172,8 @@ all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
 # saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
 saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+print(all_pairs.his_list_flt_90$aorta_CD8positivealphabetaTcell[all_pairs.his_list_flt_90$gene_id =="FGFR2"])
+
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
 # all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
@@ -185,141 +186,141 @@ saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
 # all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id, all_pairs.exp$exon_id),]
 # table(all_pairs.exp$gene_id ==his_ids$V1)
 # 
-# #===== CORRELATION WITH RANDOMIZATION =====
-# # ------------ Execute analysis ------------
-# # all_genes = fread("gene_id.txt", header = FALSE)
-# # all_genes = unique(all_pairs.exp_flt$gene_id)
-# p_value_calculator <- function(r, nrow){
-#   P <- r*sqrt(nrow-2)/sqrt(1-r*r)
-#   P <- 2*pt(-abs(P), nrow-2)
-#   return(P)
-# }
-# pearcor_p <- function(exp, his){
-#   if (length(unique(exp)) > 1 & length(unique(his)) > 1){
-#     p_val = p_value_calculator(cor(exp, his, method = "pearson"), nrow = length(exp))
-#     # p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
-#     return(p_val)
-#   }
-#   else {
-#     return(NA)
-#   }
-# }
-# 
-# 
-# pearcor_r <- function(exp, his, n_points){
-#   df = as.data.frame(cbind(exp, his))
-#   n_sep_point = nrow(unique(df))
-#   if (0 %in% apply(df, 1, unique)) n_sep_point = n_sep_point - 1
-#   if (n_sep_point >= 3 & length(unique(exp)) > 1 & length(unique(his)) >= n_points){
-#     r_val = cor(exp, his, method = "pearson")
-#     return(r_val)
-#   }
-#   else {
-#     return(NA)
-#   }
-# }
-# 
-# analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, all_genes){
-#   all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
-#   subset_name = colnames(all_pairs.his)
-#   print(subset_name)
-#   colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
-#   all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
-#   
-#   #for (i in 1:n_pairs){
-#   all_res_pair <- foreach( i=1:(length(subset_name)-2), .combine='c', .packages=c('dplyr') ) %dopar% {
-#     print(paste("Pair: ", i, sep=''))
-#     exp = all_pairs.exp_subset[[i+2]]
-#     his = all_pairs.his[[i+2]]
-#     data_table = as.data.table(cbind(exp, his))
-#     head(data_table)
-#     
-#     if (option == "p"){
-#       res_table = data_table %>%
-#         dplyr::group_by(all_pairs.exp$gene_id) %>%
-#         dplyr::summarise(res = pearcor_p(exp, his)) %>%
-#         dplyr::select(res)
-#     }
-#     else if (option == "r") {
-#       res_table = data_table %>%
-#         dplyr::group_by(all_pairs.exp$gene_id) %>%
-#         dplyr::summarise(res = pearcor_r(exp, his, n_points)) %>%
-#         dplyr::select(res)
-#     }
-#     #all_res_pair[[i]] = res_table
-#   }
-#   all_res_pair = as.data.table(all_res_pair)
-#   all_res_pair = cbind(all_genes, all_res_pair)
-#   colnames(all_res_pair) = c('gene_id', subset_name[3:length(subset_name)])
-#   print(head(all_res_pair))
-#   return(as.data.frame(all_res_pair))
-# }
-# analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", n_points=2){
-#   all_res_list = vector("list", length(histone_type_list)-1 )
-#   all_genes = unique(all_pairs.exp$gene_id)
-#   for (j in 1:length(histone_type_list)){
-#     print(paste("Histone: ", histone_type_list[[j]], sep = ''))
-#     all_pairs.his = all_pairs.his_list[[j]]
-#     if (method == "p") {
-#       all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p", all_genes=all_genes)
-#     }
-#     else if (method == "r") {
-#       all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points, all_genes=all_genes)
-#     }
-#     all_res_list[[j]] = all_res_pair
-#   }
-#   return(all_res_list)
-# }
-# 
-# print("Pearsons-p correlation")
-# # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "p")
-# # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_10perc.RDS")
-# # 
-# # all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
-# # saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
-# 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_final.RDS")
-# 
-# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
-# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_final.RDS")
-# # 
-# # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
-# # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
-# # 
-# # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=10)
-# # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r10.RDS")
-# # 
-# # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=15)
-# # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r15.RDS")
-# 
-# 
-# # temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
-# # temp[grep("STIM1", temp$V9), `V10`]
-# # name = temp$V9[seq(1, nrow(temp), 2)]
-# # 
-# # ids = lapply(name, function(x){
-# #   split_name = str_split(x, '\"')[[1]]
-# #   gene_id = split_name[2]
-# #   exon_id = split_name[length(split_name) -1]
-# #   return(c(gene_id, exon_id))
-# # })
-# # tail(ids)
-# # his_id2 = as.data.frame(do.call("rbind", ids))
-# # head(his_id2)
-# # 
-# # temp1 = temp %>%
-# #   dplyr::select(V10) %>%
-# #   group_by(group = gl(n()/2, 2)) %>%
-# #   summarise_all(max) %>%
-# #   dplyr::select(-group)
-# # head(temp3)
-# # his_id2 = read.csv("flank_id.txt", sep='\t', header = FALSE)
-# # temp2 = cbind(temp1, his_id)
-# # temp3 = cbind(temp1, his_id2)
-# # temp2[temp2$V1 == "STIM1", 1]
-# # temp3[temp3$V1 == "STIM1", 1]
-# # 
-# # fwrite(his_id2, "flank_id.txt", quote = FALSE, col.names = FALSE, sep='\t')
-# 
-# 
+#===== CORRELATION WITH RANDOMIZATION =====
+# ------------ Execute analysis ------------
+# all_genes = fread("gene_id.txt", header = FALSE)
+# all_genes = unique(all_pairs.exp_flt$gene_id)
+p_value_calculator <- function(r, nrow){
+  P <- r*sqrt(nrow-2)/sqrt(1-r*r)
+  P <- 2*pt(-abs(P), nrow-2)
+  return(P)
+}
+pearcor_p <- function(exp, his){
+  if (length(unique(exp)) > 1 & length(unique(his)) > 1){
+    p_val = p_value_calculator(cor(exp, his, method = "pearson"), nrow = length(exp))
+    # p_val = p.adjust(p_val, method = "fdr", n=ncol(all_genes))
+    return(p_val)
+  }
+  else {
+    return(NA)
+  }
+}
+
+
+pearcor_r <- function(exp, his, n_points){
+  df = as.data.frame(cbind(exp, his))
+  n_sep_point = nrow(unique(df))
+  if (0 %in% apply(df, 1, unique)) n_sep_point = n_sep_point - 1
+  if (n_sep_point >= 3 & length(unique(exp)) > 1 & length(unique(his)) >= n_points){
+    r_val = cor(exp, his, method = "pearson")
+    return(r_val)
+  }
+  else {
+    return(NA)
+  }
+}
+
+analyze_array <- function(all_pairs.exp, all_pairs.his, option = "p", n_points, all_genes){
+  all_res_pair = vector("list", ncol(all_pairs.exp) - 2)
+  subset_name = colnames(all_pairs.his)
+  print(subset_name)
+  colnames(all_pairs.exp) = gsub('trophoblastcell', 'trophoblast', colnames(all_pairs.exp))
+  all_pairs.exp_subset = all_pairs.exp[, ..subset_name]
+
+  #for (i in 1:n_pairs){
+  all_res_pair <- foreach( i=1:(length(subset_name)-2), .combine='c', .packages=c('dplyr') ) %dopar% {
+    print(paste("Pair: ", i, sep=''))
+    exp = all_pairs.exp_subset[[i+2]]
+    his = all_pairs.his[[i+2]]
+    data_table = as.data.table(cbind(exp, his))
+    head(data_table)
+
+    if (option == "p"){
+      res_table = data_table %>%
+        dplyr::group_by(all_pairs.exp$gene_id) %>%
+        dplyr::summarise(res = pearcor_p(exp, his)) %>%
+        dplyr::select(res)
+    }
+    else if (option == "r") {
+      res_table = data_table %>%
+        dplyr::group_by(all_pairs.exp$gene_id) %>%
+        dplyr::summarise(res = pearcor_r(exp, his, n_points)) %>%
+        dplyr::select(res)
+    }
+    #all_res_pair[[i]] = res_table
+  }
+  all_res_pair = as.data.table(all_res_pair)
+  all_res_pair = cbind(all_genes, all_res_pair)
+  colnames(all_res_pair) = c('gene_id', subset_name[3:length(subset_name)])
+  print(head(all_res_pair))
+  return(as.data.frame(all_res_pair))
+}
+analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", n_points=2){
+  all_res_list = vector("list", length(histone_type_list)-1 )
+  all_genes = unique(all_pairs.exp$gene_id)
+  for (j in 1:length(histone_type_list)){
+    print(paste("Histone: ", histone_type_list[[j]], sep = ''))
+    all_pairs.his = all_pairs.his_list[[j]]
+    if (method == "p") {
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "p", all_genes=all_genes)
+    }
+    else if (method == "r") {
+      all_res_pair = analyze_array(all_pairs.exp, all_pairs.his, option = "r", n_points=n_points, all_genes=all_genes)
+    }
+    all_res_list[[j]] = all_res_pair
+  }
+  return(all_res_list)
+}
+
+print("Pearsons-p correlation")
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "p")
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_10perc.RDS")
+#
+# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
+# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
+
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_final.RDS")
+
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
+saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_final.RDS")
+#
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
+#
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=10)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r10.RDS")
+#
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=15)
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r15.RDS")
+
+
+# temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
+# temp[grep("STIM1", temp$V9), `V10`]
+# name = temp$V9[seq(1, nrow(temp), 2)]
+#
+# ids = lapply(name, function(x){
+#   split_name = str_split(x, '\"')[[1]]
+#   gene_id = split_name[2]
+#   exon_id = split_name[length(split_name) -1]
+#   return(c(gene_id, exon_id))
+# })
+# tail(ids)
+# his_id2 = as.data.frame(do.call("rbind", ids))
+# head(his_id2)
+#
+# temp1 = temp %>%
+#   dplyr::select(V10) %>%
+#   group_by(group = gl(n()/2, 2)) %>%
+#   summarise_all(max) %>%
+#   dplyr::select(-group)
+# head(temp3)
+# his_id2 = read.csv("flank_id.txt", sep='\t', header = FALSE)
+# temp2 = cbind(temp1, his_id)
+# temp3 = cbind(temp1, his_id2)
+# temp2[temp2$V1 == "STIM1", 1]
+# temp3[temp3$V1 == "STIM1", 1]
+#
+# fwrite(his_id2, "flank_id.txt", quote = FALSE, col.names = FALSE, sep='\t')
+
+
