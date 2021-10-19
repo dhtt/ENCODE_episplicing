@@ -3,6 +3,7 @@ library(dplyr, quietly=TRUE)
 library(boot)
 library(stats)
 library(parallel)
+library(tidyverse)
 library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
@@ -105,18 +106,25 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    pair.his$his_id = lapply(pair.his$V9, function(x) paste(strsplit(x, split='"', fixed=T)[[1]][c(2, 6)], collapse = ':'))
+    id = do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
+    colnames(id) = c('gene', 'exon')
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
         m_val = dplyr::if_else(p_val <= 0.05, 
-                               true = abs(as.numeric(as.character(V10))), false = 0)
+                               true = abs(as.numeric(as.character(V10))), false = 0),
+        gene = id$gene, exon = id$exon, type = V3
       ) %>%
-      dplyr::select(his_id, m_val)
+      dplyr::select(gene, exon, m_val) %>%
+      dplyr::group_by(gene, exon) %>% 
+      dplyr::summarise_all(max) 
     print(dim(pair.his))
     print(head(pair.his))
     pair.his_list[[i]] = pair.his
   }
+  pair.his_list = pair.his_list %>% reduce(full_join, by = c('gene', 'id'))
+  print(dim(pair.his_list))
+  print(head(pair.his_list))
   pair.his_list = as.data.table(pair.his_list)
   pair.his_list = pair.his_list %>%
     group_by(group = gl(n()/2, 2)) %>%
@@ -126,6 +134,7 @@ get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = pair.his_list[order(pair.his_list$V1),]
   return(pair.his_list)
 }
+
 
 get_all_pairs.his_list <- function(histone_type_list){
   all_pairs.his_list = vector("list", length(histone_type_list))
