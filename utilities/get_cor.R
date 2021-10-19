@@ -106,15 +106,14 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    print(head(pair.his))
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
     pair.his = pair.his %>%
       dplyr::mutate(
         gene = id$gene, exon = id$exon, type = V3,
-        p_val = as.numeric(as.character(V11)),
+        p_val = as.numeric(as.character(V14)),
         m_val = dplyr::if_else(p_val <= 0.05, 
-                               true = abs(as.numeric(as.character(V10))), false = 0)
+                               true = abs(as.numeric(as.character(V13))), false = 0)
       ) %>%
       dplyr::select(gene, exon, m_val) %>%
       dplyr::group_by(gene, exon) %>% 
