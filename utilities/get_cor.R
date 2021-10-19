@@ -106,8 +106,9 @@ get_all_pairs.his <- function(all_pairs.his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    id = do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)]))
+    id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
+    print(head(id))
     pair.his = pair.his %>%
       mutate(
         p_val = as.numeric(as.character(V11)),
