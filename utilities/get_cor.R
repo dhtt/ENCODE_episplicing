@@ -125,6 +125,7 @@ get_all_pairs.his <- function(all_pairs.his){
   }
   lapply(pair.his_list, function(x) print(dim(x)))
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
+  pair.his_list[is.infinite(pair.his_list)] = NA
   print(dim(pair.his_list))
   print(head(pair.his_list))
   return(pair.his_list)
@@ -140,7 +141,6 @@ get_all_pairs.his_list <- function(histone_type_list){
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
     colnames(all_pairs.his.sig) = colname_his
-    all_pairs.his.sig[is.infinite(all_pairs.his.sig)] = NA
     print(all_pairs.his.sig$aorta_CD8positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
     
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
