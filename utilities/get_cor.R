@@ -98,7 +98,7 @@ all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
 his_id = read.csv("flank_id.2021.txt", sep='\t', header = FALSE)
-get_all_pairs.his <- function(all_pairs.his){
+get_all_pairs.his <- function(all_pairs.his, his){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
     # for (i in 1:1){
@@ -128,6 +128,7 @@ get_all_pairs.his <- function(all_pairs.his){
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
   print(dim(pair.his_list))
   print(head(pair.his_list))
+  saveRDS(pair.his_list, paste('pair.his_list_', his, '.RDS', sep=''))
   return(pair.his_list)
 }
 
@@ -139,7 +140,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
-    all_pairs.his.sig = get_all_pairs.his(all_pairs.his)
+    all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
     colnames(all_pairs.his.sig) = colname_his
     print(all_pairs.his.sig$aorta_CD8positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
     
