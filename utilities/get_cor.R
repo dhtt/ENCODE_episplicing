@@ -9,6 +9,7 @@ library("doMC")
 doMC::registerDoMC(cores = 17)
 
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
+histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -161,12 +162,31 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   return(all_filtered_df)
 }
 
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+#all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+#saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
+#all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
+#all_pairs.his_list_ = lapply(histone_type_list, function(x) readRDS(paste('pair.his_list_', x, '.RDS', sep='')))
+#names(all_pairs.his_list_) = histone_type_list
 
-all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
+all_pairs.his_list_ = vector("list", length(histone_type_list))
+  for (j in 1:length(histone_type_list)){
+	      his = histone_type_list[[j]]
+    all_pairs.his = readRDS(paste('pair.his_list_', his, '.RDS', sep=''))
+    print(his)
+    print(head(all_pairs.his))
+    file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
+    colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
+    #colnames(all_pairs.his.sig) = colname_his
+    print(all_pairs.his$aorta_CD8positivealphabetaTcell[all_pairs.his$gene_id == "FGFR2"])
+    all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
+  }
+
+
+
+
+
+#all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
 # all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
 # all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
