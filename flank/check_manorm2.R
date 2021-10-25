@@ -27,6 +27,7 @@ get_all_pairs.his <- function(all_pairs.his, his, check_gene){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
+    pair.his = pair.his[grep(check_gene, pair.his$V9),]
     print(head(pair.his))
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
@@ -36,8 +37,7 @@ get_all_pairs.his <- function(all_pairs.his, his, check_gene){
         p_val = as.numeric(as.character(V14)),
         m_val = as.numeric(as.character(V13))
       ) %>%
-      dplyr::select(gene, exon, m_val) %>%
-      dplyr::filter(gene == check_gene)
+      dplyr::select(gene, exon, m_val) 
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
