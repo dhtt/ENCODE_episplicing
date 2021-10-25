@@ -73,7 +73,7 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
   combined_df = combined_df[combined_df$first_exon == F, ]
 
   final_filtered_df = filtered_df #Filter by deu/dhm
-  final_filtered_df[unlist(combined_df[[filter]] == F), 3:length(final_filtered_df)] = 0
+  if (filter == "deu") final_filtered_df[unlist(combined_df[[filter]] == F), 3:length(final_filtered_df)] = 0
 
   #------Check if filter by DEU work------
   print("========= CHECK FILTER =========")
@@ -188,16 +188,15 @@ for (j in 1:length(histone_type_list)){
   print(his)
   file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
   colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
+  all_pairs.his[is.na(all_pairs.his)] = 0
   if (his == "H3K36me3"){
-      print('CHECK GSTM3 all_pairs.exp_')
+      print('CHECK GSTM3 all_pairs.his$aorta_CD4positivealphabetaTcell')
       print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
-      print('CHECK FGFR2 all_pairs.exp_')
+      print('CHECK FGFR2 all_pairs.his$aorta_CD4positivealphabetaTcell')
       print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="FGFR2"])
       }
   all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
   }
-
-
 
 
 #all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
@@ -207,9 +206,9 @@ all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_typ
 # saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
 saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
 
-print('CHECK GSTM3 all_pairs.exp_')
+print('CHECK GSTM3 all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell')
 print(all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell[all_pairs.his_list_flt_90$H3K36me3$gene_id =="GSTM3"])
-print('CHECK FGFR2 all_pairs.exp_')
+print('CHECK FGFR2 all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell')
 print(all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell[all_pairs.his_list_flt_90$H3K36me3$gene_id =="FGFR2"])
 
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
