@@ -28,7 +28,6 @@ get_all_pairs.his <- function(all_pairs.his, his, check_gene){
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
     pair.his = pair.his[grep(check_gene, pair.his$V9),]
-    print(head(pair.his))
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
     pair.his = pair.his %>%
@@ -37,6 +36,7 @@ get_all_pairs.his <- function(all_pairs.his, his, check_gene){
         p_val = as.numeric(as.character(V14)),
         m_val = as.numeric(as.character(V13))
       ) %>%
+      dplyr::filter(p_val < 0.05) %>%
       dplyr::select(gene, exon, m_val) 
     pair.his_list[[i]] = pair.his
   }
@@ -60,6 +60,10 @@ get_all_pairs.his_list <- function(histone_type_list, check_gene){
 list_results = get_all_pairs.his_list(histone_type_list, check_gene = check_gene)
 saveRDS(list_results, paste(check_gene, 'manorm.RDS', sep=''))
 
-# list_results = readRDS(paste(check_gene, 'manorm.RDS', sep=''))
-# ggplot(data = list_results[[1]][[1]], aes(x = exon, y = m_val)) +
-#   geom_point()
+# list_results = readRDS(paste(check_gene, 'manorm.RDS', sep=''))[[1]]
+# for (i in (1:length(list_results))){
+#   list_results[[i]]$tissue =  names(list_results)[i]
+# }
+# list_results = do.call(rbind, list_results)
+# ggplot(data = list_results, aes(x = exon, y = m_val, col=tissue)) +
+#   geom_point(show.legend = F)
