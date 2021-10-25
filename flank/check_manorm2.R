@@ -27,7 +27,7 @@ get_all_pairs.his <- function(all_pairs.his, his, check_gene){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    pair.his = 
+    print(head(pair.his))
     id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
     colnames(id) = c('gene', 'exon')
     pair.his = pair.his %>%
