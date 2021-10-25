@@ -5,7 +5,7 @@ library(stats)
 library(parallel)
 library(tidyverse)
 
-histone_type_list = c("H3K36me3", "H3K4me3")
+histone_type_list = c("H3K36me3")
 check_gene = 'FGFR2'
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
@@ -54,7 +54,7 @@ get_all_pairs.his_list <- function(histone_type_list, check_gene){
   return(all_pairs.his_list)
 }
 
-list_results = get_all_pairs.his_list(histone_type_list, check_gene = 'FGFR2')
-saveRDS(list_results, paste(gene, 'manorm.RDS', sep=''))
+list_results = get_all_pairs.his_list(histone_type_list, check_gene = check_gene)
+saveRDS(list_results, paste(check_gene, 'manorm.RDS', sep=''))
 
 
