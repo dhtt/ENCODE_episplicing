@@ -188,7 +188,7 @@ for (j in 1:length(histone_type_list)){
   print(his)
   file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
   colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
-  if (his = "H3K36me3"){
+  if (his == "H3K36me3"){
       print('CHECK GSTM3 all_pairs.exp_')
       print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
       print('CHECK FGFR2 all_pairs.exp_')
