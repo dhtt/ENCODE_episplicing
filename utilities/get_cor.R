@@ -93,16 +93,16 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
 
 
 print('CHECK GSTM3 all_pairs.exp_')
-print(all_pairs.exp_$aorta_CD8positivealphabetaTcell[all_pairs.exp_$gene_id =="GSTM3"])
+print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="GSTM3"])
 print('CHECK FGFR2 all_pairs.exp_')
-print(all_pairs.exp_$aorta_CD8positivealphabetaTcell[all_pairs.exp_$gene_id =="FGFR2"])
+print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="FGFR2"])
 
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
 
 print('CHECK GSTM3 all_pairs.exp_')
-print(all_pairs.exp_flt_90$aorta_CD8positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="GSTM3"])
+print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="GSTM3"])
 print('CHECK FGFR2 all_pairs.exp_')
-print(all_pairs.exp_flt_90$aorta_CD8positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="FGFR2"])
+print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="FGFR2"])
 
 # saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
 # saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
@@ -155,7 +155,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
     colnames(all_pairs.his.sig) = colname_his
-    print(all_pairs.his.sig$aorta_CD8positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
+    print(all_pairs.his.sig$aorta_CD4positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
     
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
