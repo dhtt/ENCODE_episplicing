@@ -49,9 +49,11 @@ get_all_pairs.his_list <- function(histone_type_list, check_gene){
   for (j in 1:length(histone_type_list)){
     his = histone_type_list[[j]]
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
-    all_pairs.his_list[[j]] = get_all_pairs.his(all_pairs.his, his, check_gene)
+    all_pairs.his_ = get_all_pairs.his(all_pairs.his, his, check_gene)
+    names(all_pairs.his_) = get_colname(all_pairs.his, "his")
+    all_pairs.his_list[[j]] = all_pairs.his_
   }
-  names(all_pairs.his_list) = get_colname(all_pairs.his, "his")
+
   return(all_pairs.his_list)
 }
 
