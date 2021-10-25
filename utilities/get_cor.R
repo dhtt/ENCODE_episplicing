@@ -92,17 +92,17 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
 # all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90perc.RDS", filter="deu")
 
 
-print('CHECK GSTM3 all_pairs.exp_')
-print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="GSTM3"])
-print('CHECK FGFR2 all_pairs.exp_')
-print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="FGFR2"])
-
+# print('CHECK GSTM3 all_pairs.exp_')
+# print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="GSTM3"])
+# print('CHECK FGFR2 all_pairs.exp_')
+# print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="FGFR2"])
+# 
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
-
-print('CHECK GSTM3 all_pairs.exp_')
-print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="GSTM3"])
-print('CHECK FGFR2 all_pairs.exp_')
-print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="FGFR2"])
+# 
+# print('CHECK GSTM3 all_pairs.exp_')
+# print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="GSTM3"])
+# print('CHECK FGFR2 all_pairs.exp_')
+# print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="FGFR2"])
 
 # saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
 # saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
@@ -155,7 +155,6 @@ get_all_pairs.his_list <- function(histone_type_list){
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
     colnames(all_pairs.his.sig) = colname_his
-    print(all_pairs.his.sig$aorta_CD4positivealphabetaTcell[all_pairs.his.sig$gene_id == "FGFR2"])
     
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
@@ -189,12 +188,12 @@ for (j in 1:length(histone_type_list)){
   file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
   colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
   all_pairs.his[is.na(all_pairs.his)] = 0
-  if (his == "H3K36me3"){
-      print('CHECK GSTM3 all_pairs.his$aorta_CD4positivealphabetaTcell')
-      print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
-      print('CHECK FGFR2 all_pairs.his$aorta_CD4positivealphabetaTcell')
-      print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="FGFR2"])
-      }
+  # if (his == "H3K36me3"){
+  #     print('CHECK GSTM3 all_pairs.his$aorta_CD4positivealphabetaTcell')
+  #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
+  #     print('CHECK FGFR2 all_pairs.his$aorta_CD4positivealphabetaTcell')
+  #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="FGFR2"])
+  #     }
   all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
   }
 
@@ -205,11 +204,6 @@ for (j in 1:length(histone_type_list)){
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
 # saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
 saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
-
-print('CHECK GSTM3 all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell')
-print(all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell[all_pairs.his_list_flt_90$H3K36me3$gene_id =="GSTM3"])
-print('CHECK FGFR2 all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell')
-print(all_pairs.his_list_flt_90$H3K36me3$aorta_CD4positivealphabetaTcell[all_pairs.his_list_flt_90$H3K36me3$gene_id =="FGFR2"])
 
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
 # all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
@@ -316,12 +310,12 @@ print("Pearsons-p correlation")
 # all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
 # saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
 
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_final.RDS")
+all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
+saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_final.RDS")
 
-# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
-# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_final.RDS")
-#
+all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
+saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_final.RDS")
+
 # all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
 # saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
 #
