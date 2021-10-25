@@ -51,10 +51,13 @@ get_all_pairs.his_list <- function(histone_type_list, check_gene){
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     all_pairs.his_list[[j]] = get_all_pairs.his(all_pairs.his, his, check_gene)
   }
+  names(all_pairs.his_list) = get_colname(all_pairs.his, "his")
   return(all_pairs.his_list)
 }
 
 list_results = get_all_pairs.his_list(histone_type_list, check_gene = check_gene)
 saveRDS(list_results, paste(check_gene, 'manorm.RDS', sep=''))
 
-
+# list_results = readRDS(paste(check_gene, 'manorm.RDS', sep=''))
+# ggplot(data = list_results[[1]][[1]], aes(x = exon, y = m_val)) +
+#   geom_point()
