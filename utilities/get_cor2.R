@@ -73,7 +73,6 @@ get_all_pairs.his <- function(all_pairs.his, his){
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
       dplyr::select(p_val)
-      dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     print(head(pair.his, 50))
     pair.his_list[[i]] = pair.his
