@@ -70,7 +70,7 @@ get_all_pairs.his <- function(all_pairs.his, his){
     pair.his = pair.his %>%
       dplyr::mutate(
         gene = id$gene, exon = id$exon, type = V3,
-        p_val = dplyr::if_else(as.character(V11) == '0', NA, as.numeric(as.character(V11))),
+        p_val = ifelse(as.character(V11) == '0', NA, as.numeric(as.character(V11))),
         # m_val = dplyr::if_else(p_val <= 0.05, 
         #                        true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
