@@ -72,7 +72,7 @@ get_all_pairs.his <- function(all_pairs.his, his){
         m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V13))), false = 0)
       ) %>%
-      dplyr::select(gene, exon, p_val) %>%
+      dplyr::select(gene, exon, type, p_val) %>%
       dplyr::group_by(gene, exon, type) %>% 
       dplyr::summarise_all(min, na.rm=T) %>%
       dplyr::na_if(., -Inf) %>% 
