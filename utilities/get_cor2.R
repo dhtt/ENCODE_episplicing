@@ -112,7 +112,9 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 }
 
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "home/dhthutrang/ENCODE/utilities/temp.RDS")
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/temp.RDS")
+all_pairs.his_list = readRDS("temp.RDS")
+
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 #all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
