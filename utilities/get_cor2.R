@@ -77,9 +77,10 @@ get_all_pairs.his <- function(all_pairs.his, his){
     pair.his_m = pair.his %>% dplyr::select(m_val)
     pair.his_list[[i]] = list(pair.his_m, pair.his_p)
   }
-  pair.his_list_m = lapply(pair.his_list, function(x) x[[1]])
-  pair.his_list_p = lapply(pair.his_list, function(x) x[[2]])
-  pair.his_list_m[is.na(pair.his_list_p) | pair.his_list_p > 0.05] = 0
+  pair.his_list_m = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[1]])))
+  pair.his_list_p = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[2]])))
+  pair.his_list_p_adj = apply(pair.his_list_p, 1, function(x) p.adjust(x, 'fdr'))
+  pair.his_list_m[is.na(pair.his_list_p_adj) | pair.his_list_p_adj > 0.05] = 0
   pair.his_list_m = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list_m))))
   return(pair.his_list_m)
 }
@@ -115,8 +116,9 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 }
 
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/temp.RDS")
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr.RDS")
 # all_pairs.his_list = readRDS("temp.RDS")[[1]]
+# x = all_pairs.his_list[all_pairs.his_list$gene_id == "FGFR2", ]
 
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 #all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
