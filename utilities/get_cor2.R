@@ -79,7 +79,8 @@ get_all_pairs.his <- function(all_pairs.his, his){
   }
   pair.his_list_m = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[1]])))
   pair.his_list_p = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[2]])))
-  pair.his_list_p_adj = apply(pair.his_list_p, 1, function(x) p.adjust(x, 'fdr'))
+  pair.his_list_p_adj = as.data.frame(apply(pair.his_list_p, 1, function(x) p.adjust(x, 'fdr')))
+  saveRDS(pair.his_list_p_adj, "/home/dhthutrang/ENCODE/utilities/pair.his_list_p_adj.RDS")
   pair.his_list_m[is.na(pair.his_list_p_adj) | pair.his_list_p_adj > 0.05] = 0
   pair.his_list_m = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list_m))))
   return(pair.his_list_m)
