@@ -63,8 +63,10 @@ get_all_pairs.his <- function(all_pairs.his, his){
     print(paste("Pair: ", i, sep=''))
     pair.his = all_pairs.his[[i]]
     pair.his = fread(pair.his)
-    id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
-    colnames(id) = c('gene', 'exon')
+    if (i==1){
+      id = as.data.frame(do.call(rbind, lapply(pair.his$V9, function(x) strsplit(x, split='"', fixed=T)[[1]][c(2, 6)])))
+      colnames(id) = c('gene', 'exon')
+    }
     pair.his = pair.his %>%
       dplyr::mutate(
         gene = id$gene, exon = id$exon, type = V3,
@@ -73,12 +75,9 @@ get_all_pairs.his <- function(all_pairs.his, his){
                                true = abs(as.numeric(as.character(V10))), false = 0)
       ) %>%
       dplyr::select(p_val)
-    if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
-    print(head(pair.his, 50))
     pair.his_list[[i]] = pair.his
   }
-  lapply(pair.his_list, function(x) print(dim(x)))
-  pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
+  pair.his_list = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list))))
   # saveRDS(pair.his_list, paste('pair.his_list_', his, '.RDS', sep=''))
   return(pair.his_list)
 }
