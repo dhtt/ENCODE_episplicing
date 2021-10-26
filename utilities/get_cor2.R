@@ -78,7 +78,6 @@ get_all_pairs.his <- function(all_pairs.his, his){
     pair.his_list[[i]] = pair.his
   }
   pair.his_list = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list))))
-  # saveRDS(pair.his_list, paste('pair.his_list_', his, '.RDS', sep=''))
   return(pair.his_list)
 }
 
@@ -113,33 +112,34 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 }
 
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+saveRDS(all_pairs.his_list, "home/dhthutrang/ENCODE/utilities/temp.RDS")
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 #all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
 #all_pairs.his_list_ = lapply(histone_type_list, function(x) readRDS(paste('pair.his_list_', x, '.RDS', sep='')))
 #names(all_pairs.his_list_) = histone_type_list
 
-all_pairs.his_list_ = vector("list", length(histone_type_list))
-for (j in 1:length(histone_type_list)){
-  his = histone_type_list[[j]]
-  all_pairs.his = readRDS(paste('pair.his_list_', his, '.RDS', sep=''))
-  print(his)
-  file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
-  colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
-  all_pairs.his[is.na(all_pairs.his)] = 0
-  # if (his == "H3K36me3"){
-  #     print('CHECK GSTM3 all_pairs.his$aorta_CD4positivealphabetaTcell')
-  #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
-  #     print('CHECK FGFR2 all_pairs.his$aorta_CD4positivealphabetaTcell')
-  #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="FGFR2"])
-  #     }
-  all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
-}
+# all_pairs.his_list_ = vector("list", length(histone_type_list))
+# for (j in 1:length(histone_type_list)){
+#   his = histone_type_list[[j]]
+#   all_pairs.his = readRDS(paste('pair.his_list_', his, '.RDS', sep=''))
+#   print(his)
+#   file.names = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
+#   colnames(all_pairs.his) = c("gene_id", "exon_id", get_colname(file.names, "his"))
+#   all_pairs.his[is.na(all_pairs.his)] = 0
+#   # if (his == "H3K36me3"){
+#   #     print('CHECK GSTM3 all_pairs.his$aorta_CD4positivealphabetaTcell')
+#   #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="GSTM3"])
+#   #     print('CHECK FGFR2 all_pairs.his$aorta_CD4positivealphabetaTcell')
+#   #     print(all_pairs.his$aorta_CD4positivealphabetaTcell[all_pairs.his$gene_id =="FGFR2"])
+#   #     }
+#   all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
+# }
 
-
-#all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
-# all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
-# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
-all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
-# saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
-saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
+# 
+# #all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
+# # all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
+# # all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
+# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
+# # saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
+# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90.RDS")
