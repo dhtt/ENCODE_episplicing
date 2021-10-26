@@ -72,21 +72,14 @@ get_all_pairs.his <- function(all_pairs.his, his){
         m_val = dplyr::if_else(p_val <= 0.05, 
                                true = abs(as.numeric(as.character(V13))), false = 0)
       ) %>%
-      dplyr::select(gene, exon, type, p_val) %>%
-      dplyr::group_by(gene, exon, type) %>% 
-      dplyr::summarise_all(min, na.rm=T) %>%
-      dplyr::na_if(., -Inf) %>% 
-      dplyr::na_if(., Inf) %>%
+      dplyr::select(p_val)
       dplyr::ungroup() 
     if (i == 1) pair.his_id = pair.his[, c('gene', 'exon')]
     print(head(pair.his, 50))
-    pair.his = pair.his %>% dplyr::select(-gene, -exon, -type)
     pair.his_list[[i]] = pair.his
   }
   lapply(pair.his_list, function(x) print(dim(x)))
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
-  print(dim(pair.his_list))
-  print(head(pair.his_list))
   # saveRDS(pair.his_list, paste('pair.his_list_', his, '.RDS', sep=''))
   return(pair.his_list)
 }
@@ -100,6 +93,9 @@ get_all_pairs.his_list <- function(histone_type_list){
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
     colnames(all_pairs.his.sig) = colname_his
+    
+    print(dim(all_pairs.his.sig))
+    print(head(all_pairs.his.sig))
     
     all_pairs.his_list[[j]] = as.data.table(all_pairs.his.sig)
   }
