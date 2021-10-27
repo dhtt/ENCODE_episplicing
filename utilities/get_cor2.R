@@ -8,8 +8,8 @@ library("doMC")
 #setwd("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/flank")
 doMC::registerDoMC(cores = 17)
 
-# histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1", "H3K4me3", "H3K9me3")
-histone_type_list = c("H3K36me3")
+histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
+# histone_type_list = c("H3K36me3")
 get_colname <- function(filename_list, option='his'){
   name = sapply(filename_list, function(x) strsplit(x, split='/'))
   name = sapply(name, function(x) x[length(x)][[1]])
@@ -22,6 +22,10 @@ get_colname <- function(filename_list, option='his'){
   name = sapply(name, function(x) paste(sort(strsplit(x, split="_")[[1]] ), collapse = "_"))
   names(name) = NULL
   return(name)
+}
+
+max_abs = function(l){
+  return(max(abs(l), na.rm=T))
 }
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
@@ -79,13 +83,12 @@ get_all_pairs.his <- function(all_pairs.his, his){
   }
   pair.his_list_m = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[1]])))
   pair.his_list_p = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[2]])))
-  print(head(pair.his_list_p))
   pair.his_list_p_adj = as.data.frame(t(apply(pair.his_list_p, 1, function(x) p.adjust(x, 'fdr'))))
-  print(head(pair.his_list_p_adj))
-  print(dim(pair.his_list_p_adj))
-  saveRDS(pair.his_list_p_adj, "/home/dhthutrang/ENCODE/utilities/pair.his_list_p_adj.RDS")
   pair.his_list_m[is.na(pair.his_list_p_adj) | pair.his_list_p_adj > 0.05] = 0
   pair.his_list_m = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list_m))))
+  pair.his_list_m = pair.his_list_m %>%
+    group_by(gene, exon) %>%
+    summarise_all(max_abs)
   return(pair.his_list_m)
 }
 
@@ -106,6 +109,7 @@ get_all_pairs.his_list <- function(histone_type_list){
   }
   return(all_pairs.his_list)
 }
+
 filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   all_filtered_df = vector("list")
   for (i in 1:length(histone_type_list)){
@@ -121,7 +125,7 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 
 all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr.RDS")
-# all_pairs.his_list = readRDS("temp.RDS")[[1]]
+# all_pairs.his_list = readRDS("all_pairs.his_list_fdr.RDS")[[1]]
 # x = all_pairs.his_list[all_pairs.his_list$gene_id == "FGFR2", ]
 
 
