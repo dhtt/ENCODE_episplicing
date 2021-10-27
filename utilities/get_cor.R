@@ -175,7 +175,7 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 
 #all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
-all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_fdr.RDS")
+all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr.RDS")
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.his_list.RDS")
 #all_pairs.his_list_ = lapply(histone_type_list, function(x) readRDS(paste('pair.his_list_', x, '.RDS', sep='')))
 names(all_pairs.his_list_) = histone_type_list
