@@ -58,7 +58,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
 # all_pairs.exp = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
-head(all_pairs.exp_)
+# head(all_pairs.exp_)
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
 filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
@@ -219,11 +219,12 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 print(head(all_pairs.his_list_flt_90))
 print("CHECK1")
 print(dim(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], 2, function(x) x = x > 0)
+all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)], 2, function(x) x = x > 0)
 print(head(all_pairs.his_list_flt_90))
 print("CHECK2")
 print(dim(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90_bin = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x)))
+all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[, 1:3],
+                                      apply(all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
 print(head(all_pairs.his_list_flt_90_bin))
 print("CHECK3")
 print(dim(all_pairs.his_list_flt_90))
