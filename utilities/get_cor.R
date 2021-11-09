@@ -222,13 +222,11 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
   dhm = all_pairs.his_list_flt_90[[i]][, 3:ncol(all_pairs.his_list_flt_90[[i]])]
   dhm = dhm > 0
   print(head(dhm))
-  print(dim(dhm))
-  dhm_bin = cbind(all_pairs.his_list_flt_90[[i]][, 1:2], apply(dhm, 1, function(x) Reduce(function(a,b) a|b, na.omit(x))))
-  print(head(dhm_bin))
-  print(dim(dhm_bin))
+  dhm_bin = apply(dhm, 1, function(x) Reduce(function(a,b) a|b, na.omit(x)))
   all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
 }
-
+lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
+all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][,1:2], do.call(cbind, all_pairs.his_list_flt_90_bin))
 saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
