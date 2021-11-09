@@ -199,7 +199,7 @@ names(all_pairs.his_list_) = histone_type_list
 
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
 saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
-all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
+all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90_manorm.RDS")
 
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
 # all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
