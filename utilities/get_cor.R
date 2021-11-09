@@ -215,16 +215,16 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 
 #=======GET all_pairs.his_list_flt_90 binary ========
-temp = all_pairs.his_list_flt_90[[1]]
+temp = all_pairs.his_list_flt_90[[1]][3:ncol(all_pairs.his_list_flt_90)]
 print(head(temp))
 print("CHECK1")
 print(dim(temp))
-temp[,2:ncol(temp)] = apply(temp[,2:ncol(temp)], 2, function(x) x = x > 0)
+temp = temp > 0
 print(head(temp))
 print("CHECK2")
 print(dim(temp))
-all_pairs.his_list_flt_90_bin = cbind(temp[, 1:3],
-                                      apply(temp[,2:ncol(temp)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
+all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][1:3],
+                                      apply(temp, 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
 print(head(all_pairs.his_list_flt_90_bin))
 print("CHECK3")
 print(dim(all_pairs.his_list_flt_90))
