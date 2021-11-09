@@ -217,10 +217,16 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 #=======GET all_pairs.his_list_flt_90 binary ========
 print(head(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], function(x) x = x > 0)
+print("CHECK1")
+print(dim(all_pairs.his_list_flt_90))
+all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], 2, function(x) x = x > 0)
 print(head(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90_bin = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], function(x) Reduce(function(a,b) a|b, na.omit(x)))
+print("CHECK2")
+print(dim(all_pairs.his_list_flt_90))
+all_pairs.his_list_flt_90_bin = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x)))
 print(head(all_pairs.his_list_flt_90_bin))
+print("CHECK3")
+print(dim(all_pairs.his_list_flt_90))
 saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
