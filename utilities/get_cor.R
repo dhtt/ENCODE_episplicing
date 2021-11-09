@@ -197,8 +197,8 @@ names(all_pairs.his_list_) = histone_type_list
 #   all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
 #   }
 
-# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
-# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
+all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
+saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
 all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
@@ -215,6 +215,7 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 
 #=======GET all_pairs.his_list_flt_90 binary ========
+print(length(all_pairs.his_list_flt_90))
 all_pairs.his_list_flt_90_bin = list()
 for (i in 1:length(all_pairs.his_list_flt_90)){
   print(paste("CHECK ", i))
@@ -222,7 +223,7 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
   dhm = dhm > 0
   print(head(dhm))
   print(dim(dhm))
-  dhm_bin = cbind(all_pairs.his_list_flt_90[[i]][, 1:2], apply(dhm, 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
+  dhm_bin = cbind(all_pairs.his_list_flt_90[[i]][, 1:2], apply(dhm, 1, function(x) Reduce(function(a,b) a|b, na.omit(x))))
   print(head(dhm_bin))
   print(dim(dhm_bin))
   all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
