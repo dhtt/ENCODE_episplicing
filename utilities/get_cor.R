@@ -58,6 +58,7 @@ get_all_pairs.exp <- function(all_pairs.exp){
 # all_pairs.exp = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank/all_pairs.exp.RDS")
 all_pairs.exp_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.exp.RDS")
 # saveRDS(all_pairs.exp, "/home/dhthutrang/ENCODE/flank/new_df/all_pairs.exp.RDS")
+head(all_pairs.exp_)
 
 # FILTER WITH NEW CORRECTED GENES AND FIRST EXON
 filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="deu"){
@@ -197,13 +198,9 @@ names(all_pairs.his_list_) = histone_type_list
 #   all_pairs.his_list_[[j]] = as.data.table(all_pairs.his)
 #   }
 
-
-#all_pairs.his_list_ = all_pairs.his_list_[c(1,2,3,5,6)] #Leave out H3K4me1
-# all_pairs.his_list_flt_10 = filter_all_his_list(his_list = all_pairs.his_list_, histone_type_list=histone_type_list, filter_genes_path="combined_df_exon_10perc.RDS")
-# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90perc.RDS")
-all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
-# saveRDS(all_pairs.his_list_flt_10, "all_pairs.his_list_flt_10.RDS")
-saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
+# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_exon_90_final.RDS")
+# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
+all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 # all_pairs.his_list_flt_10 = readRDS("all_pairs.his_list_flt_10.RDS")
 # all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
@@ -216,7 +213,16 @@ saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm.RDS")
 # all_pairs.exp = as.data.frame(all_pairs.exp)
 # all_pairs.exp = all_pairs.exp[order(all_pairs.exp$gene_id, all_pairs.exp$exon_id),]
 # table(all_pairs.exp$gene_id ==his_ids$V1)
-# 
+
+
+#=======GET all_pairs.his_list_flt_90 binary ========
+print(head(all_pairs.his_list_flt_90))
+all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], function(x) x = x > 0)
+print(head(all_pairs.his_list_flt_90))
+all_pairs.his_list_flt_90_bin = apply(all_pairs.his_list_flt_90[2:ncol(all_pairs.his_list_flt_90)], function(x) Reduce(function(a,b) a|b, na.omit(x)))
+print(head(all_pairs.his_list_flt_90_bin))
+saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
+
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
 # all_genes = fread("gene_id.txt", header = FALSE)
@@ -304,54 +310,8 @@ analyze_array_list <- function(all_pairs.exp, all_pairs.his_list, method = "p", 
 }
 
 print("Pearsons-p correlation")
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "p")
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_10perc.RDS")
-#
-# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_10, all_pairs.his_list_flt_10, method = "r")
-# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_10perc.RDS")
-
-all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
-saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_manorm.RDS")
-
-all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
-saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_manorm.RDS")
-
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=5)
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r5.RDS")
-#
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=10)
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r10.RDS")
-#
-# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp, all_pairs.his_list, method="r", n_points=15)
-# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r15.RDS")
-
-
-# temp = fread("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities/CD4positivealphabetaTcell_endodermalcell.txt.fl.txt")
-# temp[grep("STIM1", temp$V9), `V10`]
-# name = temp$V9[seq(1, nrow(temp), 2)]
-#
-# ids = lapply(name, function(x){
-#   split_name = str_split(x, '\"')[[1]]
-#   gene_id = split_name[2]
-#   exon_id = split_name[length(split_name) -1]
-#   return(c(gene_id, exon_id))
-# })
-# tail(ids)
-# his_id2 = as.data.frame(do.call("rbind", ids))
-# head(his_id2)
-#
-# temp1 = temp %>%
-#   dplyr::select(V10) %>%
-#   group_by(group = gl(n()/2, 2)) %>%
-#   summarise_all(max) %>%
-#   dplyr::select(-group)
-# head(temp3)
-# his_id2 = read.csv("flank_id.txt", sep='\t', header = FALSE)
-# temp2 = cbind(temp1, his_id)
-# temp3 = cbind(temp1, his_id2)
-# temp2[temp2$V1 == "STIM1", 1]
-# temp3[temp3$V1 == "STIM1", 1]
-#
-# fwrite(his_id2, "flank_id.txt", quote = FALSE, col.names = FALSE, sep='\t')
-
-
+# all_res_list.pearcor_p = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "p")
+# saveRDS(all_res_list.pearcor_p, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_p_90_manorm.RDS")
+# 
+# all_res_list.pearcor_r = analyze_array_list(all_pairs.exp_flt_90, all_pairs.his_list_flt_90, method = "r")
+# saveRDS(all_res_list.pearcor_r, "/home/dhthutrang/ENCODE/flank/new_df/all_res_list.pearcor_r_90_manorm.RDS")
