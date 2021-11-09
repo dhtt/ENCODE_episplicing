@@ -60,7 +60,7 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
 #===== PREPARE HIS FILE (6 TOTAL) =====
 print("===== PREPARE HIS FILE (6 TOTAL) =====")
 his_id = read.csv("flank_id.2021.txt", sep='\t', header = FALSE)
-get_all_pairs.his <- function(all_pairs.his, his){
+get_all_pairs.his <- function(all_pairs.his, his, binary_option){
   pair.his_list = vector("list", length(all_pairs.his))
   for (i in 1:length(all_pairs.his)){
     # for (i in 1:1){
@@ -85,6 +85,7 @@ get_all_pairs.his <- function(all_pairs.his, his){
   pair.his_list_p = as.data.frame(do.call(cbind, lapply(pair.his_list, function(x) x[[2]])))
   pair.his_list_p_adj = as.data.frame(t(apply(pair.his_list_p, 1, function(x) p.adjust(x, 'fdr'))))
   pair.his_list_m[is.na(pair.his_list_p_adj) | pair.his_list_p_adj > 0.05] = 0
+  if (binary_option == T) {pair.his_list_m = pair.his_list_m > 0}
   pair.his_list_m = as.data.frame(cbind(id, as.data.frame(do.call(cbind, pair.his_list_m))))
   colnames(pair.his_list_m) = c('gene', 'exon', seq(1, ncol(pair.his_list_m)-2))
   pair.his_list_m = pair.his_list_m %>%
@@ -93,14 +94,14 @@ get_all_pairs.his <- function(all_pairs.his, his){
   return(pair.his_list_m)
 }
 
-get_all_pairs.his_list <- function(histone_type_list){
+get_all_pairs.his_list <- function(histone_type_list, binary_option){
   all_pairs.his_list = vector("list", length(histone_type_list))
   for (j in 1:length(histone_type_list)){
     his = histone_type_list[[j]]
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
     colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
-    all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
+    all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his, binary_option)
     colnames(all_pairs.his.sig) = colname_his
     
     print(dim(all_pairs.his.sig))
@@ -124,10 +125,14 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   return(all_filtered_df)
 }
 
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr.RDS")
-# all_pairs.his_list = readRDS("all_pairs.his_list_fdr.RDS")[[1]]
+# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr.RDS")
+# all_pairs.his_list = readRDS("all_pairs.his_list_fdr.RDS")
+# x = all_pairs.his_list[[3]][all_pairs.his_list[[3]]$gene_id == "FGFR2", ]
 # x = all_pairs.his_list[all_pairs.his_list$gene_id == "FGFR2", ]
+
+all_pairs.his_list = get_all_pairs.his_list(histone_type_list, binary_option=T)
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_fdr_bin.RDS")
 
 
 #saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list.RDS")
