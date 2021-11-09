@@ -215,7 +215,7 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 
 #=======GET all_pairs.his_list_flt_90 binary ========
-temp = all_pairs.his_list_flt_90[[1]][3:ncol(all_pairs.his_list_flt_90)]
+temp = all_pairs.his_list_flt_90[[1]][3:ncol(all_pairs.his_list_flt_90[[1]])]
 print(head(temp))
 print("CHECK1")
 print(dim(temp))
@@ -227,7 +227,7 @@ all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][1:3],
                                       apply(temp, 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
 print(head(all_pairs.his_list_flt_90_bin))
 print("CHECK3")
-print(dim(all_pairs.his_list_flt_90))
+print(dim(all_pairs.his_list_flt_90_bin))
 # saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
