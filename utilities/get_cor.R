@@ -220,7 +220,9 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
   print(paste("CHECK ", i))
   dhm = all_pairs.his_list_flt_90[[i]][, 3:ncol(all_pairs.his_list_flt_90[[i]])]
   dhm = dhm > 0
-  dhm_bin = cbind(all_pairs.his_list_flt_90[[i]][, 1:3], apply(dhm, 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
+  print(head(dhm))
+  print(dim(dhm))
+  dhm_bin = cbind(all_pairs.his_list_flt_90[[i]][, 1:2], apply(dhm, 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
   print(head(dhm_bin))
   print(dim(dhm_bin))
   all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
