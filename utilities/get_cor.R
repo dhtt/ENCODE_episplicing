@@ -107,7 +107,6 @@ all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_
 
 # saveRDS(all_pairs.exp_flt_10, "all_pairs.exp_flt_10.RDS")
 # saveRDS(all_pairs.exp_flt_90, "all_pairs.exp_flt_90.RDS")
-all_pairs.exp_flt_10 = readRDS("all_pairs.exp_flt_10.RDS")
 # all_pairs.exp_flt_90 = readRDS("all_pairs.exp_flt_90.RDS")
 
 #===== PREPARE HIS FILE (6 TOTAL) =====
@@ -216,19 +215,20 @@ all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90.RDS")
 
 
 #=======GET all_pairs.his_list_flt_90 binary ========
-print(head(all_pairs.his_list_flt_90))
+temp = all_pairs.his_list_flt_90[[1]]
+print(head(temp))
 print("CHECK1")
-print(dim(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)] = apply(all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)], 2, function(x) x = x > 0)
-print(head(all_pairs.his_list_flt_90))
+print(dim(temp))
+temp[,2:ncol(temp)] = apply(temp[,2:ncol(temp)], 2, function(x) x = x > 0)
+print(head(temp))
 print("CHECK2")
-print(dim(all_pairs.his_list_flt_90))
-all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[, 1:3],
-                                      apply(all_pairs.his_list_flt_90[,2:ncol(all_pairs.his_list_flt_90)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
+print(dim(temp))
+all_pairs.his_list_flt_90_bin = cbind(temp[, 1:3],
+                                      apply(temp[,2:ncol(temp)], 2, function(x) Reduce(function(a,b) a|b, na.omit(x))))
 print(head(all_pairs.his_list_flt_90_bin))
 print("CHECK3")
 print(dim(all_pairs.his_list_flt_90))
-saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
+# saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
 
 #===== CORRELATION WITH RANDOMIZATION =====
 # ------------ Execute analysis ------------
