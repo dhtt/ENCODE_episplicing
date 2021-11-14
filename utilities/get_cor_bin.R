@@ -78,10 +78,10 @@ get_all_pairs.his <- function(all_pairs.his, his){
     pair.his = pair.his %>% dplyr::select(-gene, -exon, -type)
     pair.his_list[[i]] = pair.his
   }
-  lapply(pair.his_list, function(x) print(dim(x)))
+  # lapply(pair.his_list, function(x) print(dim(x)))
   pair.his_list = as.data.frame(cbind(pair.his_id, as.data.frame(do.call(cbind, pair.his_list))))
-  print(dim(pair.his_list))
-  print(head(pair.his_list))
+  # print(dim(pair.his_list))
+  # print(head(pair.his_list))
   saveRDS(pair.his_list, paste('pair.his_list_', his, '.RDS', sep=''))
   return(pair.his_list)
 }
