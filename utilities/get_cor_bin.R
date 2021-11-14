@@ -113,9 +113,9 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   return(all_filtered_df)
 }
 
-all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
-all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_bin_flank.RDS")
+# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
+all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
 names(all_pairs.his_list_) = histone_type_list
 
 all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
