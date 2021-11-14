@@ -115,25 +115,25 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 
 # all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
 # saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
-all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
-names(all_pairs.his_list_) = histone_type_list
-
-all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
-saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm_flank.RDS")
+# all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
+# names(all_pairs.his_list_) = histone_type_list
+# 
+# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
+# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm_flank.RDS")
 all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90_manorm_flank.RDS")
 
 
 #=======GET all_pairs.his_list_flt_90 binary ========
-# print(length(all_pairs.his_list_flt_90))
-# all_pairs.his_list_flt_90_bin = list()
-# for (i in 1:length(all_pairs.his_list_flt_90)){
-#   print(paste("CHECK ", i))
-#   dhm = all_pairs.his_list_flt_90[[i]][, 3:ncol(all_pairs.his_list_flt_90[[i]])]
-#   dhm = dhm > 0
-#   print(head(dhm))
-#   dhm_bin = apply(dhm, 1, function(x) Reduce(function(a,b) a|b, na.omit(x)))
-#   all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
-# }
-# lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
-# all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][,1:2], do.call(cbind, all_pairs.his_list_flt_90_bin))
-# saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_bin.RDS")
+print(length(all_pairs.his_list_flt_90))
+all_pairs.his_list_flt_90_bin = list()
+for (i in 1:length(all_pairs.his_list_flt_90)){
+  print(paste("CHECK ", i))
+  dhm = all_pairs.his_list_flt_90[[i]][, 3:ncol(all_pairs.his_list_flt_90[[i]])]
+  dhm = dhm > 0
+  print(head(dhm))
+  dhm_bin = apply(dhm, 1, function(x) Reduce(function(a,b) a|b, na.omit(x)))
+  all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
+}
+lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
+all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][,1:2], do.call(cbind, all_pairs.his_list_flt_90_bin))
+saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_manorm_flank_bin.RDS")
