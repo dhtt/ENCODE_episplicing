@@ -92,7 +92,7 @@ get_all_pairs.his_list <- function(histone_type_list){
     his = histone_type_list[[j]]
     all_pairs.his = list.files(paste("/home/dhthutrang/ENCODE/chip_seq", his, "flank/fl", sep='/'), pattern = '.txt', full.names = TRUE)
     print(all_pairs.his)
-    colname_his = c("gene_id", "exon_id", get_colname(all_pairs.his, "his")) 
+    colname_his = c("gene_id", "exon_id", "type", get_colname(all_pairs.his, "his")) 
     all_pairs.his.sig = get_all_pairs.his(all_pairs.his, his)
     colnames(all_pairs.his.sig) = colname_his
     
@@ -113,13 +113,13 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
   return(all_filtered_df)
 }
 
-# all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
-# saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
-# all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
-# names(all_pairs.his_list_) = histone_type_list
-# 
-# all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
-# saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm_flank.RDS")
+all_pairs.his_list = get_all_pairs.his_list(histone_type_list)
+saveRDS(all_pairs.his_list, "/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
+all_pairs.his_list_ = readRDS("/home/dhthutrang/ENCODE/flank/all_pairs.his_list_bin_flank.RDS")
+names(all_pairs.his_list_) = histone_type_list
+
+all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
+saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm_flank.RDS")
 all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90_manorm_flank.RDS")
 
 
@@ -135,5 +135,5 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
   all_pairs.his_list_flt_90_bin[[i]] = dhm_bin
 }
 lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
-all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][,1:2], do.call(cbind, all_pairs.his_list_flt_90_bin))
+all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][, 1:2], do.call(cbind, all_pairs.his_list_flt_90_bin))
 saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_manorm_flank_bin.RDS")
