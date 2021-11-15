@@ -120,7 +120,7 @@ filter_all_his_list <- function(his_list, histone_type_list, filter_genes_path){
 # 
 # all_pairs.his_list_flt_90 = filter_all_his_list(all_pairs.his_list_, histone_type_list, "combined_df_flank_90_final.RDS")
 # saveRDS(all_pairs.his_list_flt_90, "all_pairs.his_list_flt_90_manorm_flank.RDS")
-all_pairs.his_list_flt_90 = readRDS("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/all_pairs.his_list_flt_90_manorm_flank.RDS")
+all_pairs.his_list_flt_90 = readRDS("all_pairs.his_list_flt_90_manorm_flank.RDS")
 
 #=======GET all_pairs.his_list_flt_90 binary ========
 print(length(all_pairs.his_list_flt_90))
@@ -135,7 +135,7 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
 }
 lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
 all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][, 1:3], do.call(cbind, all_pairs.his_list_flt_90_bin))
-saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_manorm_flank_bin_0.RDS")
+saveRDS(all_pairs.his_list_flt_90_bin, "all_pairs.his_list_flt_90_manorm_flank_bin_0.RDS")
 #-----
 all_pairs.his_list_flt_90_bin = list()
 for (i in 1:length(all_pairs.his_list_flt_90)){
@@ -148,4 +148,4 @@ for (i in 1:length(all_pairs.his_list_flt_90)){
 }
 lapply(all_pairs.his_list_flt_90, function(x) print(dim(x)))
 all_pairs.his_list_flt_90_bin = cbind(all_pairs.his_list_flt_90[[1]][, 1:3], do.call(cbind, all_pairs.his_list_flt_90_bin))
-saveRDS(all_pairs.his_list_flt_90_bin, "/home/dhthutrang/ENCODE/utilities/all_pairs.his_list_flt_90_manorm_flank_bin_1.RDS")
+saveRDS(all_pairs.his_list_flt_90_bin, "all_pairs.his_list_flt_90_manorm_flank_bin_1.RDS")
