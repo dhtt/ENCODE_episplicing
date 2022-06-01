@@ -55,7 +55,7 @@ dxd = DEXSeqDataSetFromHTSeq(
   design = ~ sample + exon + condition:exon,
   flattenedfile= normalizePath(gtf_files)
 )
-saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_75low/dxd.RDS')
+saveRDS(dxd, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd.RDS')
 #dxd = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd_90.RDS')
 print(paste('dxd done: ', Sys.time()))
 
@@ -63,7 +63,7 @@ print(paste('dxd done: ', Sys.time()))
 dxd.res = DEXSeq(dxd, quiet = FALSE, BPPARAM=cores)
 print(paste("dxd.res done: ", Sys.time()))
 ###save(dxd.res, file="/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res_90.RDS")
-saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_75low/dxd.res.RDS')
+saveRDS(dxd.res, '/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd.res.RDS')
 # dxd.res = readRDS('/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/dxd.res.RDS')
 print(paste('dxd.res saved: ', Sys.time()))
 

@@ -13,10 +13,31 @@
 *-Ex.R
 
 # Output files from R CMD build
-/*.tar.gz
-/*.fastq.gz
-/*.gtf
-/*.fa
+*.RDS
+*.RData
+*.tar.gz
+*.tar
+*.zip
+*.fastq.gz
+*.gtf
+*.fa
+*.bed
+*.bam
+*.bai
+*.sam
+*.fastq
+*.sql
+*.majiq
+*.sj
+*.voila
+*.log
+*.tiff
+*.tsv
+*.csv
+*.bam
+*.pdf
+*.txt
+*.xls
 
 
 # Output files from R CMD check
@@ -44,3 +65,17 @@ vignettes/*.pdf
 .Renviron
 
 .DS_Store
+chip_seq/*.log
+chip_seq/*.txt
+chip_seq/H*/*
+chip_seq/file_transfer/*
+chip_seq/old/*
+chip_seq/*.txt
+chip_seq/*.xls
+chip_seq/*.tar.gz
+chip_seq/*.tar
+chip_seq/*.tiff
+chip_seq/bed_files/*
+chip_seq/fastq_files/*
+mRNA_seq/*.txt
+utilities/all_pairs.his_list_flt_90_manorm_flank.RDS

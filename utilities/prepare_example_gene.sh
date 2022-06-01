@@ -15,7 +15,7 @@ sed -i 's/_id//g' example_gene/"$gene"_NCBI.gtf
 
 grep "groupID" $ENCODE_EXP/dexseqcount/res/"$epi1"_"$epi2"_res.csv > temp1.txt
 grep $gene$'\t' $ENCODE_EXP/dexseqcount/res/"$epi1"_"$epi2"_res.csv >> temp1.txt
-grep "\"$gene\"" $ENCODE_REFGEN/reference_genome.gtf > temp2.txt
+grep "\"$gene\"" $ENCODE_REFGEN/reference_genome.2021.gtf > temp2.txt
 paste -d '\t' temp1.txt temp2.txt > $ENCODE_UTI/example_gene/"$epi1"_"$epi2"_res.csv
 rm temp1.txt temp2.txt
 
@@ -29,7 +29,7 @@ rm temp1.txt temp2.txt
 
 #Prepare his file
 echo "====> Prepare his file"
-for his in $HIS/H*/
+for his in $ENCODE_HIS/H*/
 do (
     temp=${his%*/}
     type=${temp##*/}
