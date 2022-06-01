@@ -1,3 +1,0 @@
-"https://www.encodeproject.org/metadata/?type=Experiment&files.assembly=GRCh38&files.output_type=alignments&files.file_type=bam" -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data '{"elements": ["/experiments/ENCSR000ANF/"]}'
-https://www.encodeproject.org/files/ENCFF534NCP/@@download/ENCFF534NCP.bam
-https://www.encodeproject.org/files/ENCFF191YSM/@@download/ENCFF191YSM.bam

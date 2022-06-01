@@ -99,7 +99,7 @@ filter_genes = function(df, filter_genes_path="combined_df_exon.RDS", filter="de
 # print(all_pairs.exp_$aorta_CD4positivealphabetaTcell[all_pairs.exp_$gene_id =="FGFR2"])
 # 
 all_pairs.exp_flt_90 = filter_genes(all_pairs.exp_, filter_genes_path="combined_df_exon_90_final.RDS", filter="deu")
-# 
+
 # print('CHECK GSTM3 all_pairs.exp_')
 # print(all_pairs.exp_flt_90$aorta_CD4positivealphabetaTcell[all_pairs.exp_flt_90$gene_id =="GSTM3"])
 # print('CHECK FGFR2 all_pairs.exp_')
