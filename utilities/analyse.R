@@ -18,7 +18,12 @@ library(ggraph)
 library(ggpubr) #plot1 plot2 are in analyze_flank.R 
 
 #----- GLOBAL VARIABLES------------
-setwd("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank")
+setwd("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/flank") # Local machine
+setwd("/home/dhthutrang/ENCODE/flank")
+dataset_path = "/home/dhthutrang/ENCODE/flank/110722_2"
+workdir = "/home/dhthutrang/ENCODE/flank"
+dataset_paths = paste(workdir, c("050722", "110722_0", "110722_2", "110722_2"), sep='/')
+dataset_names = c('A_P', "A_S", "T_P", 'T_S')
 official_name = c("Adipose tissue", "Aorta", "CD4-positive alpha beta T cell", 
                   "CD8 positive alpha beta T cell", "Ectodermal cell", "Endodermal cell", 
                   "Esophagus", "H1 cell", "Mesenchymal stem cell", "Mesendoderm", "Mesodermal cell", 
@@ -27,12 +32,29 @@ official_name = c("Adipose tissue", "Aorta", "CD4-positive alpha beta T cell",
 histone_type_list = c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
 subscript = '90_manorm'
 epigenomes_annot = read.csv("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/epi_info.csv", 
+                            header = TRUE, sep=';', row.names = 1) # Local machine
+epigenomes_annot = read.csv("/home/dhthutrang/ENCODE/utilities/epi_info.csv", 
                             header = TRUE, sep=';', row.names = 1)
 #----- READ CORRELATION RESULTS----------
+# Last version before BMC
 res_p_value_path = paste("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/corrected_cor/all_res_list.pearcor_p_", subscript,".RDS", sep='')
 res_r_value_path = paste("/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/corrected_cor/all_res_list.pearcor_r_", subscript, ".RDS", sep='')
 exp_path = "/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/manorm_90_get_cor_dataset/all_pairs.exp_flt_90.RDS"
 his_path = "/Users/trangdo/Documents/Episplicing/ENCODE_episplicing/utilities/manorm_90_get_cor_dataset/all_pairs.his_list_flt_90_manorm.RDS"
+
+# BMC revision
+get_paths <- function(dataset_path_){
+  res_p_value_path = paste(paste(dataset_path_, "all_res_list.pearcor_p_", sep='/'), subscript,".RDS", sep='')
+  res_r_value_path = paste(paste(dataset_path_, "all_res_list.pearcor_r_", sep='/'), subscript,".RDS", sep='')
+  exp_path = paste(dataset_path_, "all_pairs.exp_flt_90.RDS", sep='/')
+  his_path = paste(dataset_path_, "all_pairs.his_list_flt_90_manorm.RDS", sep='/')
+  paths_ = list(res_p_value_path, res_r_value_path, exp_path, his_path)
+  names(paths_) = c('res_p_value_path', 'res_r_value_path', 'exp_path', 'his_path')
+  return(paths_)
+}
+
+paths_ = lapply(dataset_paths, get_paths)
+names(paths_) = dataset_names
 #----- Get padj ------- 
 #' Compute p_adj for all p_val from pairwise correlation for each histone
 #' Return: List of DF with p_adj values
@@ -48,12 +70,12 @@ get_p_adj <- function(pearcor_p){
   names(pearcor_p_adj) = histone_type_list
   return(pearcor_p_adj)
 }
-head(all_pearcor_p[[1]])
 all_pearcor_p = readRDS(res_p_value_path)
 all_pearcor_padj = get_p_adj(all_pearcor_p)
+head(all_pearcor_p[[1]])
 
 # saveRDS(all_pearcor_padj, "all_pearcor_padj.RDS")
-table(all_pearcor_padj$H3K9me3 <= 0.05)
+table(all_pearcor_padj$H3K36me3 <= 0.05)
 temp = all_pearcor_p$H3K36me3
 names(all_pearcor_p) = histone_type_list
 temp1 = all_pearcor_padj$H3K36me3
@@ -98,7 +120,9 @@ all_pearcor_r = readRDS(res_r_value_path)
 all_pearcor_r_filtered = filter_by_p(all_pearcor_r, all_pearcor_padj, option = 'r')
 # all_pearcor_p_filtered = filter_by_p(all_pearcor_r, all_pearcor_padj, option = 'p')
 
+#Get data as controls
 exp_df = readRDS(exp_path)
+head(exp_df)
 all_pearcor_r_filtered_exp = exp_df %>%
   dplyr::select(-exon_id) %>%
   dplyr::group_by(gene_id) %>%
@@ -118,8 +142,11 @@ all_pearcor_r_filtered_his = lapply(his_df, function(x)
 names(all_pearcor_r_filtered_his) = histone_type_list
 
 #======TESTING======
+lapply(all_pearcor_r_filtered, function(x) head(x[, 1:20]))
+View(all_pearcor_r_filtered[[1]])
 x = all_pearcor_r_filtered$H3K9me3[!is.na(all_pearcor_r_filtered$H3K9me3$adiposetissue_aorta), ]
-x = t(all_pearcor_r_filtered$H3K27me3[all_pearcor_r_filtered$H3K27me3$gene_id == "FGFR2",])
+x = t(all_pearcor_r_filtered[[6]][all_pearcor_r_filtered$H3K27ac$gene_id == "STIM1",])
+rownames(x)[!is.na(x)]
 rownames(x) = colnames(all_pearcor_r_filtered$H3K27me3)
 table(x)
 endodermalcell_mesenchymalstemcell
@@ -192,25 +219,25 @@ cumulative_r_ecdf = ggplot(all_pearcor_r_compare,
         legend.box="vertical", 
         legend.margin=margin()) +
   guides(fill=guide_legend(nrow =3, byrow=t))
-tiff(paste("cumulative_r_ecdf_", subscript,"3.tiff", sep=''), width = 8, height = 5, units = 'in', res=300)
+tiff(paste(dataset_path, 'res', paste("cumulative_r_ecdf_", subscript,".tiff", sep=''), sep='/'), width = 8, height = 5, units = 'in', res=300)
 cumulative_r_ecdf
 dev.off()
 
-all_pearcor_r_cor = prep_cor_df(all_pearcor_padj)
-all_pearcor_r_cor$type = '|r| > 0.5'
-all_pearcor_r_filtered_cor = prep_cor_df(all_pearcor_p_filtered)
-all_pearcor_r_filtered_cor$type = '|r| <= 0.05'
-all_pearcor_r_compare = rbind(all_pearcor_r_cor, all_pearcor_r_filtered_cor)
+# all_pearcor_r_cor = prep_cor_df(all_pearcor_padj)
+# all_pearcor_r_cor$type = '|r| > 0.5'
+# all_pearcor_r_filtered_cor = prep_cor_df(all_pearcor_p_filtered)
+# all_pearcor_r_filtered_cor$type = '|r| <= 0.05'
+# all_pearcor_r_compare = rbind(all_pearcor_r_cor, all_pearcor_r_filtered_cor)
 
-cumulative_p_ecdf = ggplot(all_pearcor_r_compare, aes(val, colour = his, linetype=type)) + 
-  stat_ecdf(aes(colour = his)) +
-  xlab("Pearson correlation p-adj values") + ylab("Probability") +
-  scale_linetype_manual(values=c("solid", "dotted", "twodash")) +
-  theme_bw() + theme(aspect.ratio=1)
-cumulative_p_ecdf
+# cumulative_p_ecdf = ggplot(all_pearcor_r_compare, aes(val, colour = his, linetype=type)) + 
+#   stat_ecdf(aes(colour = his)) +
+#   xlab("Pearson correlation p-adj values") + ylab("Probability") +
+#   scale_linetype_manual(values=c("solid", "dotted", "twodash")) +
+#   theme_bw() + theme(aspect.ratio=1)
+# cumulative_p_ecdf
 #----- Get significant results -----
 #' Get entries with p_adj < 0.05
-get_res_list_sig <- function(res_list, method, r_sig=0.5, p_sig= 0.05, exp_sig=2, his_sig=1){
+get_res_list_sig <- function(res_list, method, r_sig=0.5, p_sig= 0.05, exp_sig=2, his_sig=1, compare_threshold = "absolute"){
   res_list_sig = vector("list", length(res_list))
   for (i in 1:length(res_list)) {
     all_res = res_list[[i]]
@@ -219,8 +246,15 @@ get_res_list_sig <- function(res_list, method, r_sig=0.5, p_sig= 0.05, exp_sig=2
     for (j in 2:ncol(all_res)){
       all_res.col = as.numeric(all_res[[j]])
       if (method == "pearcor_r"){
-        all_res_sig[[j-1]] = all_res[abs(all_res.col) >= r_sig  & !is.na(all_res.col), "gene_id"]
-        # all_res_sig[[j-1]] = all_res[all_res.col <= r_sig  & !is.na(all_res.col), "gene_id"]
+        if (compare_threshold == "greater"){
+            all_res_sig[[j-1]] = all_res[all_res.col >= r_sig  & !is.na(all_res.col), "gene_id"]
+        }
+        else if (compare_threshold == "lesser"){
+            all_res_sig[[j-1]] = all_res[all_res.col <= r_sig  & !is.na(all_res.col), "gene_id"]
+        }
+        else {
+            all_res_sig[[j-1]] = all_res[abs(all_res.col) >= r_sig  & !is.na(all_res.col), "gene_id"]
+        }
       }
       else if (method == "pearcor_p" ){
         all_res_sig[[j-1]] = all_res[all_res.col <= p_sig & !is.na(all_res.col), "gene_id"]
@@ -237,14 +271,16 @@ get_res_list_sig <- function(res_list, method, r_sig=0.5, p_sig= 0.05, exp_sig=2
   }
   return(res_list_sig)
 }
-all_pearcor_padj_sig = get_res_list_sig(all_pearcor_r_filtered, "pearcor_r", r_sig=0.5)
+# all_pearcor_padj_sig = get_res_list_sig(all_pearcor_r_filtered, "pearcor_r", r_sig=0.5, compare_threshold = "greater")
+# all_pearcor_padj_sig = get_res_list_sig(all_pearcor_r_filtered, "pearcor_r", r_sig=-0.5, compare_threshold = "lesser")
+all_pearcor_padj_sig = get_res_list_sig(all_pearcor_r_filtered, "pearcor_r", r_sig=-0.5)
 all_pearcor_padj_sig_exp = get_res_list_sig(all_pearcor_r_filtered_exp, "exp", exp_sig=2)
 all_pearcor_padj_sig_his = get_res_list_sig(all_pearcor_r_filtered_his, "his", his_sig=1)
 
 lapply(all_pearcor_padj_sig_exp, function(x) paste(x$neuronalstemcell_spleen, collapse = ','))
 all_pearcor_padj_sig[[1]]$stomach_trophoblast
 all_pearcor_padj_sig_exp[[1]]$adiposetissue_aorta
-all_sig_genes = Reduce(union, Reduce(union, all_pearcor_padj_sig))
+all_sig_genes = Reduce(union, Reduce(union, all_pearcor_padj_sig[[3]]))
 length(all_sig_genes)
 paste(all_sig_genes, collapse = ', ')
 temp = as.data.frame(all_sig_genes)
@@ -284,7 +320,7 @@ all_genes_joined_padj_exp = get_genes_for_tissue(all_pearcor_padj_sig_exp, tissu
 all_genes_joined_padj_his = get_genes_for_tissue(all_pearcor_padj_sig_his, tissue_type_list)
 paste(all_genes_joined_padj$H3K27me3$neuronalstemcell, collapse = ',')
 all_sig_genes = unique(unlist(unlist(all_genes_joined_padj)))
-saveRDS(all_sig_genes, paste("all_sig_genes_", subscript, ".RDS", xep=''))
+# saveRDS(all_sig_genes, paste("all_sig_genes_", subscript, ".RDS", xep=''))
 
 paste(all_sig_genes, collapse = ', ')
 lapply(histone_type_list, function(x) length(unique(unlist(all_genes_joined_padj[[x]]))))
@@ -338,8 +374,13 @@ get_overlap_set <- function(list_genes_joined_padj){
 }
 no_sig_gene_by_tissue$`Total epispliced genes (without overlaps)` = sapply(get_overlap_set(all_genes_joined_padj), length)
 
-saveRDS(no_sig_gene_by_tissue, paste("no_sig_gene_by_tissue_", subscript,".RDS", sep=''))
-fwrite(no_sig_gene_by_tissue, paste("no_sig_gene_by_tissue", subscript,".csv", sep=''), quote=FALSE, row.names = FALSE, col.names = TRUE, sep='\t')
+saveRDS(
+    no_sig_gene_by_tissue, 
+    paste(dataset_path, 'res', paste("no_sig_gene_by_tissue_", subscript,".RDS", sep=''), sep='/'))
+fwrite(
+    no_sig_gene_by_tissue,
+    paste(dataset_path, 'res', paste("no_sig_gene_by_tissue", subscript,".csv", sep=''), sep='/'), 
+    quote=FALSE, row.names = FALSE, col.names = TRUE, sep='\t')
 
 # Formattable
 tissue_formatter <- formatter("span", 
@@ -406,7 +447,8 @@ sim_mat_exp = get_sim_matrix(all_genes_joined_padj_exp, 'exp')
 sim_mat_his = get_sim_matrix(all_genes_joined_padj_his, histone_type_list)
 sim_mat_exphis = c(sim_mat_exp, sim_mat_his, sim_mat_exp)
 
-lapply(sim_mat_exp,function(x) max(x, na.rm = T))
+max_distance = ceiling(max(unlist(lapply(sim_mat, function(x) max(x, na.rm = T)))) * 100)/100
+min_distance = floor(min(unlist(lapply(sim_mat, function(x) min(x, na.rm = T)))) * 100)/100
 
 epigenomes_colors = list(
   list(c("lightgrey", "hotpink", "black"),
@@ -418,9 +460,12 @@ epigenomes_colors = list(
        c("hotpink", "black", "MediumPurple"),
        c("plum", "gold")) #3, 4
 ) 
-breaks = seq(0, 0.45, (0.45-0)/101)
+breaks = seq(0, max_distance, (max_distance-min_distance)/101)
 color = '-RdYlBu2:101'
-tiff(paste("heatmap_", subscript,".tiff", sep=''), width = 16, height = 14, units="in", res=200)
+tiff(
+    paste(dataset_path, 'res', paste("heatmap_", subscript,".tiff", sep=''), sep='/'), 
+    width = 16, height = 14, units="in", res=200
+    )
 par(mfrow = c(2, 3), mar = c(1,1,1,1)*10)
 for (i in 1:length(sim_mat)){
   if (i %in% c(1,2,3,4,5)){
@@ -446,7 +491,9 @@ for (i in 1:length(sim_mat)){
 dev.off()
 
 
-tiff(paste("heatmap_", subscript,"_exp_his.tiff", sep=''), width = 16, height = 14, units="in", res=200)
+tiff(
+    paste(dataset_path, 'res', paste("heatmap_", subscript,"_exp_his.tiff", sep=''), sep='/'),
+    width = 16, height = 14, units="in", res=200)
 par(mfrow = c(2, 3), mar = c(1,1,1,1)*10)
 for (i in 1:length(sim_mat_exphis)){
   if (i %in% c(1,2,3,4,5,6)){
