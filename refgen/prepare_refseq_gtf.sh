@@ -5,4 +5,4 @@ awk -F'\t' -vOFS='\t' '{ gsub("\\.10|\\.11|\\.12|\\.9|\\.14|", "", $1); print }'
 awk -F'\t' -vOFS='\t' '{ gsub("chr23", "chrX", $1); gsub("chr24", "chrY", $1); print}' temp3.gtf > temp4.gtf
 grep "^chr" temp4.gtf > temp5.gtf
 Rscript get_gtf_refgen.R
-python dexseq_prepare_annotation.py hg19.ncbiRefSeq.gtf hg19.ncbiRefSeq.DEXSeq.gtf
+python dexseq_prepare_annotation.py hg19.ncbiRefSeq.gtf hg19.ncbiRefSeq.DEXSeq.gtf #or flattened instead of DEXSeq
