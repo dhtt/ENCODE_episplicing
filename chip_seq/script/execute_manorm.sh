@@ -1,3 +1,14 @@
+# Execute MAnorm to compare the cells/tissues in a pairwise manner for each histone type
+# Inputs: The files used for the pairwise comparison are defined in histone_type/pair_chunks/. 
+#    These include the peak files in peak_files/merged/ and alignment files in 
+#    alignment_files/bed, both in BED format.
+# Outputs: For each pairwise comparison, a folder containing MAnorm results are stored in 
+#    histone_type/manorm_result/pairwise_comparison/
+# Globals:
+#     ENCODE_HIS: Path to chip_seq working dir
+
+
+# Define input path and split workload into chunks for parallel process
 cat /dev/null > execute_manorm.log
 histone_type=$1
 mkdir $ENCODE_HIS/$histone_type
@@ -8,8 +19,17 @@ echo "===> START MANORM-ING ALL PAIRS IN $histone_type"
 mkdir $INPUT_PATH/manorm_result
 mkdir $INPUT_PATH/pair_chunks
 split -l 11 --numeric-suffixes $INPUT_PATH/all_pairs.txt $INPUT_PATH/pair_chunks/chunk_
-ls $INPUT_PATH
 
+
+#######################################
+# Perform MAnorm for mulitple comparisons in parallel
+# Globals:
+#    INPUT_PATH
+# Arguments:
+#    None
+# Outputs:
+#    MAnorm results
+#######################################
 execute_manorm_parallel() {
     peak_file1=$(echo $p | awk '{split($0, a, " "); print a[1]}')
     read_file1=$(echo $p | awk '{split($0, a, " "); print a[2]}')
@@ -28,6 +48,8 @@ execute_manorm_parallel() {
     fi
 }
 
+
+# Call execute_manorm_parallel()
 for chunk in $INPUT_PATH/pair_chunks/*
 do
     while read p;

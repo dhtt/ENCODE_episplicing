@@ -65,7 +65,7 @@ vignettes/*.pdf
 
 .DS_Store
 chip_seq/*.log
-chip_seq/*.txt
+# chip_seq/*.txt
 chip_seq/H*/
 chip_seq/file_transfer/*
 chip_seq/old/*

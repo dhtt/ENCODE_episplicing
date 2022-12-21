@@ -1,8 +1,14 @@
-INPUT_PATH=$1
+# Convert BAM files to BED format
+# Inputs: Path to BAM-formatted merged alignment files in alignment_files/merged
+# Outputs: Alignments in BED format in alignment_files/bed 
+
+
+# Define input and output paths
+INPUT_PATH=$ENCODE_HIS/alignment_files/merged
 mkdir $ENCODE_HIS/alignment_files/bed
 OUTPUT_PATH=$ENCODE_HIS/alignment_files/bed
 
-#=== CONVERT BAM TO BED ===
+# Convert BAM to BED ===
 echo "Convert bam to bed"
 for file in $INPUT_PATH/*
 do (

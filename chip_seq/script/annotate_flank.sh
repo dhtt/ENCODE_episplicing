@@ -1,10 +1,19 @@
+# Annotate M-Values from MAnorm results to flank regions in reference genome
+# Inputs: xls-formatted MAnorm results stored in histone_type/manorm_result/pairwise_comparison/
+# Outputs: fl.txt in histone_type/flank/
+# Globals:
+#     ENCODE_HIS: Path to chip_seq working dir
+
+
+# Write log file
 cat /dev/null > annotate_manorm.log
 echo "Start Time: $(date)" >> annotate_manorm.log
 histonetype=$1
 HISTONE_PATH=$ENCODE_HIS/$histonetype
 
-echo "===> Begin annotating"
+
 #Get chr, start, end, M-value, p-value, normedcount1, normedcount2
+echo "===> Begin annotating"
 echo "===> 1: Get chr, start, end, M-value, p-value, normedcount1, normedcount2"
 mkdir $HISTONE_PATH/normalizedcounts
 for x in $HISTONE_PATH/manorm_result/*/*.xls
@@ -18,7 +27,8 @@ done
 wait
 echo "===> Finish"
 
-#annotate all xls.bed in normalizedcounts into $FLANK/histonetype
+
+# Annotate all xls.bed in normalizedcounts into $FLANK/histonetype
 echo "===> 2: Annotate all xls.bed in normalizedcounts into FLANK/histonetype"
 mkdir $HISTONE_PATH/flank
 mkdir $HISTONE_PATH/flank
@@ -55,7 +65,6 @@ annotate_manorm_parallel_flank() {
     fi
 }
 
-
 for FILE in $HISTONE_PATH/normalizedcounts/*
 do
     annotate_manorm_parallel_flank &
@@ -63,7 +72,8 @@ done
 echo "End Time: $(date)" >> annotate_manorm.log
 wait
 
-#Collapse counts
+
+# Collapse counts
 echo "===> 3: Collapsing annotated counts"
 for f in $HISTONE_PATH/flank/*
 do (
@@ -73,4 +83,3 @@ do (
 done
 wait
 echo "Finish"
-
