@@ -39,7 +39,6 @@
 *.txt
 *.xls
 
-
 # Output files from R CMD check
 /*.Rcheck/
 
