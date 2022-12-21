@@ -67,7 +67,7 @@ vignettes/*.pdf
 .DS_Store
 chip_seq/*.log
 chip_seq/*.txt
-chip_seq/H*/*
+chip_seq/H*/
 chip_seq/file_transfer/*
 chip_seq/old/*
 chip_seq/*.txt
@@ -78,4 +78,4 @@ chip_seq/*.tiff
 chip_seq/bed_files/*
 chip_seq/fastq_files/*
 mRNA_seq/*.txt
-utilities/all_pairs.his_list_flt_90_manorm_flank.RDS
+*.RDS
