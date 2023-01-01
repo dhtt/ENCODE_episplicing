@@ -7,7 +7,7 @@
 # Define input and output paths
 echo "=====> Converting BAM to SAM"
 BAM_folder=$1
-SAM_folder=$ENCODE_EXP/sam_files
+SAM_folder=$ENCODE_EXP/sam_filesÏ
 
 #######################################
 # Convert BAM to SAM in parallel

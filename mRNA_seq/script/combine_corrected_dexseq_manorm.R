@@ -1,3 +1,22 @@
+## ---------------------------
+##
+## Script name: DEXSeq_analysis.R
+##
+## Purpose of script: Perform pairwise Differential Exon Usage analysis using DEXSeq R package
+##
+## Author: Trang Do
+##
+## Copyright (c) Trang Do, 2018
+## Email: dhttrang@bioinformatik.uni-saarland.de
+##
+## ---------------------------
+##
+## Notes: This script was used for pairwise DEU analysis. For multiple correction, 
+## DEXSeq_analysis_combined.R was used
+##
+## ---------------------------
+
+
 library(data.table)
 library(dplyr)
 
