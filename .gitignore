@@ -78,3 +78,5 @@ chip_seq/bed_files/*
 chip_seq/fastq_files/*
 mRNA_seq/*.txt
 *.RDS
+mRNA_seq/script/old_results/*
+utilities/old_result/*

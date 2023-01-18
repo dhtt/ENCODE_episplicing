@@ -15,8 +15,6 @@
 ## - Description:This script was used for pairwise DEU analysis. For multiple correction, 
 ##   DEXSeq_analysis_combined.R was used. Here, 2 samples are compared against each other using 
 ##   DEXSeq workflow. The script was called from execute_dexseq.sh for all possible sample pairs
-## - Preceeding script: count_exon.sh, get_all_pairs.sh
-## - Succeeding script: multiple_correction.R
 ##
 ## ---------------------------
 

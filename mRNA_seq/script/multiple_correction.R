@@ -36,6 +36,7 @@ get_name <- function(ID_list, option = "gene") {
   #' This method gathers only the gene names or exon number.
   #' @param gene_exon_list list of gene_exon_id
   #'
+  
   if (option == "gene") {
     return(unlist(lapply(ID_list, function(x) strsplit(x, split = ";")[[1]][1])))
   } else if (option == "exon") {
@@ -44,6 +45,7 @@ get_name <- function(ID_list, option = "gene") {
     warning("Check option for get_name()")
   }
 }
+general_analysis_results <- "/home/dhthutrang/ENCODE/general_analysis_results" # TODO
 
 
 # ==== PREPARATION ====
@@ -59,8 +61,7 @@ opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
 # Set working directory and input paths
-DEXSeqresultpath <- paste(opt$DEXSeqCountPath, 'res', sep='/')
-working_dir <- getwd()
+DEXSeqresultpath <- paste(opt$DEXSeqCountPath, 'res', sep = "/")
 all_files <- list.files(DEXSeqresultpath, pattern = "*.csv")
 
 
@@ -73,7 +74,7 @@ all_DEU_genes <- foreach(i = 1:length(all_files), .combine = "c", .packages = c(
   sig_exon$id <- paste(sig_exon$groupID, sig_exon$featureID, sep = ";")
   return(sig_exon$id)
 }
-saveRDS(all_DEU_genes, paste(working_dir, "all_DEU_genes.RDS", sep = "/"))
+saveRDS(all_DEU_genes, paste(general_analysis_results, "all_DEU_genes.RDS", sep = "/"))
 
 
 # Store the gene name, exon number and the number of tissue pairs in which the DEU
@@ -81,20 +82,20 @@ saveRDS(all_DEU_genes, paste(working_dir, "all_DEU_genes.RDS", sep = "/"))
 # which contain "+" or "-" in their names are excluded
 freq <- table(all_DEU_genes)
 freq <- freq[order(freq, decreasing = TRUE)]
-freq <- freq[grep("+", names(freq), fixed = T, invert = T)]
-freq <- freq[grep("-", names(freq), fixed = T, invert = T)]
+freq <- freq[grep("+", names(freq), fixed = TRUE, invert = TRUE)]
+freq <- freq[grep("-", names(freq), fixed = TRUE, invert = TRUE)]
 freq_gene <- get_name(ID_list = names(freq), option = "gene")
 freq_exon <- get_name(ID_list = names(freq), option = "exon")
 freq_table <- data.table(freq_exon = as.numeric(freq), gene = freq_gene, exon = freq_exon)
-saveRDS(freq_table, paste(working_dir, "DEXSeq_DEU_freq_table.RDS", sep = "/"))
+saveRDS(freq_table, paste(general_analysis_results, "DEXSeq_DEU_freq_table.RDS", sep = "/"))
 
 
 # ==== SUBFIGURE S1A: CUMULATIVE DISTRIBUTION FOR TISSUE PAIRS NUMBER IN WHICH AN DEU OCCURRED ====
-tiff(paste(working_dir, "ecdf_dexseq_correction.tiff", sep = "/"),
+tiff(paste(general_analysis_results, "ecdf_dexseq_correction.tiff", sep = "/"),
   res = 300, units = "in", width = 3, height = 3
 )
 ggplot(freq_table, aes(freq_exon, legend = F)) +
-  stat_ecdf(pad = F, na.rm = T, size = 0.5) +
+  stat_ecdf(pad = FALSE, na.rm = TRUE, size = 0.5) +
   scale_color_manual(values = "blue") +
   geom_vline(xintercept = 25, linetype = "dashed", color = "red", size = 0.5) +
   geom_hline(yintercept = 0.9, color = "red", size = 0.5) +
@@ -118,24 +119,24 @@ print("Number of genes with non-ubiquitous DEUs")
 
 
 # Store retained genes with non-ubiquitous DEUs in multiple_correction_genes.txt
-sink(paste(working_dir, "multiple_correction_genes.txt", sep = "/"))
+sink(paste(general_analysis_results, "multiple_correction_genes.txt", sep = "/"))
 print(paste(all_DEU_genes_sig, collapse = ","))
 sink()
 
 
 # Filter genes in count files out if they are in filtered_genes list
-count_folder <- paste(opt$DEXSeqCountPath, 'count', sep='/')
+count_folder <- paste(opt$DEXSeqCountPath, 'count', sep = "/")
 count_files <- list.files(count_folder, full.names = TRUE)
-filtered_count_folder <- paste(opt$DEXSeqCountPath, 'correction', 'count', sep='/')
+filtered_count_folder <- paste(opt$DEXSeqCountPath, 'correction', 'count', sep = "/")
 
 for (file in count_files) {
   file_name <- strsplit(file, "/")[[1]]
   output_path <- paste(filtered_count_folder, file_name[length(file_name)], sep="/")
   
-  count_file <- fread(file, sep = '\t', col.names = c('ID', 'count'))
+  count_file <- fread(file, sep = "\t", col.names = c('ID', 'count'))
   filtered_ind <- sapply(count_file$ID, function(x) strsplit(x, ":")[[1]][1]) %in% filtered_genes
-  filtered_ind[grep("+", count_file$ID, fixed=T)] = TRUE
-  filtered_ind[grep("-", count_file$ID, fixed=T)] = TRUE
+  filtered_ind[grep("+", count_file$ID, fixed = T )] = TRUE
+  filtered_ind[grep("-", count_file$ID, fixed = T )] = TRUE
   count_file <- count_file[!filtered_ind, ]
-  fwrite(count_file, output_path, sep = '\t', row.names = FALSE, col.names = FALSE, quote = FALSE)
+  fwrite(count_file, output_path, sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 }

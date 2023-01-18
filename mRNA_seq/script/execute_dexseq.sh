@@ -18,10 +18,10 @@ cat /dev/null >execute_dexseq.log
 echo "===> START DEXSEQ-ING ALL PAIRS"
 DEXSeq_dir="$1"
 pair_chunks="$2"
-COUNT_folder=$DEXSeq_dir/count
-RData_folder=$DEXSeq_dir/Rdata
 REFGEN_path=$ENCODE_REFGEN/reference_genome.gtf
 DEXSEQ_script=$ENCODE_EXP/script/DEXSeq_analysis.R
+COUNT_folder=$DEXSeq_dir/count
+RData_folder=$DEXSeq_dir/Rdata
 Rscript $DEXSEQ_script
 
 #######################################
