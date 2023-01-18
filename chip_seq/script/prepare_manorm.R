@@ -6,19 +6,19 @@ library("optparse", quietly=TRUE)
 # ==== Preparation ==== 
 # Parse in Epispliced project path
 option_list <- list(
-  make_option(c("-pd", "--projectdir"), type="character",
-              help="path to Episliced project", metavar="character")
-			  )
+  make_option(c("-p", "--chipseq_path"), 
+    type = "character",
+    help = "path to Episliced project", 
+    metavar = "character"),
+    default = "chip_seq"
+    )
 opt_parser <- OptionParser(option_list=option_list)
 opt <- parse_args(opt_parser)
-
-# Set woking directory to Epispliced project
-setwd(opt$projectdir)
 
 
 # ==== Write MAnorm/MAnorm2 arguments to file ====
 # Define paths in for chip-seq analysis
-chipseq_dir <- paste(opt$projectdir, "chip_seq", sep='/')
+chipseq_dir <- opt$chipseq_path
 peak_dir <- paste(chipseq_dir, "peak_files", sep='/')
 alignment_dir <- paste(chipseq_dir, "alignment_files", sep='/')
 peak_metadata <- fread(paste(peak_dir, "metadata.tsv", sep='/'))

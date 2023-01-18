@@ -31,35 +31,39 @@ library("BiocParallel", quietly = TRUE)
 # ==== PREPARATION ====
 # Parse arguments for input/output settings
 option_list <- list(
-  make_option(c("-f", "--countfolder"),
-    type = "character", default = "/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/count",
+  make_option(c("-f", "--count_folder"),
+    type = "character", 
+    default = "mRNA_seq/dexseqcount",
     help = "path to folder of counts", metavar = "character"
   ),
-  make_option(c("-g", "--referencegenome"),
-    type = "character", default = "/home/dhthutrang/ENCODE/refgen/reference_genome.gtf",
-    help = "path to flattened reference genome", metavar = "character"
+  make_option(c("-g", "--reference_genome"),
+    type = "character", 
+    default = "refgen/reference_genome.gtf",
+    help = "path to flattened reference genome", 
+    metavar = "character"
   ),
-  make_option(c("-n", "--numcores"),
-    type = "integer", default = 1,
-    help = "number of processing cores", metavar = "character"
+  make_option(c("-n", "--num_cores"),
+    type = "integer", 
+    default = 1,
+    help = "number of processing cores", 
+    metavar = "character"
   )
 )
 
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-setwd(opt$countfolder)
-inDir <- normalizePath(getwd())
-count_files <- list.files(inDir, pattern = "*count.txt$", full.names = TRUE)
+count_files <- list.files(paste(opt$count_folder, "correction/count", sep = "/"), pattern = "*count.txt$", full.names = TRUE)
 file_names <- as.data.table(str_split_fixed(basename(count_files), "\\_", 3))
-gtf_files <- opt$referencegenome
-cores <- MulticoreParam(opt$numcores)
+gtf_files <- opt$reference_genome
+cores <- MulticoreParam(opt$num_cores)
+correction_result_path <- paste(opt$count_folder, "correction/count/res", sep = "/")
 
 # Write logs
 log_name <- file(paste(paste(epi_id1, epi_id2, sep='_'), "log", sep='.'), open = "wt")
 sink(log_name, type = c("output", "message"))
 
-cat(paste("---> Working folder: ", opt$countfolder, sep=''), append = TRUE)
+cat(paste("---> Working folder: ", opt$count_folder, sep=''), append = TRUE)
 cat("\n---> Count files: ", append = TRUE)
 cat(basename(count_files), append = TRUE)
 cat(paste("\n---> Reference genome: ", gtf_files, sep=''), append = TRUE)
@@ -80,7 +84,7 @@ dxd <- DEXSeqDataSetFromHTSeq(
   design = ~ sample + exon + condition:exon,
   flattenedfile = normalizePath(gtf_files)
 )
-saveRDS(dxd, "/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd.RDS")
+saveRDS(dxd, paste(correction_result_path, "dxd.RDS", sep = "/"))
 print(paste("dxd done: ", Sys.time()))
 
 cat("\n---> Getting DEXSeq result", append = TRUE)
@@ -89,7 +93,7 @@ print(paste("dxd.res done: ", Sys.time()))
 
 
 # Save DEXSeq results
-saveRDS(dxd.res, "/home/dhthutrang/ENCODE/mRNA_seq/dexseqcount/correction/res_90perc/dxd.res.RDS")
+saveRDS(dxd.res, paste(correction_result_path, "dxd.res.RDS", sep = "/"))
 print(paste("dxd.res saved: ", Sys.time()))
 
 

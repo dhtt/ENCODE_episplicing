@@ -1,13 +1,23 @@
 # Convert BAM files to SAM format, which is compatible to HTSeq.
 # Inputs: Path to BAM files
 # Outputs: SAM files in result folder
-# Globals:
-#     ENCODE_EXP: Path to mrna_seq working dir
 
-# Define input and output paths
+
+# Parse arguments for input path, output path
 echo "=====> Converting BAM to SAM"
-BAM_folder=$1
-SAM_folder=$ENCODE_EXP/sam_files
+while getopts 'b:s:' flag
+do 
+    case "${flag}" in 
+        (b) BAM_PATH=${OPTARG};;
+        (s) SAM_PATH=${OPTARG};;
+        (:) 
+            case ${OPTARG} in 
+                (b) exit 9999;;
+                (s) exit 9999;;
+            esac;;
+    esac
+done
+
 
 #######################################
 # Convert BAM to SAM in parallel
@@ -21,11 +31,11 @@ bam_to_sam() {
     ACC_NO=${ACC_NO##*/}
     echo $ACC_NO
     echo "Converting $ACC_NO" >>$ENCODE_log/bam2sam.log
-    (samtools sort -n -O SAM $f >$SAM_folder/$ACC_NO.sam) || echo "Err: Cannot convert BAM to SAM $ACC_NO" >>$ENCODE_log/bam2sam.log
+    (samtools sort -n -O SAM $f >$SAM_PATH/$ACC_NO.sam) || echo "Err: Cannot convert BAM to SAM $ACC_NO" >>$ENCODE_log/bam2sam.log
 }
 
 # Call bam_to_sam() on BAM files folder
-for f in $BAM_folder/*.bam; do
+for f in $BAM_PATH/*.bam; do
     bam_to_sam $f &
 done
 wait

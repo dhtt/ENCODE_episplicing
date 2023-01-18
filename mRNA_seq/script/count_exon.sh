@@ -5,35 +5,40 @@
 # Globals:
 #   ENCODE_EXP: Path to mrna_seq working dir
 
-# Define input and output paths
-echo "=====> Begin counting"
-cd "$(dirname "$0")"
-SAM_folder=$1
-COUNT_folder=$ENCODE_EXP/dexseqcount
+# Parse arguments for input path, output path
+while getopts 'i:o:g:' flag
+do 
+    case "${flag}" in 
+        (i) INPUT_PATH=${OPTARG};;
+        (o) OUTPUT_PATH=${OPTARG};;
+        (g) REFGEN_PATH=${OPTARG};;
+        (:) 
+            case ${OPTARG} in 
+                (i) exit 9999;;
+                (o) exit 9999;;
+                (g) exit 9999;;
+            esac;;
+    esac
+done
 
-#######################################
-# Generate count files from SAM files in parallel
-# Arguments:
-#    Path to SAM file
-# Outputs:
-#    Count files
-#######################################
+# Start exon reads counting
+echo "generate_exon_count.sh: STARTED"
+
 dexseq_count() {
     ID=${file%%.*}
     ID=${ID##*/}
-    file_path=$COUNT_folder/$ID"_count.txt"
-    echo "Counting $ID" >>log_dexseqcount.txt
-    if [ -e $file_path ]; then
-        echo "Already counted $ID" >>log_dexseqcount.txt
+    OUTPUT_FILENAME=$OUTPUT_PATH/"$ID"_count.txt
+    echo "Counting $ID" >> DEU_log.txt
+    if [ -e "$OUTPUT_FILENAME" ]
+    then 
+        echo "Already counted $ID" >> DEU_log.txt    
     else
-        echo $file_path
-        (python ~/R/x86_64-pc-linux-gnu-library/3.6/DEXSeq/python_scripts/dexseq_count.py $ENCODE_REFGEN/reference_genome.gtf $file $ENCODE_EXP/dexseqcount/"$ID"_count.txt) || (echo "Err: Counting $ID failed" >>log_dexseqcount.txt)
+        (python ~/R/x86_64-pc-linux-gnu-library/3.6/DEXSeq/python_scripts/dexseq_count.py $REFGEN_PATH $file $OUTPUT_FILENAME) || (echo "Err: Counting $ID failed" >> DEU_log.txt)
     fi
 }
-
-# Call dexseq_count() on SAM files folder
-for file in ls $SAM_folder/*.sam; do
-    dexseq_count &
+for file in $INPUT_PATH/*.sam
+do
+    dexseq_count & 
 done
 wait
-echo "=====> Finished counting"
+echo "generate_exon_count.sh: DONE"

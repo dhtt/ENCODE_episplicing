@@ -34,14 +34,27 @@ library("GO.db", quietly = TRUE)
 library("tidyverse", quietly = TRUE)
 library("tidytext", quietly = TRUE)
 library("ggpubr", quietly = TRUE)
-
+library("optparse", quietly = TRUE)
 
 # ==== PREPARATION ====
+# Parse arguments for input/output settings
+option_list <- list(
+  make_option("--dataset_path",
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored for a specific dataset",
+    metavar = "character",
+    default = "general_analysis_results/datasets/True_Pearson"
+  )
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
+
+
 histone_type_list <- c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-DEU_df_path <- "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.exp_flt_90.RDS"
-DHM_dfs_path <- "/home/dhthutrang/ENCODE/flank/110722_1/all_pairs.his_list_flt_90_manorm.RDS"
-genewise_odds_ratios_plot_path <- "/home/dhthutrang/ENCODE/flank/110722_1/res/or_vs_nexons3.tiff"
-odds_ratios_plot_path <- "/home/dhthutrang/ENCODE/flank/110722_1/res//odd_ratio_annot.tiff"
+DEU_df_path <- paste(opt$dataset_path, "DEU_df.RDS", sep = "/")
+DHM_dfs_path <- paste(opt$dataset_path, "DEU_df.RDS", sep = "/")
+genewise_odds_ratios_plot_path <- paste(opt$dataset_path, "res", "genewise_or.tiff", sep = "/")
+odds_ratios_plot_path <- paste(opt$dataset_path, "res", "groupwise_or.tiff", sep = "/")
 
 # ==== COMPUTE GLOBAL ODDS RATIO ====
 # ---- Methods ----

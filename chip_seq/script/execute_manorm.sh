@@ -7,11 +7,12 @@
 # Globals:
 #   ENCODE_HIS: Path to chip_seq working dir
 
+
 # Define input path and split workload into chunks for parallel process
 cat /dev/null >execute_manorm.log
 histone_type=$1
-mkdir $ENCODE_HIS/$histone_type
-INPUT_PATH=$ENCODE_HIS/$histone_type
+mkdir chip_seq/$histone_type
+INPUT_PATH=chip_seq/$histone_type
 
 echo "Start Time: $(date)" >>execute_manorm.log
 echo "===> START MANORM-ING ALL PAIRS IN $histone_type"

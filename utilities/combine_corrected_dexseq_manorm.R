@@ -2,7 +2,7 @@
 ##
 ## Script name: DEXSeq_analysis.R
 ##
-## Purpose of script: Perform pairwise Differential Exon Usage analysis using DEXSeq R package
+## Purpose of script: Combine the multiple correction results
 ##
 ## Author: Trang Do
 ##
@@ -11,34 +11,44 @@
 ##
 ## ---------------------------
 ##
-## Notes: This script was used for pairwise DEU analysis. For multiple correction,
-## DEXSeq_analysis_combined.R was used
+## Notes: 
+## - Description: The script gathers the multiple correction results from global DEXSeq analysis and Manorm2 analysis
+## and generate a dataframe containing the information about corrected exons
 ##
 ## ---------------------------
 
-library(data.table)
-library(dplyr)
-library(optparse)
+library("data.table")
+library("dplyr")
+library("optparse")
+
 
 # ==== PREPARATION ====
 # Parse arguments for input/output settings
 option_list <- list(
-  make_option("--globalDEXSeqResult",
+  make_option("--global_DEXSeq_result",
     type = "character",
-    help = "path to the result from combined DEXSeq analysis in RDS format. $ENCODE_EXP/res_90perc/dxd.res_90.RDS was used",
+    help = "path to the result from global DEXSeq analysis in RDS format",
+    metavar = "character",
+    default = "mRNA_seq/dexseqcount/correction/count/res/dxd.res.RDS"
+  ),
+  make_option("--manorm2_result",
+    type = "character",
+    help = "path to all MAnorm2 results in xlsx format specific for histone marks",
+    default = "chip_seq", 
     metavar = "character"
   ),
-  make_option("--MAnorm2Result",
+  make_option("--general_analysis_results",
     type = "character",
-    help = "path to MAnorm2 results in xlsx format",
-    default = "$ENCODE_HIS", # ENCODE/chip_seq
-    metavar = "character"
+    help = "path to the folder where the general results from the analysis are stored and shared between processes",
+    metavar = "character",
+    default = "general_analysis_results"
   )
 )
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
-globalDEXSeqResult <- opt$globalDEXSeqResult
-manorm2_res_path <- opt$MAnorm2Result
+global_DEXSeq_result <- opt$global_DEXSeq_result
+manorm2_res_path <- opt$manorm2_result
+general_analysis_results <- opt$general_analysis_results
 
 # Set working directory and input paths
 working_dir <- getwd()
@@ -122,4 +132,5 @@ combine_corrected_result <- function(manorm2_result, global_dexseq_result, corre
   saveRDS(corrected_result_df, corrected_exon_filename) 
 }
 
-combine_corrected_result(MAnorm2Result, globalDEXSeqResult, "combined_df_final.RDS")
+combine_corrected_result(manorm2_result, global_DEXSeq_result, 
+                         paste(general_analysis_results, "combined_df_final.RDS", sep = "/"))

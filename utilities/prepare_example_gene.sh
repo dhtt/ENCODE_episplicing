@@ -1,43 +1,62 @@
-if [[ $# -ne 3 ]]
-then 
-    echo "Please input epi_id1, epi_id2 and gene name"
-    exit 1
-fi
-mkdir $ENCODE_UTI/example_gene
-epi1=$1
-epi2=$2
-gene=$3
+# Gather the raw DEXSeq and MAnorm results for a gene for plotting Figure 4 in utilities/get_example_gene_plot.R
+# Inputs:
+#   EPI1: first epigenome
+#   EPI2: second epigenome
+#   GENE_ID: gene which should be plotted
+#   REFGEN: Path to the raw reference genome file with all original transcripts (GTF format)
+#   REFGEN_DEXSEQ: Path to the DEXSeq-collapsed reference genome file (GTF format)
+# Outputs: A folder containing the DEXSeq/MAnorm results for all histone available for this 2 epigenomes
+
+
+# Parse arguments for input path, output path
+echo "===> START DEXSEQ-ING ALL PAIRS"
+
+REFGEN=refgen/hg38.ncbiRefSeq.gtf 
+REFGEN_DEXSEQ=refgen/reference_genome.2021.gtf
+
+while getopts 'a:b:g:r:d:' flag
+do 
+    case "${flag}" in 
+        (a) EPI1=${OPTARG};;
+        (b) EPI2=${OPTARG};;
+        (g) GENE_ID=${OPTARG};;
+        (r) REFGEN=${OPTARG};;
+        (d) REFGEN_DEXSEQ=${OPTARG};;
+        (:) 
+            case ${OPTARG} in 
+                (a) exit 9999;;
+                (b) exit 9999;;
+                (g) exit 9999;;
+                (r) exit 9999;;
+                (d) exit 9999;;
+            esac;;
+    esac
+done
+
+EXAMPLE_GENE_PATH=general_analysis_results/example_gene
+mkdir -p $EXAMPLE_GENE_PATH
 
 #Prepare exp file
 echo "====> Prepare exp file"
-grep "\"$gene\"" $ENCODE_REFGEN/hg19.ncbiRefSeq.gtf > example_gene/"$gene"_NCBI.gtf
-sed -i 's/_id//g' example_gene/"$gene"_NCBI.gtf
+grep "\"$GENE_ID\"" $REFGEN >$EXAMPLE_GENE_PATH/"$GENE_ID"_NCBI.gtf
+sed -i 's/_id//g' $EXAMPLE_GENE_PATH/"$GENE_ID"_NCBI.gtf
 
-grep "groupID" $ENCODE_EXP/dexseqcount/res/"$epi1"_"$epi2"_res.csv > temp1.txt
-grep $gene$'\t' $ENCODE_EXP/dexseqcount/res/"$epi1"_"$epi2"_res.csv >> temp1.txt
-grep "\"$gene\"" $ENCODE_REFGEN/reference_genome.2021.gtf > temp2.txt
-paste -d '\t' temp1.txt temp2.txt > $ENCODE_UTI/example_gene/"$epi1"_"$epi2"_res.csv
-rm temp1.txt temp2.txt
-
-# #Prepare met file
-# echo "====> Prepare met file"
-# ##Met diff
-# grep "\"$gene\"" $MET/annotateddiff/"$epi1"_"$epi2"_diff.txt.txt > example_gene/"$epi1"_"$epi2"_diff.txt.txt
-# ##Met count
-# grep "\"$gene\"" $MET/annotatedcounts/exon_"$epi1"_"$epi2"_normedratio.csv.txt > example_gene/exon_"$epi1"_"$epi2"_normedratio.csv.txt
-# grep "\"$gene\"" $MET/annotatedcounts/pi_"$epi1"_"$epi2"_normedratio.csv.txt > example_gene/pi_"$epi1"_"$epi2"_normedratio.csv.txt
+grep "groupID" mRNA_seq/dexseqcount/res/"$EPI1"_"$EPI2"_res.csv >temp1.txt
+grep $GENE_ID$'\t' mRNA_seq/dexseqcount/res/"$EPI1"_"$EPI2"_res.csv >>temp1.txt
+grep "\"$GENE_ID\"" $REFGEN_DEXSEQ >temp2.txt
+paste -d '\t' temp1.txt temp2.txt >$EXAMPLE_GENE_PATH/"$EPI1"_"$EPI2"_res.csv
+rm temp*txt
 
 #Prepare his file
 echo "====> Prepare his file"
-for his in $ENCODE_HIS/H*/
-do (
-    temp=${his%*/}
-    type=${temp##*/}
-    grep "\"$gene\"" $ENCODE_HIS/$type/exon_pi/exon_"$epi1"_"$epi2".txt > $ENCODE_UTI/example_gene/exon_"$epi1"_"$epi2"."$type".txt
-    grep "\"$gene\"" $ENCODE_HIS/$type/exon_pi/pi_"$epi1"_"$epi2".txt > $ENCODE_UTI/example_gene/pi_"$epi1"_"$epi2"."$type".txt
-)
+for his in chip_seq/H*/; do
+    (
+        temp=${his%*/}
+        type=${temp##*/}
+        grep "\"$GENE_ID\"" chip_seq/$type/exon_pi/exon_"$EPI1"_"$EPI2".txt >$EXAMPLE_GENE_PATH/exon_"$EPI1"_"$EPI2"."$type".txt
+        grep "\"$GENE_ID\"" chip_seq/$type/exon_pi/pi_"$EPI1"_"$EPI2".txt >$EXAMPLE_GENE_PATH/pi_"$EPI1"_"$EPI2"."$type".txt
+    )
 done
-#Finishing
-tar -cvf example_"$epi1"_"$epi2"_"$gene".tar.gz example_gene
-rm -r example_gene
 
+#Finishing
+tar -cvf example_"$EPI1"_"$EPI2"_"$GENE_ID".tar.gz $EXAMPLE_GENE_PATH

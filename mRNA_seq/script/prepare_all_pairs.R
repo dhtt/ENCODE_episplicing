@@ -16,18 +16,8 @@
 ##   extracted and used to rename the SAM files for easier identification. Furthermore, the list of tissue pairs are 
 ##   generated and splitted into chunks of pairs. These chunks are stored in separate txt files and DEXSeq analysis is
 ##   performed with the chunks in parallel
-## - Preceeding script: -
-## - Succeeding script: count_exon.sh
 ##
 ## ---------------------------
-
-
-# Generate the sample pairs from 19 tissues
-# Inputs: none
-# Outputs: pair_chunk folder where the comparisons are splitted into chunks
-#      for parallel processing. Chunk files are named chunk_xx.
-# Globals:
-#   ENCODE_EXP: Path to mrna_seq working dir
 
 
 library(data.table)
@@ -40,12 +30,14 @@ library(optparse, quietly = TRUE)
 option_list <- list(
   make_option("--SAMfolder",
     type = "character",
-    help = "path to the folder of SAM files. $ENCODE_EXP/raw_data/SAM_files was used",
+    help = "path to the folder of SAM files",
+    default = "mRNA_seq/raw_data/sam",
     metavar = "character"
   ),
   make_option("--metadata",
     type = "character",
-    help = "path to metadata.tsv. $ENCODE_EXP/raw_data/metadata.tsv was used",
+    help = "path to metadata.tsv",
+    default = "mRNA_seq/raw_data/metadata.tsv",
     metavar = "character"
   )
 )
@@ -57,6 +49,7 @@ mrna_metadata = fread(opt$metadata)
 # Set working directory and input paths
 working_dir <- getwd()
 
+
 # ==== RENAME SAM FILES ====
 submeta = mrna_metadata %>%
   mutate(tissue = gsub('[[:punct:]]|\ ', '', `Biosample term name`),
@@ -64,7 +57,8 @@ submeta = mrna_metadata %>%
 	 rename = paste('mv ', paste(sam_folder, '/', `File accession`, '.sam', sep=''), filename)
          ) %>%
   dplyr::select(rename)
-fwrite(submeta, "/home/dhthutrang/ENCODE/mRNA_seq/script/renameSAMfiles.sh", row.names = FALSE, col.names = FALSE, quote = FALSE)
+fwrite(submeta, paste(working_dir, "mRNA_seq/script/renameSAMfiles.sh", sep = "/"), 
+  row.names = FALSE, col.names = FALSE, quote = FALSE)
 
 # ==== SPLIT TISSUES PAIRS INTO CHUNK FOR PARALLEL DEXSEQ ====
 tissue = mrna_metadata$`Biosample term name`
@@ -78,6 +72,7 @@ tissue_pairs_chunks = split(tissue_pairs, ceiling(seq_along(tissue_pairs)/no_chu
 
 for (i in seq_along(tissue_pairs_chunks)){
   chunk = tissue_pairs_chunks[i]
-  chunk_filename = paste("/home/dhthutrang/ENCODE/mRNA_seq/script/test/chunk_",  str_pad(i, 2, pad = '0'), sep="") 
+  chunk_filename = paste(paste(working_dir, "mRNA_seq/script/test/chunk_", sep = "/"),  
+                         str_pad(i, 2, pad = '0'), sep="")
   fwrite(chunk, chunk_filename, row.names = FALSE, col.names = FALSE, quote = FALSE)
 }

@@ -25,13 +25,15 @@ library(optparse, quietly = TRUE)
 option_list <- list(
   make_option(c("-freq", "--DEUsFreqTable"),
     type = "character",
-    help = "path to DEXSeq DEU frequency table in RDS format. $ENCODE_EXP/script/DEXSeq_DEU_freq_table.RDS was used",
+    help = "path to DEXSeq DEU frequency table in RDS format",
+    default = "general_analysis_results/DEXSeq_DEU_freq_table.RDS",
     metavar = "character"
   ),
   make_option(c("-res", "--globalDEXSeqResult"),
     type = "character",
-    help = "path to the result from global DEXSeq analysis in RDS format. $ENCODE_EXP/res_90perc/dxd.res_90.RDS was used",
-    metavar = "character"
+    help = "path to the result from global DEXSeq analysis in RDS format",
+    metavar = "character",
+    default = "mRNA_seq/dexseqcount/correction/count/res/dxd.res.RDS"
   )
 )
 opt_parser <- OptionParser(option_list = option_list)
@@ -98,4 +100,3 @@ get_sig_exon <- function(freq_table, global_res_df, sig_exon_filename){
   saveRDS(exons_after_correction, sig_exon_filename)
   return(overlap_global_pairwise)
 }
-sig_exons = get_sig_exon(freq_table, global_res_df, "multiple_correction_sig_exon_75low.RDS") #TODO
