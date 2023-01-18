@@ -57,7 +57,7 @@ option_list <- list(
   make_option(c("-c", "--corrected_res_path"),
     type = "character",
     help = "path to multiple correction results in RDS format",
-    default = "$ENCODE/utilities/combined_df_exon_90_final.RDS",
+    default = "/home/dhthutrang/ENCODE/general_analysis_results/combined_df_exon_90_final.RDS",
     metavar = "character"
   ),
   make_option(c("-i", "--all_pairs_DEU_path"),
@@ -144,7 +144,7 @@ get_colname <- function(filename_list, option = "DHM") {
   return(column_name)
 }
 
-filter_genes <- function(result_df, filter_genes_path = "combined_df_exon.RDS", filter = "deu") {
+filter_genes <- function(result_df, filter_genes_path, filter = "deu") {
   #' Filter out unsignificant DEU events from the dataframe containing all pairwise results using multiple correction
   #' outcome
   #'
