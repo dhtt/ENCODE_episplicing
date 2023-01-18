@@ -1,0 +1,20 @@
+Epigenome;Potency;Type;Origin;Life stage;Official name
+adiposetissue;Differentiated;Tissue;Mesoderm;Adult;Adipose tissue
+aorta;Differentiated;Tissue;Mesoderm;Adult;Aorta
+CD4positivealphabetaTcell;Differentiated;Primary cell;Mesoderm;Adult;CD4-positive alpha beta T cell
+CD8positivealphabetaTcell;Differentiated;Primary cell;Mesoderm;Adult;CD8-positive alpha beta Tcell
+ectodermalcell;Multipotent;In vitro differentiated cell;Embryonic cell;Embryo;Ectodermal cell
+endodermalcell;Multipotent;In vitro differentiated cell;Embryonic cell;Embryo;Endodermal cell
+esophagus;Differentiated;Tissue;Endoderm;Adult;Esophagus
+H1;Pluripotent;Cell line;Embryonic cell;Embryo;H1 cell
+mesenchymalstemcell;Multipotent;In vitro differentiated cell;Mesoderm;Embryo;Mesenchymal stem cell
+mesendoderm;Multipotent;In vitro differentiated cell;Embryonic cell;Embryo;Mesendoderm
+mesodermalcell;Multipotent;In vitro differentiated cell;Embryonic cell;Embryo;Mesodermal cell
+neuronalstemcell;Multipotent;In vitro differentiated cell;Ectoderm;Embryo;Neuronal stem cell
+pancreas;Differentiated;Tissue;Endoderm;Adult;Pancreas
+psoasmuscle;Differentiated;Tissue;Mesoderm;Adult;Psoas muscle
+sigmoidcolon;Differentiated;Tissue;Mesoderm;Adult;Sigmoid colon
+smallintestine;Differentiated;Tissue;Endoderm;Adult;Small intestine
+spleen;Differentiated;Tissue;Mesoderm;Adult;Spleen
+stomach;Differentiated;Tissue;Endoderm;Adult;Stomach
+trophoblastcell;Multipotent;In vitro differentiated cell;Embryonic cell;Embryo;Trophoblast

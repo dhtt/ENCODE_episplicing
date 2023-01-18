@@ -1,0 +1,20 @@
+Tissue	H3K27ac	H3K27me3	H3K36me3	H3K4me3	H3K9me3	Total epispliced genes (with overlaps)	Total epispliced genes (without overlaps)
+Adipose tissue	425					425	425
+Aorta	414	166	383	324	136	1423	1125
+CD4-positive alpha beta T cell	717	310	658	554	377	2616	1875
+CD8-positive alpha beta Tcell	750	241	648	548	302	2489	1843
+Ectodermal cell	791	286		575	277	1929	1463
+Endodermal cell	799	315	683	630	449	2876	2073
+Esophagus	470	169	420	354	198	1611	1241
+H1 cell	977	538	832	677	449	3473	2457
+Mesenchymal stem cell	931	333	744	679	369	3056	2264
+Mesendoderm	943	271	838	667		2719	2033
+Mesodermal cell	727		651	490	312	2180	1688
+Neuronal stem cell	963	435	816	833	621	3668	2611
+Pancreas	593	221	629	405	295	2143	1646
+Psoas muscle	544	202	485	403	165	1799	1363
+Sigmoid colon	517	193	480	321	164	1675	1313
+Small intestine	625	223	552	338	225	1963	1483
+Spleen	491	201	530	367	302	1891	1484
+Stomach	532	254	530	364	275	1955	1513
+Trophoblast	942	305	790		369	2406	1963

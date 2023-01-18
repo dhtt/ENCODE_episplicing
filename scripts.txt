@@ -1,0 +1,5 @@
+1. ./mRNA_seq/script/count_exon.sh -g refgen/reference_genome.gtf -o mRNA_seq/dexseqcount/count -i mRNA_seq/raw_data/sam
+2. ./mRNA_seq/script/execute_dexseq.sh -d mRNA_seq/dexseqcount -c mRNA_seq/script/pair_chunks -g refgen/reference_genome.gtf
+3. ./utilities/prepare_example_gene.sh -a neuronalstemcell -b pancreas -g LMNB1 -r refgen/hg38.ncbiRefSeq.gtf -d refgen/reference_genome.2021.gtf
+4. ./mRNA_seq/script/prepare_all_pairs.R --SAMfolder mRNA_seq/raw_data/sam --metadata mRNA_seq/raw_data/metadata.tsv
+Rscript ./mRNA_seq/script/multiple_correction.R --general_analysis_results general_analysis_results --count_folder mRNA_seq/dexseqcount
