@@ -45,55 +45,31 @@ option_list <- list(
   make_option(c("-d", "--dexseq_res_path"),
     type = "character",
     help = "path to DEXseq count results in csv format",
-    default = "$ENCODE_EXP/dexseqcount/res",
+    default = "mRNA_seq/dexseqcount/res",
     metavar = "character"
   ),
   make_option(c("-m", "--manorm_res_path"),
     type = "character",
     help = "path to MAnorm results in xlsx format",
-    default = "$ENCODE_HIS", # ENCODE/chip_seq
+    default = "chip_seq", 
     metavar = "character"
+  ),
+  make_option(c("-o", "--general_analysis_results"),
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored and shared between processes",
+    metavar = "character",
+    default = "general_analysis_results"
   ),
   make_option(c("-c", "--corrected_res_path"),
     type = "character",
     help = "path to multiple correction results in RDS format",
-    default = "/home/dhthutrang/ENCODE/general_analysis_results/combined_df_exon_90_final.RDS",
+    default = "general_analysis_results/combined_df_exon_90_final.RDS",
     metavar = "character"
   ),
-  make_option(c("-i", "--all_pairs_DEU_path"),
+  make_option(c("-n", "--dataset_name"),
     type = "character",
-    help = "path to save the final dataframe containing DEU statistics",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_pairs_DEU.RDS", # TODO
-    metavar = "character"
-  ),
-  make_option(c("-j", "--all_pairs_DEU_flt_path"),
-    type = "character",
-    help = "path to save the filtered dataframe containing DEU statistics",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_DEUs_corrected.RDS", # TODO
-    metavar = "character"
-  ),
-  make_option(c("-k", "--all_pairs_DHM_path"),
-    type = "character",
-    help = "path to save the final dataframe containing DHM M-values",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_pairs_DHM_list.RDS", # TODO
-    metavar = "character"
-  ),
-  make_option(c("-l", "--all_pairs_DHM_flt_path"),
-    type = "character",
-    help = "path to save the filtered dataframe containing DHM M-values",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_DHMs_corrected_list_manorm.RDS", # TODO
-    metavar = "character"
-  ),
-  make_option(c("-p", "--p_values_path"),
-    type = "character",
-    help = "path to save p-values from correlation",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_res_list.pearcor_p_90_manorm.RDS", # TODO
-    metavar = "character"
-  ),
-  make_option(c("-r", "--r_values_path"),
-    type = "character",
-    help = "path to save r-values from correlation",
-    default = "/home/dhthutrang/ENCODE/flank/150123/all_res_list.pearcor_r_90_manorm.RDS", # TODO
+    help = "name of the dataset being processed",
+    default = "True_Pearson", 
     metavar = "character"
   )
 )
@@ -102,12 +78,17 @@ opt <- parse_args(OptionParser(option_list = option_list))
 dexseq_res_path <- opt$dexseq_res_path
 manorm_res_path <- opt$manorm_res_path
 corrected_res_path <- opt$corrected_res_path
-all_pairs_DEU_path <- opt$all_pairs_DEU_path
-all_pairs_DEU_flt_path <- opt$all_pairs_DEU_flt_path
-all_pairs_DHM_path <- opt$all_pairs_DHM_path
-all_pairs_DHM_flt_path <- opt$all_pairs_DHM_flt_path
-p_values_path <- opt$p_values_path
-r_values_path <- opt$r_values_path
+general_analysis_results <- opt$general_analysis_results
+dataset_name <- opt$dataset_name
+dataset_path <- paste(general_analysis_results, "datasets", dataset_name, sep = "/")
+dir.create(file.path(dataset_path), showWarnings = FALSE)
+
+all_pairs_DEU_path <- paste(dataset_path, "all_pairs_DEU.RDS", sep = "/")
+all_pairs_DEU_flt_path <- paste(dataset_path, "DEU_df.RDS", sep = "/")
+all_pairs_DHM_path <- paste(dataset_path, "all_pairs_DHM_list.RDS", sep = "/")
+all_pairs_DHM_flt_path <- paste(dataset_path, "DHM_dfs.RDS", sep = "/")
+p_values_path <- paste(dataset_path, "p_val_dfs.RDS", sep = "/")
+r_values_path <- paste(dataset_path, "r_val_dfs.RDS", sep = "/")
 
 correlation_option_list <- list(opt$correlation_type, opt$absolute_value)
 names(correlation_option_list) <- c("correlation_type", "absolute_value")

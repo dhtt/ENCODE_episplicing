@@ -9,7 +9,7 @@
 cat /dev/null > annotate_manorm.log
 echo "Start Time: $(date)" >> annotate_manorm.log
 histonetype=$1
-HISTONE_PATH=$ENCODE_HIS/$histonetype
+HISTONE_PATH=chip_seq/$histonetype
 
 
 #Get chr, start, end, M-value, p-value, normedcount1, normedcount2

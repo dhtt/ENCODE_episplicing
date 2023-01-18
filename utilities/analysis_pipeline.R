@@ -15,45 +15,79 @@
 ## - Description: This script calls the analysis methods in analysis_methods.R to extract the epispliced genes to 
 ##   fulfill the main aim of the study. Figures and tables along the manuscript are generated from this script,
 ##   including Figure 3, Figure 5, Figure 6, Subfigure S3, Subfigure S4, Subfigure S1B, Table 2
-## - Preceeding script: get_cor.R
-## - Succeeding script: -
 ##
 ## ---------------------------
 
+library("optparse", quietly = TRUE)
 
 # ==== PREPARATION ====
 # Parse arguments for input/output settings
-workdir <- "/home/dhthutrang/ENCODE/flank"
-# dataset_paths <- paste(workdir, c("050722", "110722_0", "110722_1", "110722_2"), sep = "/")
-# dataset_names <- c("Abs_Pearson_both.stat", "Abs_Spearman_both.stat", "True_Pearson_both.stat", "True_Spearman_both.stat")
-dataset_paths <- paste(workdir, c("110722_1", "110722_2"), sep = "/")
-dataset_names <- c("True_Pearson_both.stat", "True_Spearman_both.stat")
-names(dataset_paths) <- dataset_names
-multi_datasets_results_path <- "/home/dhthutrang/ENCODE/multi_datasets_results" #TODO: change to results/results_all_datasets
-general_analysis_results <- "/home/dhthutrang/ENCODE/general_analysis_results"
-subscript <- "90_manorm"
+option_list <- list(
+  make_option("--general_analysis_results",
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored and shared between processes",
+    metavar = "character",
+    default = "general_analysis_results"
+  ),
+  make_option(c("-f", "--datasets_path"),
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored for all used dataset",
+    metavar = "character", 
+    default = "general_analysis_results/datasets"
+  ),
+  make_option("--multi_datasets_results",
+    type = "character",
+    help = "path to the folder where the results from the comparing different datasets are stored",
+    metavar = "character",
+    default = "multi_datasets_results"
+  ),
+  make_option("--epigenome_information",
+    type = "character",
+    help = "path to a ; separated dataframe with Epigenome, Potency, Type, Origin, Life stage, Official name are",
+    metavar = "character",
+    default = "general_analysis_results/epigenome_info.csv"
+  ),
+  make_option("--analysis_methods",
+    type = "character",
+    help = "path to the script containing analysing methods",
+    metavar = "character",
+    default = "utilities/analysis_methods.R"
+  ),
+  make_option("--analysis_methods_GO",
+    type = "character",
+    help = "path to the script containing analysing methods for Gene Ontology Enrichment Analysis",
+    metavar = "character",
+    default = "utilities/analysis_methods_GO.R"
+  )
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
+
+general_analysis_results <- opt$general_analysis_results
+dataset_paths <- dir(opt$datasets_path, full.names = TRUE)
+sapply(dataset_paths, function(path_) dir.create(file.path(path_, "res"), showWarnings = FALSE))
+
+multi_datasets_results_path <- opt$multi_datasets_results_path
+dir.create(file.path(multi_datasets_results_path), showWarnings = FALSE)
+
+source(opt$analysis_methods)
+source(opt$analysis_methods_GO)
+shinyGO_result_path <- paste(general_analysis_results, "shinyGO_epispliced_genes.csv", sep = "/")
+universe_genes_path <- paste(general_analysis_results, "all_DEU_genes.RDS", sep = "/")
 
 histone_type_list <- c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-epigenomes_annot <- read.csv("/home/dhthutrang/ENCODE/utilities/general_analysis_results/epigenome_info.csv",
-                            header = TRUE, sep = ";", row.names = 1)
+epigenomes_annot <- read.csv(opt$epigenome_information, header = TRUE, sep = ";", row.names = 1)
 official_name <- epigenomes_annot$Official.name
 
-source("/home/dhthutrang/ENCODE/utilities/analysis_methods.R")
-source("/home/dhthutrang/ENCODE/utilities/analysis_methods_GO.R")
-sapply(dataset_paths, function(path_) dir.create(file.path(path_, "res"), showWarnings = FALSE))
-dir.create(file.path(multi_datasets_results_path), showWarnings = FALSE)
-shinyGO_result_path <- "/home/dhthutrang/ENCODE/utilities/general_analysis_results/shinyGO_epispliced_genes.csv" 
-universe_genes_path <- "/home/dhthutrang/ENCODE/utilities/general_analysis_results/all_DEU_genes.RDS"
 
 #==== ANALYSIS PIPELINE ====
-run_pipeline <- function(dataset_path, dataset_index, dataset_name, r_sig = 0.5) {
+run_pipeline <- function(dataset_path, dataset_index, r_sig = 0.5) {
   #' This function executes the analysis pipeline with the helping functions defined in "METHODS TO COLLECT TISSUE-
   #' SPECIFIC EPISPLICED GENES"
   #' 
   #' @param dataset_path a list of paths to the results of get_cor.R. Each path leads to a folder where 4 dataframes
   #' containing DEU statistics, DHM M-values, correlation p-values and correlation r-values are stored in RDS format
   #' @param dataset_index the index of the dataset_path being analyse. Used for reporting during parallel process only
-  #' @param dataset_name a list of names to assign to the datasets for identification
   #' @param r_sig the threshold for correlation R-values to define epispliced genes
   #' @return a list containg the analysed results for each dataset. Each result contains 2 lists: 'info' where paths 
   #' and parameters set for the analysis are stored, and 'results' where the generated lists and dataframes are stored
@@ -61,18 +95,19 @@ run_pipeline <- function(dataset_path, dataset_index, dataset_name, r_sig = 0.5)
   
   info <- list()
   results <- list()
+  dataset_name <- sapply(dataset_paths, function(path_) {
+    name <- strsplit(path_, "/")[[1]]
+    return(name[length(name)])
+    })
   absolute_values <- strsplit(dataset_name, "_")[[1]][1]
   correlation_type <- strsplit(dataset_name, "_")[[1]][2]
-  val_type <- strsplit(dataset_name, "_")[[1]][3]
 
   info["absolute_values"] <- absolute_values
   info["correlation_type"] <- correlation_type
-  info["val_type"] <- val_type
 
   print(paste(
     "Currently processing: ", dataset_path, " with options: Absolute values - ", absolute_values,
     " Correlation type - ", correlation_type,
-    "Value type - ", val_type,
     sep = ""
   ))
 
@@ -80,8 +115,8 @@ run_pipeline <- function(dataset_path, dataset_index, dataset_name, r_sig = 0.5)
   # Define paths
   print("..... Define paths")
   dataset_path <- dataset_path
-  res_p_value_path <- paste(paste(dataset_path, "all_res_list.pearcor_p_", sep = "/"), subscript, ".RDS", sep = "")
-  res_r_value_path <- paste(paste(dataset_path, "all_res_list.pearcor_r_", sep = "/"), subscript, ".RDS", sep = "")
+  res_p_value_path <- paste(dataset_path, "p_val_dfs.RDS", sep = "/")
+  res_r_value_path <- paste(dataset_path, "r_val_dfs.RDS", sep = "/")
   DEU_path <- paste(dataset_path, "DEU_df.RDS", sep = "/")
   DHM_path <- paste(dataset_path, "DHM_dfs.RDS", sep = "/")
 
@@ -346,8 +381,7 @@ res_all_datasets <- foreach(i = seq(length(dataset_paths)),
   .combine = "list", .multicombine = TRUE, .errorhandling = 'pass') %dopar% { 
   output <- run_pipeline(
     dataset_path = dataset_paths[i], 
-    dataset_index = i, 
-    dataset_name = names(dataset_paths)[i]
+    dataset_index = i
     )
 }
 saveRDS(res_all_datasets, paste(multi_datasets_results_path, "res_all_datasets.RDS", sep = "/"))
@@ -400,7 +434,7 @@ get_name_list <- function(analysis_results_){
   #' 
   
   name_list_ <- lapply(analysis_results_, function(x) 
-    paste(x[["info"]][["absolute_values"]], x[["info"]][["correlation_type"]], x[["info"]][["val_type"]], sep = "_")
+    paste(x[["info"]][["absolute_values"]], x[["info"]][["correlation_type"]], sep = "_")
   )
   return(name_list_)
 }

@@ -27,41 +27,88 @@ library("rtracklayer", quietly = TRUE)
 library("stringr", quietly = TRUE)
 library("data.table", quietly = TRUE)
 library("dplyr", quietly = TRUE)
+library("optparse", quietly = TRUE)
+
+# ==== PREPARATION ====
+# Parse arguments for input/output settings
+option_list <- list(
+  make_option("--epi1",
+    type = "character",
+    help = "name of the first cell type/tissue in the comparison",
+    metavar = "character",
+    default = "neuronalstemcell"
+  ),
+  make_option("--epi1_name",
+    type = "character",
+    help = "official name of the first cell type/tissue to show in plot",
+    metavar = "character",
+    default = "Neuronal stem cell"
+  ),
+  make_option("--epi2",
+    type = "character",
+    help = "name of the second cell type/tissue in the comparison",
+    metavar = "character",
+    default = "pancreas"
+  ),
+  make_option("--epi2_name",
+    type = "character",
+    help = "official name of the second cell type/tissue to show in plot",
+    metavar = "character",
+    default = "Pancreas"
+  ),
+  make_option("--gene_name",
+    type = "character",
+    help = "name of the gene being plotted",
+    metavar = "character",
+    default = "LMNB1"
+  ),
+  make_option("--data_path",
+    type = "character",
+    help = "path to folder containing the transcripts, DEXSeq/MAnorm results of the gene being plotted",
+    metavar = "character",
+    default = "general_analysis_results/example_gene"
+  ),
+  make_option("--reverse_strand",
+    type = "logical",
+    help = "FALSE if the gene locates on forward strand and TRUE on reverse strand",
+    default = FALSE
+  ),
+  make_option("--skipped_transcripts",
+    type = "character",
+    help = "name of transcripts that should be skipped in plotting separated by '_' - usually uncommon/unconventional transcripts",
+    default = ""
+  ),
+  make_option("--general_analysis_results",
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored and shared between processes",
+    metavar = "character",
+    default = "general_analysis_results"
+  )
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
 
 #==== PREPARATION ====
 # Parse arguments for input/output settings
+gene_name <- opt$gene_name
+epi_id1 <- opt$epi1
+epi_id2 <- opt$epi2
+epi_name1 <- opt$epi1_name
+epi_name2 <- opt$epi2_name
+reverseStrand <- opt$reverse_strand 
+example_gene_folder <- normalizePath(opt$data_path)
+general_analysis_results <- opt$general_analysis_results
+
+all_files <- list.files(example_gene_folder, full.names = TRUE)
+skipped_transcripts <- strsplit(opt$skipped_transcripts, "_")[[1]]
+histone_types <- c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
+
 col.highlight <- "#fffa70"
 fontsize.title <- 17
 type.color <- c("#EE442F", "#63ACBE")
 margin <- c(20, 20)
 background.title <- "#5D2ED2"
 col.title <- "white"
-gene_name <- "SEPTIN9" # INPUT
-epi_id1 <- "neuronalstemcell" # INPUT
-epi_id2 <- "spleen" # INPUT
-example_gene_folder <- normalizePath(paste("/home/dhthutrang/ENCODE/utilities",
-  paste("example", epi_id1, epi_id2, gene_name, sep = "_"),
-  sep = "/"
-))
-example_gene_folder <- normalizePath(paste("/Users/dhthutrang/Documents/BIOINFO/Episplicing/ENCODE_episplicing/utilities",
-  paste(epi_id1, epi_id2, sep = "_"),
-  sep = "/"
-)) # INPUT
-epi_name1 <- "Neuronal stem cell" # INPUT
-epi_name2 <- "Spleen" # INPUT
-reverseStrand <- TRUE # INPUT
-all_files <- list.files(example_gene_folder, full.names = TRUE)
-# omit_transcript = c("NM_001382568.1", "NM_001277961.3", "NM_001382574.1", "NM_001382572.1",
-#                     "NM_001382580.1", "NM_001382581.1", "NM_001382569.1", "NM_001382571.1",
-#                     "NM_001382579.1", "NM_001277962.2", "NM_001382578.1") #STIM1
-omit_transcript <- c(
-  "XM_024447892.1", "NM_001144915.2", "NM_001144916.2",
-  "XM_024447890.1", "NM_022970.3", "NM_001144917.2", "NM_023029.2", "NM_001144914.1",
-  "NM_001144919.2", "XM_024447887.1", "XM_024447888.1", "XM_024447889.1",
-  "NM_001144918.2", "XM_017015924.2", "XM_017015925.2", "XM_024447891.1",
-)
-histone_types <- c("H3K27ac", "H3K27me3", "H3K36me3", "H3K4me3", "H3K9me3")
-
 
 #==== PLOT DIFFERENTIAL EXON USAGE =====
 
@@ -73,7 +120,7 @@ transcript <- as(import.gff(transcript_file), "GRanges")
 
 # Only show exons and main transcripts
 transcript <- transcript[transcript$type == "exon", ]
-transcript <- transcript[transcript$transcript %in% omit_transcript == FALSE, ]
+transcript <- transcript[transcript$transcript %in% skipped_transcripts == FALSE, ]
 
 #---- 2. Prepare highlighted transcript ----
 # Read DEXSeq result file for exons with DEUs (FDR p-value <= 0.05)
@@ -219,8 +266,8 @@ all_histone_track_sigs <- get_all_histone_track_sigs(expansion_range = 0, all_hi
 all_tracks <- list(itrack, gtrack, grtrack_sig)
 all_tracks <- append(all_tracks, all_histone_track_sigs)
 
-tiff(filename = paste(paste(epi_id1, epi_id2, gene_name, sep = "_"), "tiff", sep = "."), width = 12, height = 15, 
-     units = "in", res = 300)
+tiff(filename = paste(general_analysis_results, paste(paste(epi_id1, epi_id2, gene_name, sep = "_"), "tiff", sep = "."), sep = "/"), 
+     width = 12, height = 15, units = "in", res = 300)
 plotTracks(all_tracks, extend.left = 5000, extend.right = 500, fontsize.title = fontsize.title, stackHeight = 0.75,
            background.title = background.title, col.title = col.title, margin = margin, reverseStrand = reverseStrand,
            stackHeight = 0.75, cex = 0.6, lwd = 1.5, frame = TRUE, cex.axis = 0.3, lineheight = 0.25, 

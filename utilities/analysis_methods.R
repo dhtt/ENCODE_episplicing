@@ -232,7 +232,7 @@ plot_ecdf <- function(all_r_compare, dataset_path){
           legend.position = "bottom", legend.box = "vertical", legend.margin = margin()) +
     guides(fill = guide_legend(nrow = 3, byrow = t))
 
-  tiff(filename = paste(dataset_path, "res", paste("cumulative_r_ecdf_", subscript, ".tiff", sep = ""), sep = "/"),
+  tiff(filename = paste(dataset_path, "res", "cumulative_r_ecdf.tiff", sep = "/"),
        width = 8, height = 5, units = "in", res = 300)
   print(cumulative_r_ecdf)
   dev.off()
@@ -291,7 +291,7 @@ export_no_sig_gene_by_tissue <- function(no_sig_gene_by_tissue, dataset_path) {
   #'  
   
   fwrite(x = no_sig_gene_by_tissue,
-        file = paste(dataset_path, "res", paste("no_sig_gene_by_tissue", subscript, ".csv", sep = ""), sep = "/"), 
+        file = paste(dataset_path, "res", "no_sig_gene_by_tissue.csv", sep = "/"), 
         quote = FALSE, row.names = FALSE, col.names = TRUE, sep = "\t")
 }
 
@@ -380,7 +380,7 @@ plot_heatmap <- function(sim_mat, sim_mat_DEU_DHM, dataset_path) {
   # Plot similarity heatmaps for tissues based on TSEGs
   breaks <- get_color_scale(sim_matrices = sim_mat)
 
-  tiff(filename = paste(dataset_path, "res", paste("heatmap_", subscript, ".tiff", sep = ""), sep = "/"), 
+  tiff(filename = paste(dataset_path, "res", "heatmap.tiff", sep = "/"), 
       width = 16, height = 14, units = "in", res = 200)
   par(mfrow = c(2, 3), mar = c(1, 1, 1, 1) * 10)
   for (i in seq(length(sim_mat))){
@@ -396,7 +396,7 @@ plot_heatmap <- function(sim_mat, sim_mat_DEU_DHM, dataset_path) {
   # Plot similarity heatmaps for tissues based on DEU/DHM genes
   breaks <- get_color_scale(sim_matrices = sim_mat_DEU_DHM)
 
-  tiff(filename = paste(dataset_path, "res", paste("heatmap_", subscript, "_DEU_DHM.tiff", sep = ""), sep = "/"),
+  tiff(filename = paste(dataset_path, "res", "heatmap_DEU_DHM.tiff", sep = "/"),
       width = 16, height = 14, units = "in", res = 200)
   par(mfrow = c(2, 3), mar = c(1, 1, 1, 1)*10)
   for (i in seq(length(sim_mat_DEU_DHM))){

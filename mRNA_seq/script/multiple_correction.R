@@ -1,6 +1,6 @@
 ## ---------------------------
 ##
-## Script name: select_gene_for_correction.R
+## Script name: multiple_correction.R
 ##
 ## Purpose of script: Filter the genes used for DEXSeq multiple correction
 ##
@@ -12,22 +12,47 @@
 ## ---------------------------
 ##
 ## Notes: 
-## - Description: Given a folder containing all DEXSeq pariwise comparisons in csv format,
-##   this script collect all exons that have differential usage in any sample pair, plot 
-##   the cumulative distribution for the occurrence of DEUs and filter out genes that have
-##   DEUs occurring in a high number of comparisons
-## - Preceeding script: execute_dexseq.sh
-## - Succeeding script: DEXSeq_analysis_combined.R 
+## - Description: Given a folder containing all DEXSeq pariwise comparisons in csv format, this script collect all 
+##   exons that have differential usage in any sample pair, plot the cumulative distribution for the occurrence of
+##   DEUs and filter out genes that have DEUs occurring in a high number of comparisons
 ##
 ## ---------------------------
 
-library(data.table, quietly = TRUE)
-library(dplyr, quietly = TRUE)
-library(ggplot2, quietly = TRUE)
-library(reshape2, quietly = TRUE)
-library(optparse, quietly = TRUE)
-library(doMC)
+library("data.table", quietly = TRUE)
+library("dplyr", quietly = TRUE)
+library("ggplot2", quietly = TRUE)
+library("reshape2", quietly = TRUE)
+library("optparse", quietly = TRUE)
+library("doMC", quietly = TRUE)
 doMC::registerDoMC(cores = 8)
+library("optparse", quietly = TRUE)
+
+# ==== PREPARATION ====
+# Parse arguments for input/output settings
+option_list <- list(
+  make_option("--general_analysis_results",
+    type = "character",
+    help = "path to the folder where the general results from the analysis are stored and shared between processes",
+    metavar = "character",
+    default = "general_analysis_results"
+  ),
+  make_option(c("-c", "--count_folder"),
+    type = "character",
+    help = "path to folder of mRNA-seq counts",
+    metavar = "character", 
+    default = "mRNA_seq/dexseqcount"
+  )
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
+
+# Set working directory and input paths
+working_dir <- getwd()
+general_analysis_results <- opt$general_analysis_results
+count_folder <- paste(opt$count_folder, 'res', sep = "/")
+all_files <- list.files(count_folder, pattern = "*.csv", full.names = TRUE)
+print(all_files)
+
 
 get_name <- function(ID_list, option = "gene") {
   #' Get only gene names/ exon numbers from the list of ID_list
@@ -45,24 +70,6 @@ get_name <- function(ID_list, option = "gene") {
     warning("Check option for get_name()")
   }
 }
-general_analysis_results <- "/home/dhthutrang/ENCODE/general_analysis_results" # TODO
-
-
-# ==== PREPARATION ====
-# Parse arguments for input/output settings
-option_list <- list(
-  make_option(c("-p", "--DEXSeqCountPath"),
-    type = "character",
-    help = "path to DEXseq count in csv format. $ENCODE_EXP/dexseqcount was used",
-    metavar = "character"
-  )
-)
-opt_parser <- OptionParser(option_list = option_list)
-opt <- parse_args(opt_parser)
-
-# Set working directory and input paths
-DEXSeqresultpath <- paste(opt$DEXSeqCountPath, 'res', sep = "/")
-all_files <- list.files(DEXSeqresultpath, pattern = "*.csv")
 
 
 # ==== INSPECT DEU GENES/EXONS ABUNDANCE ====
@@ -125,9 +132,9 @@ sink()
 
 
 # Filter genes in count files out if they are in filtered_genes list
-count_folder <- paste(opt$DEXSeqCountPath, 'count', sep = "/")
+count_folder <- paste(opt$count_folder, 'count', sep = "/")
 count_files <- list.files(count_folder, full.names = TRUE)
-filtered_count_folder <- paste(opt$DEXSeqCountPath, 'correction', 'count', sep = "/")
+filtered_count_folder <- paste(opt$count_folder, 'correction', 'count', sep = "/")
 
 for (file in count_files) {
   file_name <- strsplit(file, "/")[[1]]

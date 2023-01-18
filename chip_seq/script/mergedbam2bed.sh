@@ -4,9 +4,9 @@
 
 
 # Define input and output paths
-INPUT_PATH=$ENCODE_HIS/alignment_files/merged
-mkdir $ENCODE_HIS/alignment_files/bed
-OUTPUT_PATH=$ENCODE_HIS/alignment_files/bed
+INPUT_PATH=chip_seq/alignment_files/merged
+mkdir chip_seq/alignment_files/bed
+OUTPUT_PATH=chip_seq/alignment_files/bed
 
 # Convert BAM to BED ===
 echo "Convert bam to bed"
